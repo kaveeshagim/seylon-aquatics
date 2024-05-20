@@ -2,16 +2,8 @@
 /* resources/css/app.css */
 /* @import '~bootstrap/dist/css/bootstrap.min.css'; */
 @import 'bootstrap/dist/css/bootstrap.min.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-
-aside.sidebar-collapsed {
-    width: 80px;
-}
-
-aside.sidebar-collapsed nav a span,
-aside.sidebar-collapsed nav div span {
-    display: none;
-}

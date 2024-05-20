@@ -53,7 +53,7 @@ class LoginController extends Controller
                     session()->put('username',$username);
                     session()->put('user_type',$user_usertype);
     
-                    $ipaddress = $this->get_client_ip();
+                    $ipaddress = Util::get_client_ip();
                     Util::user_auth_log($ipaddress,"user logged in successfully",$username,"User Logged In");
 
                     $result = 'correct';
@@ -72,7 +72,7 @@ class LoginController extends Controller
                     session()->put('username',$username);
                     session()->put('user_type',$user_usertype);
     
-                    $ipaddress = $this->get_client_ip();
+                    $ipaddress = Util::get_client_ip();
                     Util::user_auth_log($ipaddress,"user logged in successfully",$username,"User Logged In");
 
                     $result = 'correct';
@@ -103,7 +103,7 @@ class LoginController extends Controller
             ->where('id', $userid)
             ->update(['token' => '']);
 
-        $ipaddress = $this->get_client_ip();
+        $ipaddress = Util::get_client_ip();
         Util::user_auth_log($ipaddress,"user logged out successfully",$username,"User Logged Out");
 
 
@@ -115,22 +115,5 @@ class LoginController extends Controller
         return redirect('/');
     }
 
-    public function get_client_ip() {
-        $ipaddress = '';
-        if (isset($_SERVER['HTTP_CLIENT_IP']))
-            $ipaddress = $_SERVER['HTTP_CLIENT_IP'];
-        else if(isset($_SERVER['HTTP_X_FORWARDED_FOR']))
-            $ipaddress = $_SERVER['HTTP_X_FORWARDED_FOR'];
-        else if(isset($_SERVER['HTTP_X_FORWARDED']))
-            $ipaddress = $_SERVER['HTTP_X_FORWARDED'];
-        else if(isset($_SERVER['HTTP_FORWARDED_FOR']))
-            $ipaddress = $_SERVER['HTTP_FORWARDED_FOR'];
-        else if(isset($_SERVER['HTTP_FORWARDED']))
-            $ipaddress = $_SERVER['HTTP_FORWARDED'];
-        else if(isset($_SERVER['REMOTE_ADDR']))
-            $ipaddress = $_SERVER['REMOTE_ADDR'];
-        else
-            $ipaddress = 'UNKNOWN';
-        return $ipaddress;
-    }
+    
 }

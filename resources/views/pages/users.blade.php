@@ -1,167 +1,273 @@
 @extends('layouts.app')
 
 @section('content')
-<div>
-    <div id="alertArea" class="z-2"></div>
 
-    <h4 class="text-2xl font-bold dark:text-white">Add Users</h4>
-    <hr class="w-full h-1 my-4 bg-gray-900 border-0 rounded md:my-10 dark:bg-gray-700">
-    <div class="mb-5"></div>
+<nav class="flex" aria-label="Breadcrumb">
+    <ol class="inline-flex items-center space-x-1 md:space-x-2 rtl:space-x-reverse">
+      <li class="inline-flex items-center">
+        <a href="#" class="inline-flex items-center text-sm font-medium text-gray-700 hover:text-blue-600 dark:text-gray-400 dark:hover:text-white">
+          <svg class="w-3 h-3 me-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+            <path d="m19.707 9.293-2-2-7-7a1 1 0 0 0-1.414 0l-7 7-2 2a1 1 0 0 0 1.414 1.414L2 10.414V18a2 2 0 0 0 2 2h3a1 1 0 0 0 1-1v-4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v4a1 1 0 0 0 1 1h3a2 2 0 0 0 2-2v-7.586l.293.293a1 1 0 0 0 1.414-1.414Z"/>
+          </svg>
+          <span style="padding-left: 5px;">Home</span>
+        </a>
+      </li>
+      <li>
+        <div class="flex items-center">
+          <svg class="rtl:rotate-180 w-3 h-3 text-gray-400 mx-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4"/>
+          </svg>
+          <a href="#" class="ms-1 text-sm font-medium text-gray-700 hover:text-blue-600 md:ms-2 dark:text-gray-400 dark:hover:text-white">Admin</a>
+        </div>
+      </li>
+      <li aria-current="page">
+        <div class="flex items-center">
+          <svg class="rtl:rotate-180 w-3 h-3 text-gray-400 mx-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4"/>
+          </svg>
+          <span class="ms-1 text-sm font-medium text-gray-500 md:ms-2 dark:text-gray-400">Users</span>
+        </div>
+      </li>
+    </ol>
+  </nav>
 
-    <form id="userForm">
-    @csrf
-    <div class="grid gap-6 mb-6 md:grid-cols-2 font-medium">
-        
-        <div>
-            <label for="usertype" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">User Type</label>
-            <select id="usertype" name="usertype" class="bg-gray-500 border border-gray-300 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-                <option value="">- Select user type -</option
-                @foreach($usertypelist as $value)
-                <option value="{{ $value->id }}">{{ $value->title }}</option>
-                @endforeach
-            </select>
-        </div>
+<div class="px-4">
+  
+<h4 class="text-2xl font-bold dark:text-white">Users</h4>
 
-        <div>
-            <label for="first_name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Username</label>
-            <input type="text" id="username" name="username" class="bg-gray-500 border border-gray-300 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"  required/>
-        </div>
-        <div>
-            <label for="last_name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">First name</label>
-            <input type="text" id="firstname" name="firstname" class="bg-gray-500 border border-gray-300 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"  />
-        </div>
-        <div>
-            <label for="last_name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Last name</label>
-            <input type="text" id="lastname" name="lastname" class="bg-gray-500 border border-gray-300 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"  />
-        </div>
-        <div>
-            <label for="company" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Company</label>
-            <input type="text" id="company" name="company" class="bg-gray-500 border border-gray-300 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"  />
-        </div>  
-        <div>
-            <label for="email" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Email address</label>
-            <input type="email" id="email" name="email" class="bg-gray-500 border border-gray-300 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"  />
-        </div> 
-        <div>
-            <label for="phone" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Phone number</label>
-            <input type="tel" id="primary_contact" name="primary_contact" class="bg-gray-500 border border-gray-300 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"  />
-        </div>
-        <div>
-            <label for="phone" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Phone number 2</label>
-            <input type="tel" id="secondary_contact" name="secondary_contact" class="bg-gray-500 border border-gray-300 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"/>
-        </div>
-        <div>
-            <label for="password" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Password</label>
-            <input type="password" id="password" name="password" class="bg-gray-500 border border-gray-300 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required />
-        </div> 
-        
-        <div>
-            <label for="activestatus" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Active Status</label>
-            <div class="flex">
-                <div class="flex items-center me-4">
-                    <input id="active" type="radio" value="1" name="inline-radio-group" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
-                    <label for="active" name="activestatus" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Active</label>
+<hr>
+
+<div class="mb-4">
+<a href="{{ route('adduserpage') }}">
+    <button class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Add new user</button>
+</a>
+
+<button onclick="searchdata()" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 ml-2">Search</button>
+</div>
+
+<table class="table table-bordered dataTable display" id="users-table" style="width:100%">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>User Type</th>
+                <th>Active status</th>
+                <th>View</th>
+                <th>Edit</th>
+                <th>Delete</th>
+            </tr>
+        </thead>
+</table>
+
+
+
+<div class="modal fade bd-example-modal-lg" id="UserDetailModel" tabindex="-1" role="dialog"
+         aria-labelledby="UserDetailModelLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="UserDetailModelLabel">User Detail</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
                 </div>
-                <div class="flex items-center me-4">
-                    <input id="inactive" type="radio" value="0" name="inline-radio-group" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
-                    <label for="inactive" name="activestatus" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Inactive</label>
+                <div class="modal-body" id="status_model">
+                    <table style='font-size:14px' align="center" width='90%'>
+                        <tr class='row'>
+                            <td class='col-md-3' style="padding: 5px;" align="left"><label class='control-label labels'><strong>Login
+                                        Time: </strong></label></td>
+                            <td class='col-md-4' style="padding: 5px;"><span id="loginid"></span></td>
+                            <td class='col-md-3' style="padding: 5px;" align='left'><label class='control-label labels'><strong>Total
+                                        Idle: </strong></label></td>
+                            <td class='col-md-3' style="padding: 5px;"><span id="idleid"></span></td>
+                        </tr>
+                        <tr class='row'>
+                            <td class='col-md-3' style="padding: 5px;" align='left'><strong>Number of Outbound Calls: </strong>
+                            </td>
+                            <td class='col-md-3' style="padding: 5px;"><span id="outcalls"></span></td>
+                            <td class='col-md-3' style="padding: 5px;" align='left'><label class='control-label labels'><strong>Total
+                                        Break Time: </strong></label></td>
+                            <td class='col-md-3' style="padding: 5px;"><span id="totalbreakid"></span></td>
+                        </tr>
+                        <tr class='row'>
+                            <td class='col-md-3' style="padding: 5px;" align='left'><strong>Outbound Answered: </strong>
+                            </td>
+                            <td class='col-md-3' style="padding: 5px;"><span id="outanscalls"></span></td>
+                            <td class='col-md-3' style="padding: 5px;" align='left'><label class='control-label labels'><strong>Total
+                                        Busy: </strong></label></td>
+                            <td class='col-md-3' style="padding: 5px;"><span id="busyid"></span></td>
+                        </tr>
+                        <tr class="row">
+                            <td class='col-md-3' style="padding: 5px;" align='left'><label class='control-label labels'><strong>Number
+                                        of Inbound Calls: </strong></label></td>
+                            <td class='col-md-3' style="padding: 5px;"><span id="nocallsid"></span></td>
+                        </tr>
+                        <tr class='row'>
+                            <td class='col-md-3' style="padding: 5px;" align='left'><label class='control-label labels'><strong>Inbound AHT: </strong></label></td>
+                            <td class='col-md-3' style="padding: 5px;"><span id="ahtcallsid"></span></td>
+                        </tr>
+                    </table>
+                    <br>
+                    <table id="AgentBreaklist" align="center" width='70%'>
+
+                        <thead class="table_head">
+                        <tr>
+                            <th style="padding: 7px;" class="text-center">Break</th>
+                            <th style="padding: 7px;" class="text-center">Number of Breaks</th>
+                            <th style="padding: 7px;" class="text-center">Time</th>
+                        </tr>
+                        </thead>
+                        <tbody id="userData">
+                        </tbody>
+
+                    </table>
+                </div>
+                <div class="modal-footer" id="UserDetailModelfooter">
+
+                    <button type='button' class='btn btn-secondary' data-dismiss='modal'>Close</button>
+
                 </div>
             </div>
         </div>
-
     </div>
-    
-    <button type="submit" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Submit</button>
-    </form>
+
+
+
+
 
 </div>
 
 
-
 <script>
-
-$(document).ready(function() {
-    $('#userForm').submit(function(event) {
-        event.preventDefault();
-
-        $.ajax({
-            url: 'adduser',
-            type: 'POST',
-            data: $(this).serialize(), 
-            success: function(response) {
-                console.log(response);
-                var alertArea = document.getElementById('alertArea');
-
-                if(response === "failed"){
-
-                    var errorAlert = `<div id="alert-border-2" class="flex items-center p-4 mb-4 text-red-800 border-t-4 border-red-300 bg-red-50 dark:text-red-400 dark:bg-gray-800 dark:border-red-800" role="alert">
-                        <svg class="flex-shrink-0 w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-                        <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
-                        </svg>
-                        <div class="ms-3 text-sm font-medium">
-                        Username already exists.
-                        </div>
-                        <button id="dismiss-button" type="button" class="ms-auto -mx-1.5 -my-1.5 bg-red-50 text-red-500 rounded-lg focus:ring-2 focus:ring-red-400 p-1.5 hover:bg-red-200 inline-flex items-center justify-center h-8 w-8 dark:bg-gray-800 dark:text-red-400 dark:hover:bg-gray-700"  data-dismiss-target="#alert-border-2" aria-label="Close">
-                        <span class="sr-only">Dismiss</span>
-                        <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
-                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
-                        </svg>
-                        </button>
-                    </div>`;
-
-                    alertArea.innerHTML = errorAlert;
-
-
-                }else{
-
-                    var successAlert = `<div id="alert-border-3" class="flex items-center p-4 mb-4 text-green-800 border-t-4 border-green-300 bg-green-50 dark:text-green-400 dark:bg-gray-800 dark:border-green-800" role="alert">
-                        <svg class="flex-shrink-0 w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-                        <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
-                        </svg>
-                        <div class="ms-3 text-sm font-medium">
-                        User added.
-                        </div>
-                        <button id="dismiss-button" type="button" class="ms-auto -mx-1.5 -my-1.5 bg-green-50 text-green-500 rounded-lg focus:ring-2 focus:ring-green-400 p-1.5 hover:bg-green-200 inline-flex items-center justify-center h-8 w-8 dark:bg-gray-800 dark:text-green-400 dark:hover:bg-gray-700"  data-dismiss-target="#alert-border-3" aria-label="Close">
-                        <span class="sr-only">Dismiss</span>
-                        <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
-                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
-                        </svg>
-                        </button>
-                    </div>`;
-
-                    alertArea.innerHTML = successAlert;
-                    window.location.reload();
-                }
-            },
-            error: function(jqXHR, textStatus, errorThrown) {
-                alert('Form submission failed:', textStatus, errorThrown);
-            }
-        });
+    $(document).ready(function() {
+        searchdata();
     });
-});
-
-    
 </script>
+
 <script>
 
-$('#dismiss-button').click(function() {
-    dismiss.hide();
-});
+function searchdata() {
+  $('#users-table').DataTable().destroy();
 
-    
-</script>
+  $.ajax({
+    url: "getusers",
+    type: "GET",
+    dataSrc: "data",
+    success: function(data) {
+      console.log("Data:", data);
 
-<script type="module">
-    import { initializeAlertDismiss } from './../../resources/js/alertDismiss.js';
+      // Initialize the DataTable with the retrieved data
+      $('#users-table').DataTable({
+        "processing": true,
+        "deferRender": true,
+        "data": data,
+        "columns": [
+          { "data": "username" },
+          { "data": "usertype" },
+          {
+            sortable: false,
+            "render": function(data, type, full, meta) {
+              console.log(full.token);
+                if(full.token != '' || full.token != null) {
+                  return '<td><div class="flex items-center"><div class="h-2.5 w-2.5 rounded-full bg-green-500 me-2"></div> Online</div></td>';
+                }else{
+                  return '<td><div class="flex items-center"><div class="h-2.5 w-2.5 rounded-full bg-red-500 me-2"></div> Offline</div></td>';
+                }
+              }
+          },
+          {
+            sortable: false,
+            "render": function(data, type, full, meta) {
+              return '<td><a style="color: #000000" href="" onclick="userDetailModel(\'' + full.id + '\')"><span class="fas fa-eye"></span></a></td>';
+            }
+          },
+          {
+            sortable: false,
+            "render": function(data, type, full, meta) {
+              return '<td><button style="color: #000000" onclick="editusers(\'' + full.id + '\')"><span class="fas fa-pencil-alt"></span></button></td>';
+            }
+          },
+          {
+            sortable: false,
+            "render": function(data, type, full, meta) {
+              return '<td><a style="color: #000000" href="" onclick="deleteusers(\'' + full.id + '\')"><span class="fas fa-trash-alt"></span></a></td>';
+            }
+          }
+        ],
+        "columnDefs": [
+          { className: "text-center", "targets": [0, 1, 2, 3, 4, 5] }
+        ],
+        "pageLength": 25,
+        "order": [[0, "desc"]],
+        "searching": true
+      });
+    },
+    "error": function(xhr, status, error) {
+      console.error("Error:", error);
+    }
+  });
+}
 
-    const $targetEl = document.getElementById(targetElementId);
-    const $triggerEl = document.getElementById(triggerElementId);
+function editusers(id) {
+  location.href = "{{url('edituserpage')}}" + "/" + id;
+}
 
-        const alertDismissInstance = initializeAlertDismiss($targetEl, $triggerEl);
+function deleteusers(id) {
+    $.ajax({
+        url: 'deleteuser',
+        type: 'GET',
+        data: {id: id},
+        success: function (response) {
+            if(response == "deleted") {
+               alert("user successfully deleted!"); 
+               location.reload();
+            }
+        }
+    });
+}
 
-    $('#dismiss-button').click(function() {
-        alertDismissInstance.hide();
-        });
+function userDetailModel(id) {
+        // body...
 
+        // $.ajax({
+        //     type: "GET",
+        //     url: '{{url('userdetails')}}',
+        //     data: {id:id},
+        //     success: function (response) {
+
+        //         var bodyData = '';
+
+        //         $("#userData").empty();
+
+        //         console.log(response);
+        //         $.each(response, function (index, c) {
+
+        //             $('#loginid').html(c.cre_datetime);
+        //             $('#totalonlineid').html(c.ReadyTime);
+        //             $('#busyid').html(response.TalkTime);
+        //             $('#idleid').html(response.idleTime);
+        //             $('#nocallsid').html(response.CallCount);
+        //             $('#ahtcallsid').html(response.AHT);
+        //             $('#ans_id').html(response.AnsCount);
+        //             $('#totalbreakid').html(response.BreakTime);
+        //             $('#outcalls').html(response.OutCount);
+        //             $('#outanscalls').html(response.OutAnsCallCount);
+        //         });
+
+        //         $.each(response.data, function (index, row) {
+
+        //             bodyData += "<tr>"
+        //             bodyData += "<td style='padding: 6px'>" + row.description + "</td><td style='padding: 6px'>" + row.breakCount + "</td><td style='padding: 6px'>" + row.time + "</td>";
+        //             bodyData += "</tr>";
+
+        //         });
+
+        //         $("#userData").append(bodyData).css({"text-align": "center"});
+
+        //     }
+
+        // });
+
+        $('#StatusModel').modal('show');
+    }
 </script>
 @endsection
