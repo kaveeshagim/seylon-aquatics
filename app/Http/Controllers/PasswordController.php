@@ -7,17 +7,19 @@ use App\Http\Util;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Models\ResetPasswordReq;
+use App\Models\ResetPassword;
+use App\Models\User;
 
 class PasswordController extends Controller
 {
 
     public function getpasswordreq() {
 
-        $data = DB::table('tbl_reset_password_req')
-            ->select('tbl_reset_password_req.*', 'tbl_users.username')
-            ->join('tbl_users', 'tbl_reset_password_req.user_id', '=', 'tbl_users.id')
-            ->where('status', '=', 'pending')
-            ->get();
+        $data = ResetPasswordReq::select('tbl_reset_password_req.*', 'tbl_users.username')
+                ->join('tbl_users', 'tbl_reset_password_req.user_id', '=', 'tbl_users.id')
+                ->where('status', 'pending')
+                ->get();
 
         return $data;    
 
@@ -27,14 +29,13 @@ class PasswordController extends Controller
 
         $username = $request->input('username-reset');
 
-        $cur_password = DB::table('tbl_users')->select('tbl_users.password', 'tbl_users.id')->where('username', $username)->first();
+        $user = User::where('username', $username)->first();
 
-        DB::table('tbl_reset_password_req')
-        ->insert([
-            'user_id'=> $cur_password->id,
+        ResetPasswordReq::insert([
+            'user_id' => $user->id,
             'reason' => $request->input('reason'),
-            'cur_password' => $cur_password->password,
-            'cre_datetime' => NOW(),
+            'cur_password' => $user->password,
+            'cre_datetime' => now(),
             'status' => 'pending',
         ]);
 
@@ -49,24 +50,20 @@ class PasswordController extends Controller
 
     public function editnewpassword(Request $request) {
 
-        DB::table('tbl_reset_password')
-        ->insert([
+        ResetPassword::create([
             'psws_reqid' => $request->req_id, 
             'user_id' => $request->user_id,
             'username' => $request->username,
             'old_password' => $request->oldpswd,
             'new_password' => $request->newpswd,
             'updated_by' => session()->get('userid'),
-            'cre_datetime' => NOW()
-         ]);
-
-        DB::table('tbl_reset_password_req')
-        ->where('id', $request->id)
-        ->update(['status' => 'completed']);
-
-        $email = DB::table('tbl_users')->select('tbl_users.email')->where('tbl_users.id', '=', $request->user_id)->first();
-
-        $to = $email->email;
+            'cre_datetime' => now()
+        ]);
+        
+        ResetPasswordReq::where('id', $request->id)->update(['status' => 'completed']);
+        
+        $user = User::find($request->user_id);
+        $email = $user->email;
 
         $subject = "Password Change Request";
 

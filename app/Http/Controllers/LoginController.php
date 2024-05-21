@@ -6,6 +6,8 @@ use App\Http\Util;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Models\UserType;
+use App\Models\User;
 
 class LoginController extends Controller
 {
@@ -21,10 +23,7 @@ class LoginController extends Controller
         $password = $request->input('password');
         $result = '';
 
-        $user = DB::table('tbl_users')
-            ->select('*')
-            ->where('username', '=', $username)
-            ->first();
+        $user = User::where('username', $username)->first();
 
         if($user){
             $user_password = $user->password;
@@ -37,16 +36,13 @@ class LoginController extends Controller
 
                 if($user_token !== ''){
 
-                    DB::table('tbl_users')
-                    ->where('id', $user->id)
-                    ->update(['token' => '']);
+                    $user->token = '';
+                    $user->save();
 
-                    $datetime = date('YmdHis');
-                    $token = $user->id.'_'.$datetime;
-
-                    DB::table('tbl_users')
-                        ->where('id', $user->id)
-                        ->update(['token' => $token]);
+                    $datetime = now()->format('YmdHis');
+                    $token = $user->id . '_' . $datetime;
+                    $user->token = $token;
+                    $user->save();
 
                     session()->put('userid',$user_id);
                     session()->put('user_token',$token);
@@ -60,12 +56,11 @@ class LoginController extends Controller
 
                 }else{
 
-                    $datetime = date('YmdHis');
-                    $token = $user->id.'_'.$datetime;
+                    $datetime = now()->format('YmdHis');
+                    $token = $user->id . '_' . $datetime;
 
-                    DB::table('tbl_users')
-                        ->where('id', $user->id)
-                        ->update(['token' => $token]);
+                    $user->token = $token;
+                    $user->save();
 
                     session()->put('userid',$user_id);
                     session()->put('user_token',$token);
@@ -99,9 +94,10 @@ class LoginController extends Controller
         $userid = session()->get('userid');
         $username=session()->get('username');
 
-        DB::table('tbl_users')
-            ->where('id', $userid)
-            ->update(['token' => '']);
+        $user = User::find($userid);
+
+        $user->token = '';
+        $user->save();
 
         $ipaddress = Util::get_client_ip();
         Util::user_auth_log($ipaddress,"user logged out successfully",$username,"User Logged Out");

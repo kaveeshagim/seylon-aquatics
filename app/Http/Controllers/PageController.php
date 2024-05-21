@@ -5,6 +5,11 @@ namespace App\Http\Controllers;
 use App\Http\Util;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Session;
+use App\Models\UserType;
+use App\Models\User;
+use App\Models\Customer;
+use App\Models\ResetPasswordReq;
 
 class PageController extends Controller
 {
@@ -31,9 +36,7 @@ class PageController extends Controller
 
     public function adduserpage(){
 
-        $usertypelist = DB::table('tbl_usertype')
-                ->select('tbl_usertype.id', 'tbl_usertype.title')
-                ->get();
+        $usertypelist = UserType::select('id', 'title')->get();
 
         $username = session()->get('username');
         $ipaddress = Util::get_client_ip();
@@ -45,14 +48,9 @@ class PageController extends Controller
 
     public function edituserpage($id) {
 
-        $data = DB::table('tbl_users')
-                ->select('*')
-                ->where('tbl_users.id','=', $id)
-                ->first();
-
-        $usertypelist = DB::table('tbl_usertype')
-                ->select('tbl_usertype.id', 'tbl_usertype.title')
-                ->get();
+        $data = User::find($id);
+        
+        $usertypelist = UserType::select('id', 'title')->get();
 
         $username = session()->get('username');
         $ipaddress = Util::get_client_ip();
@@ -85,10 +83,7 @@ class PageController extends Controller
     public function editusertypepage($id) {
         // $id = $_GET['id'];
 
-        $data = DB::table('tbl_usertype')
-                ->select('*')
-                ->where('tbl_usertype.id','=', $id)
-                ->first();
+        $data = UserType::find($id);
 
         $username = session()->get('username');
         $ipaddress = Util::get_client_ip();
@@ -118,10 +113,10 @@ class PageController extends Controller
 
     public function addcustomerspage(){
 
-        $executives = DB::table('tbl_users')
-                    ->select('tbl_users.fname as fname','tbl_users.id as id')
-                    ->join('tbl_usertype', 'tbl_usertype.id', '=', 'tbl_users.user_type')
-                    ->where('tbl_usertype.title', '=', 'Executive')
+        $executives = User::select('fname', 'id')
+                    ->whereHas('userType', function ($query) {
+                        $query->where('title', 'Executive');
+                    })
                     ->get();
 
         $username = session()->get('username');
@@ -134,8 +129,7 @@ class PageController extends Controller
 
     public function addsubcustomerspage(){
 
-        $maincustomerlist = DB::table('tbl_customers')
-                ->select('tbl_customers.id', CONCAT('tbl_customers.fname', ' ','tbl_customers.lname' ))
+        $maincustomerlist = Customer::select('id', \DB::raw("CONCAT(fname, ' ', lname) as full_name"))
                 ->get();
 
         $username = session()->get('username');
@@ -188,10 +182,8 @@ class PageController extends Controller
     public function resetpasswordpage($id) {
         // $id = $_GET['id'];
 
-        $data = DB::table('tbl_reset_password_req')
-                ->select('tbl_reset_password_req.*', 'tbl_users.username', 'tbl_users.id as user_id')
-                ->join('tbl_users', 'tbl_reset_password_req.user_id', '=', 'tbl_users.id')
-                ->where('tbl_reset_password_req.id','=', $id)
+        $data = ResetPasswordRequest::with('user')
+                ->where('id', $id)
                 ->first();
 
         $username = session()->get('username');
@@ -231,10 +223,7 @@ class PageController extends Controller
     public function show($username)
     {
 
-        $data = DB::table('tbl_users')
-                ->select('*')
-                ->where('tbl_users.username','=', $username)
-                ->first();
+        $data = User::where('username', $username)->first();
 
         $username = session()->get('username');
         $ipaddress = Util::get_client_ip();
@@ -252,6 +241,16 @@ class PageController extends Controller
         Util::user_auth_log($ipaddress,"user opened user profile ",$username, "View Profile Page");
 
         return view('pages.userprofile');
+    }
+
+    public function fish_weekly() {
+
+        $username = session()->get('username');
+        $ipaddress = Util::get_client_ip();
+        Util::user_auth_log($ipaddress,"user opened fish weekly interface ",$username, "View Fish Weekly Page");
+
+        return view('pages.fishweekly');
+
     }
 
     public function fish_habitat() {

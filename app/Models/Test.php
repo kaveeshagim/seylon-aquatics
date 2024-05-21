@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class UserType extends Model
+class Test extends Model
 {
     use HasFactory;
 
@@ -14,7 +14,7 @@ class UserType extends Model
      *
      * @var string
      */
-    protected $table = 'tbl_users';
+    protected $table = 'test';
 
     /**
      * The attributes that are mass assignable.
@@ -24,19 +24,4 @@ class UserType extends Model
     protected $fillable = [
         'title',
     ];
-
-    /**
-     * The attributes that should be cast.
-     *
-     * @var array<string, string>
-     */
-    protected $casts = [
-        'created_at' => 'datetime',
-        'updated_at' => 'datetime',
-    ];
-
-    public function userType()
-    {
-        return $this->belongsTo(UserType::class, 'user_type');
-    }
 }

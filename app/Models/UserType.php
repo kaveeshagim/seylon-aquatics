@@ -14,7 +14,7 @@ class UserType extends Model
      *
      * @var string
      */
-    protected $table = 'tbl_users';
+    protected $table = 'tbl_usertype';
 
     /**
      * The attributes that are mass assignable.
@@ -35,8 +35,8 @@ class UserType extends Model
         'updated_at' => 'datetime',
     ];
 
-    public function userType()
+    public function users()
     {
-        return $this->belongsTo(UserType::class, 'user_type');
+        return $this->hasMany(User::class, 'user_type');
     }
 }

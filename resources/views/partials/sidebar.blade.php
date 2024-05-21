@@ -38,8 +38,10 @@
         <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
                 <h6 class="collapse-header">Fish Stock:</h6>
-                <a class="collapse-item" href="buttons.html">Fish Stock</a>
-                <a class="collapse-item" href="cards.html">Weekly Fish Stock</a>
+                <a class="collapse-item" href="{{ route('fish_stock') }}">Fish Stock</a>
+                <a class="collapse-item" href="{{ route('fish_weekly') }}">Weekly Fish Stock</a>
+                <a class="collapse-item" href="{{ route('fish_habitat') }}">Fish Habitat</a>
+                <a class="collapse-item" href="{{ route('fish_variety') }}">Fish Variety</a>
             </div>
         </div>
     </li>

@@ -79,6 +79,25 @@ Route::namespace('App\Http\Controllers')->group(function () {
     Route::post('/addpasswordresetreq', 'PasswordController@addpasswordresetreq')->name('addpasswordresetreq');
     Route::post('/editnewpassword', 'PasswordController@editnewpassword')->name('editnewpassword');
 
+    // Fish routes
+    Route::get('/fish_stock', 'PageController@fish_stock')->name('fish_stock');
+    Route::get('/fish_weekly', 'PageController@fish_weekly')->name('fish_weekly');
+    Route::get('/fish_habitat', 'PageController@fish_habitat')->name('fish_habitat');
+    Route::get('/fish_variety', 'PageController@fish_variety')->name('fish_variety');
+    Route::get('/add_fish_habitat', 'PageController@add_fish_habitat')->name('add_fish_habitat');
+    Route::get('/edit_fish_habitat', 'PageController@edit_fish_habitat')->name('edit_fish_habitat');
+    Route::get('/add_fish_variety', 'PageController@add_fish_variety')->name('add_fish_variety');
+    Route::get('/edit_fish_habitat', 'PageController@edit_fish_variety')->name('edit_fish_variety');
+    
+    Route::get('/add_fish_habitat', 'UsersController@adduser');
+    Route::get('/getusers', 'UsersController@getusers')->name('getusers');
+    Route::get('/deleteuser', 'UsersController@deleteuser')->name('deleteuser');
+    Route::get('/userprofile/{username}', 'PageController@show')->name('userprofile.show');
+    Route::get('/userprofile', 'PageController@showprofile')->name('userprofile.showprofile');
+    Route::get('/userdetails', 'UsersController@userdetails')->name('userdetails');
+    Route::get('/edituserpage/{id}', 'PageController@edituserpage')->name('edituserpage');
+    Route::post('/edituser', 'UsersController@edituser');
+
     // Excel upload
     Route::post('/upload-excel', 'ExcelImportController@upload')->name('upload.excel');
 

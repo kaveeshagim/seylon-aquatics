@@ -7,16 +7,15 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use App\Models\UserType;
+use App\Models\User;
 
 class UsersController extends Controller
 {
 
     public function getusers() {
 
-        $data = DB::table('tbl_users')
-            ->select('tbl_users.*', 'tbl_usertype.title AS usertype')
-            ->join('tbl_usertype', 'tbl_usertype.id','=','tbl_users.user_type')
-            ->get();
+        $data = User::with('userType')->get();
 
             // dd($users);
 
@@ -108,10 +107,8 @@ class UsersController extends Controller
         $username = $validatedData['username'];
     
         // Check if the username already exists
-        $found = DB::table('tbl_users')
-            ->where('username', $username)
-            ->exists();
-    
+        $found = User::where('username', $username)->exists();
+
         if ($found) {
             return 'failed';
         }
@@ -129,19 +126,21 @@ class UsersController extends Controller
         }
     
         // Insert the user data into the database
-        DB::table('tbl_users')->insert([
-            'user_type' => $validatedData['usertype'],
-            'username' => $validatedData['username'],
-            'fname' => $validatedData['firstname'],
-            'lname' => $validatedData['lastname'],
-            'password' => $validatedData['password'],
-            'active_status' => $validatedData['inline-radio-group'],
-            'company' => $validatedData['company'],
-            'email' => $validatedData['email'],
-            'primary_contact' => $validatedData['primary_contact'],
-            'secondary_contact' => $validatedData['secondary_contact'],
-            'avatar' => $avatarPath,
-        ]);
+        $user = new User();
+        $user->user_type = $validatedData['usertype'];
+        $user->username = $validatedData['username'];
+        $user->fname = $validatedData['firstname'];
+        $user->lname = $validatedData['lastname'];
+        $user->password = $validatedData['password'];
+        $user->active_status = $validatedData['inline-radio-group'];
+        $user->company = $validatedData['company'];
+        $user->email = $validatedData['email'];
+        $user->primary_contact = $validatedData['primary_contact'];
+        $user->secondary_contact = $validatedData['secondary_contact'];
+        $user->avatar = $avatarPath; // Assuming $avatarPath is the path to the user's avatar image
+
+        // Save the user to the database
+        $user->save();
     
         $ipaddress = Util::get_client_ip();
         Util::user_auth_log($ipaddress, "user added ", $username, "User Added");
@@ -194,19 +193,23 @@ class UsersController extends Controller
         }
     
         // Insert the user data into the database
-        DB::table('tbl_users')->where('id', $id)->update([
-            'user_type' => $validatedData['usertype'],
-            'username' => $validatedData['username'],
-            'fname' => $validatedData['firstname'],
-            'lname' => $validatedData['lastname'],
-            'password' => $validatedData['password'],
-            'active_status' => $validatedData['inline-radio-group'],
-            'company' => $validatedData['company'],
-            'email' => $validatedData['email'],
-            'primary_contact' => $validatedData['primary_contact'],
-            'secondary_contact' => $validatedData['secondary_contact'],
-            'avatar' => $avatarPath,
-        ]);
+        $user = User::find($id);
+
+        // Update user attributes
+        $user->user_type = $validatedData['usertype'];
+        $user->username = $validatedData['username'];
+        $user->fname = $validatedData['firstname'];
+        $user->lname = $validatedData['lastname'];
+        $user->password = $validatedData['password'];
+        $user->active_status = $validatedData['inline-radio-group'];
+        $user->company = $validatedData['company'];
+        $user->email = $validatedData['email'];
+        $user->primary_contact = $validatedData['primary_contact'];
+        $user->secondary_contact = $validatedData['secondary_contact'];
+        $user->avatar = $avatarPath;
+        
+        // Save the changes
+        $user->save();
     
         $ipaddress = Util::get_client_ip();
         Util::user_auth_log($ipaddress,"user edited ",$username, "User Edited");
@@ -217,9 +220,7 @@ class UsersController extends Controller
     public function deleteuser(Request $request) {
 
 
-        DB::table('tbl_users')
-        ->where('id', $request->input('id'))
-        ->delete();
+        User::destroy($request->input('id'));
 
         $username = session()->get('username');
         $ipaddress = Util::get_client_ip();

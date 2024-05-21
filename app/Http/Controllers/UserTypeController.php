@@ -7,18 +7,19 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use App\Models\UserType;
+use App\Models\User;
 
 class UsertypeController extends Controller
 {
 
     public function getusertypes() {
 
-        $data = DB::table('tbl_usertype')
-        ->select('tbl_usertype.*', DB::raw('COUNT(tbl_users.id) as userscount'))
-        ->leftJoin('tbl_users', 'tbl_users.user_type', '=', 'tbl_usertype.id')
-        ->groupBy('tbl_usertype.id')
-        ->orderBy('tbl_usertype.id', 'ASC')
-        ->get();
+        $data = UserType::select('tbl_usertype.*', \DB::raw('COUNT(tbl_users.id) as userscount'))
+                ->leftJoin('tbl_users', 'tbl_users.user_type', '=', 'tbl_usertype.id')
+                ->groupBy('tbl_usertype.id')
+                ->orderBy('tbl_usertype.id', 'ASC')
+                ->get();
     
         return $data;
     
@@ -29,21 +30,20 @@ class UsertypeController extends Controller
 
         $title = $request->input('title');
 
-            DB::table('tbl_usertype')
-            ->insert([
-                'title' => $request->input('title'),
-            ]);
+        UserType::create([
+            'title' => $title,
+        ]);
 
-            $ipaddress = Util::get_client_ip();
-            Util::user_auth_log($ipaddress,"user type added ",$username, "User type Added");
+        $ipaddress = Util::get_client_ip();
+        Util::user_auth_log($ipaddress,"user type added ",$username, "User type Added");
 
-            $result = "success";
+        $result = "success";
 
-            $username = session()->get('username');
-            $ipaddress = Util::get_client_ip();
-            Util::user_auth_log($ipaddress,"user type added ",$username, "User Type Added");
-    
-            return $result;
+        $username = session()->get('username');
+        $ipaddress = Util::get_client_ip();
+        Util::user_auth_log($ipaddress,"user type added ",$username, "User Type Added");
+
+        return $result;
     }
 
     public function editusertype(Request $request) {
@@ -51,9 +51,9 @@ class UsertypeController extends Controller
         $id = $request->input('usertypeid');
         $title = $request->input('title');
 
-        DB::select('tbl_usertype')
-        ->where('id', $id)
-        ->update(['title' => $title]);
+        $userType = UserType::find($id);
+        $userType->title = $title;
+        $userType->save();
 
         $username = session()->get('username');
         $ipaddress = Util::get_client_ip();
@@ -68,9 +68,7 @@ class UsertypeController extends Controller
 
         $id = session()->get('id');
 
-        DB::table('tbl_usertype')
-        ->where('id', $request->input('id'))
-        ->delete();
+        UserType::where('id', $request->input('id'))->delete();
 
         $ipaddress = Util::get_client_ip();
         Util::user_auth_log($ipaddress,"user type deleted ",$username, "Usertype Deleted");
