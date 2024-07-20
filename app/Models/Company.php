@@ -15,4 +15,5 @@ class Company extends Model
      * @var string
      */
     protected $table = 'tbl_company';
+    public $timestamps = true;
 }

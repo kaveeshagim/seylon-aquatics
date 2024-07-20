@@ -15,4 +15,5 @@ class FishWeekly extends Model
      * @var string
      */
     protected $table = 'tbl_fishweekly';
+    public $timestamps = true;
 }

@@ -15,4 +15,5 @@ class Order extends Model
      * @var string
      */
     protected $table = 'tbl_order_mst';
+    public $timestamps = true;
 }

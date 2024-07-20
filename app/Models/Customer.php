@@ -14,6 +14,7 @@ class Customer extends Model
      * @var string
      */
     protected $table = 'tbl_customers';
+    public $timestamps = true;
 
     protected $fillable = [
         'title',

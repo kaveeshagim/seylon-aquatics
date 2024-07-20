@@ -3,11 +3,13 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
 
-class UserType extends Model
+class User extends Authenticatable
 {
-    use HasFactory;
+    use HasFactory, HasApiTokens, Notifiable;
 
     /**
      * The table associated with the model.
@@ -15,6 +17,7 @@ class UserType extends Model
      * @var string
      */
     protected $table = 'tbl_users';
+    public $timestamps = true;
 
     /**
      * The attributes that are mass assignable.
@@ -22,7 +25,28 @@ class UserType extends Model
      * @var array<int, string>
      */
     protected $fillable = [
-        'title',
+        'username',
+        'password',
+        'tbl_usertype_id',
+        'fname',
+        'lname',
+        'company',
+        'active_status',
+        'email',
+        'primary_contact',
+        'secondary_contact',
+        'token',
+        'avatar',
+    ];
+
+    /**
+     * The attributes that should be hidden for arrays.
+     *
+     * @var array<int, string>
+     */
+    protected $hidden = [
+        'password',
+        'token',
     ];
 
     /**
@@ -35,8 +59,11 @@ class UserType extends Model
         'updated_at' => 'datetime',
     ];
 
+    /**
+     * Get the user type associated with the user.
+     */
     public function userType()
     {
-        return $this->belongsTo(UserType::class, 'user_type');
+        return $this->belongsTo(UserType::class, 'tbl_usertype_id');
     }
 }

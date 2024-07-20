@@ -7,21 +7,28 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Hash;
 use App\Models\UserType;
 use App\Models\User;
 
 class UsersController extends Controller
 {
 
-    public function getusers() {
+public function getusers() {
+    // Retrieve users along with their user types
+    $users = User::with('userType')->get();
 
-        $data = User::with('userType')->get();
+    $formattedUsers = $users->map(function ($user) {
+        return [
+            'id' => $user->id,
+            'username' => $user->username,
+            'usertype' => $user->userType->title,
+            'token' => $user->token,
+        ];
+    });
 
-            // dd($users);
-
-        return $data;    
-
-    }
+    return response()->json($formattedUsers);
+}
 
     // public function adduser(Request $request){
 
@@ -105,6 +112,7 @@ class UsersController extends Controller
         ]);
     
         $username = $validatedData['username'];
+        $hashedPassword = Hash::make($validatedData['password']);
     
         // Check if the username already exists
         $found = User::where('username', $username)->exists();
@@ -131,7 +139,7 @@ class UsersController extends Controller
         $user->username = $validatedData['username'];
         $user->fname = $validatedData['firstname'];
         $user->lname = $validatedData['lastname'];
-        $user->password = $validatedData['password'];
+        $user->password = $hashedPassword;
         $user->active_status = $validatedData['inline-radio-group'];
         $user->company = $validatedData['company'];
         $user->email = $validatedData['email'];
@@ -149,11 +157,10 @@ class UsersController extends Controller
     }
 
     public function edituser(Request $request) {
-
         // Validate the form data
         $validatedData = $request->validate([
             'usertype' => 'required',
-            'username' => 'required|unique:tbl_users,username',
+            'username' => 'required',
             'firstname' => 'nullable',
             'lastname' => 'nullable',
             'password' => 'required',
@@ -166,19 +173,14 @@ class UsersController extends Controller
         ]);
     
         $username = $validatedData['username'];
-
         $id = $request->input('userid');
+        $hashedPassword = Hash::make($validatedData['password']);
     
-        // Check if the username already exists
-        // $found = DB::table('tbl_users')
-        // ->where('username', $username)
-        // ->whereNotIn('id', [$id])
-        // ->exists();
-
-    
-        // if ($found) {
-        //     return 'failed';
-        // }
+        // Check if there are other records with the same username
+        $existingUser = User::where('username', $username)->where('id', '!=', $id)->first();
+        if ($existingUser) {
+            return 'failed'; // Or you can return an error message
+        }
     
         // Handle the file upload
         $avatarPath = null;
@@ -189,31 +191,39 @@ class UsersController extends Controller
             // Generate a new filename using the username and current date/time
             $newFileName = $username . '-' . now()->format('Y-m-d-H-i-s') . '.' . $originalExtension;
     
-            $avatarPath = $avatar->storeAs('avatars', $newFileName, 'public');
+            // Check if the file already exists in the storage
+            if (!Storage::disk('public')->exists('avatars/' . $newFileName)) {
+                $avatarPath = $avatar->storeAs('avatars', $newFileName, 'public');
+            } else {
+                // If the file exists, use the existing path
+                $avatarPath = 'avatars/' . $newFileName;
+            }
         }
     
         // Insert the user data into the database
         $user = User::find($id);
-
+    
         // Update user attributes
         $user->user_type = $validatedData['usertype'];
         $user->username = $validatedData['username'];
         $user->fname = $validatedData['firstname'];
         $user->lname = $validatedData['lastname'];
-        $user->password = $validatedData['password'];
+        $user->password = $hashedPassword; // Encrypt the password before saving
         $user->active_status = $validatedData['inline-radio-group'];
         $user->company = $validatedData['company'];
         $user->email = $validatedData['email'];
         $user->primary_contact = $validatedData['primary_contact'];
         $user->secondary_contact = $validatedData['secondary_contact'];
-        $user->avatar = $avatarPath;
+        if ($avatarPath) {
+            $user->avatar = $avatarPath;
+        }
         
         // Save the changes
         $user->save();
     
         $ipaddress = Util::get_client_ip();
-        Util::user_auth_log($ipaddress,"user edited ",$username, "User Edited");
-
+        Util::user_auth_log($ipaddress, "user edited", $username, "User Edited");
+    
         return 'success';
     }
 

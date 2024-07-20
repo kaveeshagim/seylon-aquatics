@@ -1,354 +1,903 @@
 @extends('layouts.app')
 
 @section('content')
+<div class="rounded-lg h-20 mb-1"></div>
 
-<nav class="flex" aria-label="Breadcrumb">
-    <ol class="inline-flex items-center space-x-1 md:space-x-2 rtl:space-x-reverse">
-      <li class="inline-flex items-center">
-        <a href="#" class="inline-flex items-center text-sm font-medium text-gray-700 hover:text-blue-600 dark:text-gray-400 dark:hover:text-white">
-          <svg class="w-3 h-3 me-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-            <path d="m19.707 9.293-2-2-7-7a1 1 0 0 0-1.414 0l-7 7-2 2a1 1 0 0 0 1.414 1.414L2 10.414V18a2 2 0 0 0 2 2h3a1 1 0 0 0 1-1v-4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v4a1 1 0 0 0 1 1h3a2 2 0 0 0 2-2v-7.586l.293.293a1 1 0 0 0 1.414-1.414Z"/>
-          </svg>
-          <span style="padding-left: 5px;">Home</span>
-        </a>
-      </li>
-      <li>
+<h4 class="text-2xl font-bold dark:text-white">Realtime Analytics Dashboard</h4>
+<hr class="w-full h-1 my-4 bg-gray-900 border-0 rounded md:my-10 dark:bg-gray-700">
+
+
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+
+  <a href="" class="no-underline rounded-lg shadow">
+    <div class="rounded-lg dark:border-gray-600 h-32 md:h-64">
+      <dl class="bg-gray-50 dark:bg-gray-800 rounded-lg flex flex-col items-center justify-center w-full h-full hover:bg-gray-100 dark:hover:bg-gray-700">
+        <dt id="pending-orders" class="mb-2 text-3xl font-extrabold text-gray-500 dark:text-gray-50">10</dt>
+        <dd class="text-gray-500 dark:text-gray-400">PENDING ORDERS</dd>
+      </dl>
+    </div>
+  </a>
+
+  <a href="" class="no-underline rounded-lg shadow">
+    <div class="rounded-lg dark:border-gray-600 h-32 md:h-64">
+      <dl class="bg-gray-50 dark:bg-gray-800 rounded-lg flex flex-col items-center justify-center w-full h-full hover:bg-gray-100 dark:hover:bg-gray-700">
+        <dt id="in-progress-orders" class="mb-2 text-3xl font-extrabold text-gray-500 dark:text-gray-50">3</dt>
+        <dd class="text-gray-500 dark:text-gray-400">IN PROGRESS ORDERS</dd>
+      </dl>
+    </div>
+  </a>
+
+  <a href="" class="no-underline rounded-lg shadow">
+    <div class="rounded-lg dark:border-gray-600 h-32 md:h-64">
+      <dl class="bg-gray-50 dark:bg-gray-800 rounded-lg flex flex-col items-center justify-center w-full h-full hover:bg-gray-100 dark:hover:bg-gray-700">
+        <dt id="shipped-orders" class="mb-2 text-3xl font-extrabold text-gray-500 dark:text-gray-50">15</dt>
+        <dd class="text-gray-500 dark:text-gray-400">SHIPPED ORDERS</dd>
+      </dl>
+    </div>
+  </a>
+
+  <a href="" class="no-underline rounded-lg shadow">
+    <div class="rounded-lg dark:border-gray-600 h-32 md:h-64">
+      <dl class="bg-gray-50 dark:bg-gray-800 rounded-lg flex flex-col items-center justify-center w-full h-full hover:bg-gray-100 dark:hover:bg-gray-700">
+        <dt id="completed-orders" class="mb-2 text-3xl font-extrabold text-gray-500 dark:text-gray-50">20</dt>
+        <dd class="text-gray-500 dark:text-gray-400">COMPLETED ORDERS</dd>
+      </dl>
+    </div>
+  </a>
+
+</div>
+
+
+<div class="grid grid-cols-2 gap-4 mb-4">
+
+ <!-- chart -->
+  <div class="rounded-lg  h-50 md:h-72">
+
+    <div class="w-full bg-gray-50 rounded-lg shadow dark:bg-gray-800 p-4 md:p-6">
+      
+      <div class="flex justify-between pb-4 mb-4 border-b border-gray-200 dark:border-gray-700">
         <div class="flex items-center">
-          <svg class="rtl:rotate-180 w-3 h-3 text-gray-400 mx-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
-            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4"/>
+          <div class="w-12 h-12 rounded-lg bg-gray-100 dark:bg-gray-700 flex items-center justify-center me-3">
+            <svg class="w-6 h-6 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 19">
+              <path d="M14.5 0A3.987 3.987 0 0 0 11 2.1a4.977 4.977 0 0 1 3.9 5.858A3.989 3.989 0 0 0 14.5 0ZM9 13h2a4 4 0 0 1 4 4v2H5v-2a4 4 0 0 1 4-4Z"/>
+              <path d="M5 19h10v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2ZM5 7a5.008 5.008 0 0 1 4-4.9 3.988 3.988 0 1 0-3.9 5.859A4.974 4.974 0 0 1 5 7Zm5 3a3 3 0 1 0 0-6 3 3 0 0 0 0 6Zm5-1h-.424a5.016 5.016 0 0 1-1.942 2.232A6.007 6.007 0 0 1 17 17h2a1 1 0 0 0 1-1v-2a5.006 5.006 0 0 0-5-5ZM5.424 9H5a5.006 5.006 0 0 0-5 5v2a1 1 0 0 0 1 1h2a6.007 6.007 0 0 1 4.366-5.768A5.016 5.016 0 0 1 5.424 9Z"/>
+            </svg>
+          </div>
+          <div>
+            <h5 class="leading-none text-2xl font-bold text-gray-900 dark:text-white pb-1">3.4k</h5>
+            <p class="text-sm font-normal text-gray-500 dark:text-gray-400">Leads generated per week</p>
+          </div>
+        </div>
+        <div>
+          <span class="bg-green-100 text-green-800 text-xs font-medium inline-flex items-center px-2.5 py-1 rounded-md dark:bg-green-900 dark:text-green-300">
+            <svg class="w-2.5 h-2.5 me-1.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 14">
+              <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13V1m0 0L1 5m4-4 4 4"/>
+            </svg>
+            42.5%
+          </span>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-2">
+        <dl class="flex items-center">
+            <dt class="text-gray-500 dark:text-gray-400 text-sm font-normal me-1">Money spent:</dt>
+            <dd class="text-gray-900 text-sm dark:text-white font-semibold">$3,232</dd>
+        </dl>
+        <dl class="flex items-center justify-end">
+            <dt class="text-gray-500 dark:text-gray-400 text-sm font-normal me-1">Conversion rate:</dt>
+            <dd class="text-gray-900 text-sm dark:text-white font-semibold">1.2%</dd>
+        </dl>
+      </div>
+
+      <div id="column-chart"></div>
+        <div class="grid grid-cols-1 items-center border-gray-200 border-t dark:border-gray-700 justify-between">
+          <div class="flex justify-between items-center pt-5">
+            <!-- Button -->
+            <button
+              id="dropdownDefaultButton"
+              data-dropdown-toggle="lastDaysdropdown"
+              data-dropdown-placement="bottom"
+              class="text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-gray-900 text-center inline-flex items-center dark:hover:text-white"
+              type="button">
+              Last 7 days
+              <svg class="w-2.5 m-2.5 ms-1.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
+              </svg>
+            </button>
+            <!-- Dropdown menu -->
+            <div id="lastDaysdropdown" class="z-10 hidden bg-gray-50 divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700">
+                <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownDefaultButton">
+                  <li>
+                    <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Yesterday</a>
+                  </li>
+                  <li>
+                    <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Today</a>
+                  </li>
+                  <li>
+                    <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Last 7 days</a>
+                  </li>
+                  <li>
+                    <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Last 30 days</a>
+                  </li>
+                  <li>
+                    <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Last 90 days</a>
+                  </li>
+                </ul>
+            </div>
+            <a
+              href="#"
+              class="uppercase text-sm font-semibold inline-flex items-center rounded-lg text-blue-600 hover:text-blue-700 dark:hover:text-blue-500  hover:bg-gray-100 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700 px-3 py-2">
+              Leads Report
+              <svg class="w-2.5 h-2.5 ms-1.5 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4"/>
+              </svg>
+            </a>
+          </div>
+        </div>
+    </div>
+  
+  </div>
+  <!-- chart -->
+
+
+  <!-- chart -->
+  <div class="rounded-lg h-50 md:h-72">
+      
+  
+<div class="w-full bg-gray-50 rounded-lg shadow dark:bg-gray-800 p-4 md:p-6">
+  <div class="flex justify-between mb-5">
+    <div class="grid gap-4 grid-cols-2">
+      <div>
+        <h5 class="inline-flex items-center text-gray-500 dark:text-gray-400 leading-none font-normal mb-2">Clicks
+          <svg data-popover-target="clicks-info" data-popover-placement="bottom" class="w-3 h-3 text-gray-400 hover:text-gray-900 dark:hover:text-white cursor-pointer ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
           </svg>
-          <a href="#" class="ms-1 text-sm font-medium text-gray-700 hover:text-blue-600 md:ms-2 dark:text-gray-400 dark:hover:text-white">Dashboard</a>
-        </div>
-      </li>
-    </ol>
-</nav>
-
-<div class="px-4">
-
-<!-- Page Heading -->
-<div class="d-sm-flex align-items-center justify-content-between mb-4">
-    <h4 class="text-2xl font-bold dark:text-white">Dashboard</h4>
-    <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
-            class="fas fa-download fa-sm text-white-50"></i> Generate Report</a>
+          <div data-popover id="clicks-info" role="tooltip" class="absolute z-10 invisible inline-block text-sm text-gray-500 transition-opacity duration-300 bg-gray-50 border border-gray-200 rounded-lg shadow-sm opacity-0 w-72 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-400">
+              <div class="p-3 space-y-2">
+                  <h3 class="font-semibold text-gray-900 dark:text-white">Clicks growth - Incremental</h3>
+                  <p>Report helps navigate cumulative growth of community activities. Ideally, the chart should have a growing trend, as stagnating chart signifies a significant decrease of community activity.</p>
+                  <h3 class="font-semibold text-gray-900 dark:text-white">Calculation</h3>
+                  <p>For each date bucket, the all-time volume of activities is calculated. This means that activities in period n contain all activities up to period n, plus the activities generated by your community in period.</p>
+                  <a href="#" class="flex items-center font-medium text-blue-600 dark:text-blue-500 dark:hover:text-blue-600 hover:text-blue-700 hover:underline">Read more <svg class="w-2 h-2 ms-1.5 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+              <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4"/>
+            </svg></a>
+              </div>
+              <div data-popper-arrow></div>
+          </div>
+        </h5>
+        <p class="text-gray-900 dark:text-white text-2xl leading-none font-bold">42,3k</p>
+      </div>
+      <div>
+        <h5 class="inline-flex items-center text-gray-500 dark:text-gray-400 leading-none font-normal mb-2">CPC
+        <svg data-popover-target="cpc-info" data-popover-placement="bottom" class="w-3 h-3 text-gray-400 hover:text-gray-900 dark:hover:text-white cursor-pointer ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
+          </svg>
+          <div data-popover id="cpc-info" role="tooltip" class="absolute z-10 invisible inline-block text-sm text-gray-500 transition-opacity duration-300 bg-gray-50 border border-gray-200 rounded-lg shadow-sm opacity-0 w-72 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-400">
+              <div class="p-3 space-y-2">
+                  <h3 class="font-semibold text-gray-900 dark:text-white">CPC growth - Incremental</h3>
+                  <p>Report helps navigate cumulative growth of community activities. Ideally, the chart should have a growing trend, as stagnating chart signifies a significant decrease of community activity.</p>
+                  <h3 class="font-semibold text-gray-900 dark:text-white">Calculation</h3>
+                  <p>For each date bucket, the all-time volume of activities is calculated. This means that activities in period n contain all activities up to period n, plus the activities generated by your community in period.</p>
+                  <a href="#" class="flex items-center font-medium text-blue-600 dark:text-blue-500 dark:hover:text-blue-600 hover:text-blue-700 hover:underline">Read more <svg class="w-2 h-2 ms-1.5 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+              <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4"/>
+            </svg></a>
+              </div>
+              <div data-popper-arrow></div>
+          </div>
+        </h5>
+        <p class="text-gray-900 dark:text-white text-2xl leading-none font-bold">$5.40</p>
+      </div>
+    </div>
+    <div>
+      <button id="dropdownDefaultButton"
+        data-dropdown-toggle="lastDaysdropdown"
+        data-dropdown-placement="bottom" type="button" class="px-3 py-2 inline-flex items-center text-sm font-medium text-gray-900 focus:outline-none bg-gray-50 rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">Last week <svg class="w-2.5 h-2.5 ms-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
+    </svg></button>
+    <div id="lastDaysdropdown" class="z-10 hidden bg-gray-50 divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700">
+          <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownDefaultButton">
+            <li>
+              <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Yesterday</a>
+            </li>
+            <li>
+              <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Today</a>
+            </li>
+            <li>
+              <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Last 7 days</a>
+            </li>
+            <li>
+              <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Last 30 days</a>
+            </li>
+            <li>
+              <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Last 90 days</a>
+            </li>
+          </ul>
+      </div>
+    </div>
+  </div>
+  <div id="line-chart"></div>
+  <div class="grid grid-cols-1 items-center border-gray-200 border-t dark:border-gray-700 justify-between mt-2.5">
+    <div class="pt-5">      
+      <a href="#" class="px-5 py-2.5 text-sm font-medium text-white inline-flex items-center bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+        <svg class="w-3.5 h-3.5 text-white me-2 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 20">
+          <path d="M14.066 0H7v5a2 2 0 0 1-2 2H0v11a1.97 1.97 0 0 0 1.934 2h12.132A1.97 1.97 0 0 0 16 18V2a1.97 1.97 0 0 0-1.934-2Zm-3 15H4.828a1 1 0 0 1 0-2h6.238a1 1 0 0 1 0 2Zm0-4H4.828a1 1 0 0 1 0-2h6.238a1 1 0 1 1 0 2Z"/>
+          <path d="M5 5V.13a2.96 2.96 0 0 0-1.293.749L.879 3.707A2.98 2.98 0 0 0 .13 5H5Z"/>
+        </svg>
+        View full report
+      </a>
+    </div>
+  </div>
 </div>
 
-<hr>
+      
+  </div>
+  <!-- chart -->
 
-<!-- Content Row -->
-<div class="row">
+    <!-- chart -->
+    <div class="rounded-lg h-50 md:h-72">
 
-    <!-- Earnings (Monthly) Card Example -->
-    <div class="col-xl-3 col-md-6 mb-4">
-        <div class="card border-left-primary shadow h-100 py-2">
-            <div class="card-body">
-                <div class="row no-gutters align-items-center">
-                    <div class="col mr-2">
-                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                            Pending Orders</div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800">25</div>
-                    </div>
-                    <div class="col-auto">
-                        <i class="fas fa-calendar fa-2x text-gray-300"></i>
-                    </div>
-                </div>
-            </div>
+    
+<div class="w-full bg-gray-50 rounded-lg shadow dark:bg-gray-800 p-4 md:p-6">
+  
+  <div class="flex justify-between mb-3">
+      <div class="flex justify-center items-center">
+          <h5 class="text-xl font-bold leading-none text-gray-900 dark:text-white pe-1">Website traffic</h5>
+          <svg data-popover-target="chart-info" data-popover-placement="bottom" class="w-3.5 h-3.5 text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white cursor-pointer ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm0 16a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3Zm1-5.034V12a1 1 0 0 1-2 0v-1.418a1 1 0 0 1 1.038-.999 1.436 1.436 0 0 0 1.488-1.441 1.501 1.501 0 1 0-3-.116.986.986 0 0 1-1.037.961 1 1 0 0 1-.96-1.037A3.5 3.5 0 1 1 11 11.466Z"/>
+          </svg>
+          <div data-popover id="chart-info" role="tooltip" class="absolute z-10 invisible inline-block text-sm text-gray-500 transition-opacity duration-300 bg-gray-50 border border-gray-200 rounded-lg shadow-sm opacity-0 w-72 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-400">
+              <div class="p-3 space-y-2">
+                  <h3 class="font-semibold text-gray-900 dark:text-white">Activity growth - Incremental</h3>
+                  <p>Report helps navigate cumulative growth of community activities. Ideally, the chart should have a growing trend, as stagnating chart signifies a significant decrease of community activity.</p>
+                  <h3 class="font-semibold text-gray-900 dark:text-white">Calculation</h3>
+                  <p>For each date bucket, the all-time volume of activities is calculated. This means that activities in period n contain all activities up to period n, plus the activities generated by your community in period.</p>
+                  <a href="#" class="flex items-center font-medium text-blue-600 dark:text-blue-500 dark:hover:text-blue-600 hover:text-blue-700 hover:underline">Read more <svg class="w-2 h-2 ms-1.5 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+              <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4"/>
+            </svg></a>
+              </div>
+              <div data-popper-arrow></div>
+          </div>
         </div>
-    </div>
-
-    <!-- Earnings (Monthly) Card Example -->
-    <div class="col-xl-3 col-md-6 mb-4">
-        <div class="card border-left-success shadow h-100 py-2">
-            <div class="card-body">
-                <div class="row no-gutters align-items-center">
-                    <div class="col mr-2">
-                        <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                            Pending Invoices</div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800">30</div>
-                    </div>
-                    <div class="col-auto">
-                        <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
-                    </div>
-                </div>
-            </div>
+      <div>
+        <button type="button" data-tooltip-target="data-tooltip" data-tooltip-placement="bottom" class="hidden sm:inline-flex items-center justify-center text-gray-500 w-8 h-8 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 rounded-lg text-sm"><svg class="w-3.5 h-3.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 16 18">
+    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 1v11m0 0 4-4m-4 4L4 8m11 4v3a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2v-3"/>
+  </svg><span class="sr-only">Download data</span>
+        </button>
+        <div id="data-tooltip" role="tooltip" class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
+            Download CSV
+            <div class="tooltip-arrow" data-popper-arrow></div>
         </div>
-    </div>
+      </div>
+  </div>
 
-    <!-- Earnings (Monthly) Card Example -->
-    <div class="col-xl-3 col-md-6 mb-4">
-        <div class="card border-left-info shadow h-100 py-2">
-            <div class="card-body">
-                <div class="row no-gutters align-items-center">
-                    <div class="col mr-2">
-                        <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Tasks
-                        </div>
-                        <div class="row no-gutters align-items-center">
-                            <div class="col-auto">
-                                <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">50%</div>
-                            </div>
-                            <div class="col">
-                                <div class="progress progress-sm mr-2">
-                                    <div class="progress-bar bg-info" role="progressbar"
-                                        style="width: 50%" aria-valuenow="50" aria-valuemin="0"
-                                        aria-valuemax="100"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-auto">
-                        <i class="fas fa-clipboard-list fa-2x text-gray-300"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
+  <div>
+    <div class="flex" id="devices">
+      <div class="flex items-center me-4">
+          <input id="desktop" type="checkbox" value="desktop" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+          <label for="desktop" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Desktop</label>
+      </div>
+      <div class="flex items-center me-4">
+          <input id="tablet" type="checkbox" value="tablet" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+          <label for="tablet" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Tablet</label>
+      </div>
+      <div class="flex items-center me-4">
+          <input id="mobile" type="checkbox" value="mobile" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+          <label for="mobile" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Mobile</label>
+      </div>
     </div>
+  </div>
 
-    <!-- Pending Requests Card Example -->
-    <div class="col-xl-3 col-md-6 mb-4">
-        <div class="card border-left-warning shadow h-100 py-2">
-            <div class="card-body">
-                <div class="row no-gutters align-items-center">
-                    <div class="col mr-2">
-                        <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
-                            Completed Orders</div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800">18</div>
-                    </div>
-                    <div class="col-auto">
-                        <i class="fas fa-comments fa-2x text-gray-300"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
+  <!-- Donut Chart -->
+  <div class="py-6" id="donut-chart"></div>
+
+  <div class="grid grid-cols-1 items-center border-gray-200 border-t dark:border-gray-700 justify-between">
+    <div class="flex justify-between items-center pt-5">
+      <!-- Button -->
+      <button
+        id="dropdownDefaultButton"
+        data-dropdown-toggle="lastDaysdropdown"
+        data-dropdown-placement="bottom"
+        class="text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-gray-900 text-center inline-flex items-center dark:hover:text-white"
+        type="button">
+        Last 7 days
+        <svg class="w-2.5 m-2.5 ms-1.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+          <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
+        </svg>
+      </button>
+      <div id="lastDaysdropdown" class="z-10 hidden bg-gray-50 divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700">
+          <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownDefaultButton">
+            <li>
+              <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Yesterday</a>
+            </li>
+            <li>
+              <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Today</a>
+            </li>
+            <li>
+              <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Last 7 days</a>
+            </li>
+            <li>
+              <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Last 30 days</a>
+            </li>
+            <li>
+              <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Last 90 days</a>
+            </li>
+          </ul>
+      </div>
+      <a
+        href="#"
+        class="uppercase text-sm font-semibold inline-flex items-center rounded-lg text-blue-600 hover:text-blue-700 dark:hover:text-blue-500  hover:bg-gray-100 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700 px-3 py-2">
+        Traffic analysis
+        <svg class="w-2.5 h-2.5 ms-1.5 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+          <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4"/>
+        </svg>
+      </a>
     </div>
+  </div>
 </div>
 
-<!-- Content Row -->
 
-<div class="row">
-
-    <!-- Area Chart -->
-    <div class="col-xl-8 col-lg-7">
-        <div class="card shadow mb-4">
-            <!-- Card Header - Dropdown -->
-            <div
-                class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                <h6 class="m-0 font-weight-bold text-primary">Earnings Overview</h6>
-                <div class="dropdown no-arrow">
-                    <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
-                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
-                    </a>
-                    <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
-                        aria-labelledby="dropdownMenuLink">
-                        <div class="dropdown-header">Dropdown Header:</div>
-                        <a class="dropdown-item" href="#">Action</a>
-                        <a class="dropdown-item" href="#">Another action</a>
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="#">Something else here</a>
-                    </div>
-                </div>
-            </div>
-            <!-- Card Body -->
-            <div class="card-body">
-                <div class="chart-area">
-                    <canvas id="myAreaChart"></canvas>
-                </div>
-            </div>
-        </div>
     </div>
+    <!-- chart -->
 
-    <!-- Pie Chart -->
-    <div class="col-xl-4 col-lg-5">
-        <div class="card shadow mb-4">
-            <!-- Card Header - Dropdown -->
-            <div
-                class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                <h6 class="m-0 font-weight-bold text-primary">Revenue Sources</h6>
-                <div class="dropdown no-arrow">
-                    <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
-                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
-                    </a>
-                    <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
-                        aria-labelledby="dropdownMenuLink">
-                        <div class="dropdown-header">Dropdown Header:</div>
-                        <a class="dropdown-item" href="#">Action</a>
-                        <a class="dropdown-item" href="#">Another action</a>
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="#">Something else here</a>
-                    </div>
-                </div>
+    <!-- chart -->
+    <div class="rounded-lg h-50 md:h-72">
+
+    
+<div class="w-full bg-gray-50 rounded-lg shadow dark:bg-gray-800 p-4 md:p-6">
+
+  <div class="flex justify-between items-start w-full">
+      <div class="flex-col items-center">
+        <div class="flex items-center mb-1">
+            <h5 class="text-xl font-bold leading-none text-gray-900 dark:text-white me-1">Website traffic</h5>
+            <svg data-popover-target="chart-info" data-popover-placement="bottom" class="w-3.5 h-3.5 text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white cursor-pointer ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm0 16a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3Zm1-5.034V12a1 1 0 0 1-2 0v-1.418a1 1 0 0 1 1.038-.999 1.436 1.436 0 0 0 1.488-1.441 1.501 1.501 0 1 0-3-.116.986.986 0 0 1-1.037.961 1 1 0 0 1-.96-1.037A3.5 3.5 0 1 1 11 11.466Z"/>
+            </svg>
+            <div data-popover id="chart-info" role="tooltip" class="absolute z-10 invisible inline-block text-sm text-gray-500 transition-opacity duration-300 bg-gray-50 border border-gray-200 rounded-lg shadow-sm opacity-0 w-72 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-400">
+                <div class="p-3 space-y-2">
+                    <h3 class="font-semibold text-gray-900 dark:text-white">Activity growth - Incremental</h3>
+                    <p>Report helps navigate cumulative growth of community activities. Ideally, the chart should have a growing trend, as stagnating chart signifies a significant decrease of community activity.</p>
+                    <h3 class="font-semibold text-gray-900 dark:text-white">Calculation</h3>
+                    <p>For each date bucket, the all-time volume of activities is calculated. This means that activities in period n contain all activities up to period n, plus the activities generated by your community in period.</p>
+                    <a href="#" class="flex items-center font-medium text-blue-600 dark:text-blue-500 dark:hover:text-blue-600 hover:text-blue-700 hover:underline">Read more <svg class="w-2 h-2 ms-1.5 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4"/>
+              </svg></a>
             </div>
-            <!-- Card Body -->
-            <div class="card-body">
-                <div class="chart-pie pt-4 pb-2">
-                    <canvas id="myPieChart"></canvas>
-                </div>
-                <div class="mt-4 text-center small">
-                    <span class="mr-2">
-                        <i class="fas fa-circle text-primary"></i> Direct
-                    </span>
-                    <span class="mr-2">
-                        <i class="fas fa-circle text-success"></i> Social
-                    </span>
-                    <span class="mr-2">
-                        <i class="fas fa-circle text-info"></i> Referral
-                    </span>
-                </div>
-            </div>
+            <div data-popper-arrow></div>
         </div>
+      </div>
+      <button id="dateRangeButton" data-dropdown-toggle="dateRangeDropdown" data-dropdown-ignore-click-outside-class="datepicker" type="button" class="inline-flex items-center text-blue-700 dark:text-blue-600 font-medium hover:underline">31 Nov - 31 Dev <svg class="w-3 h-3 ms-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+          <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
+        </svg>
+      </button>
+      <div id="dateRangeDropdown" class="z-10 hidden bg-gray-50 divide-y divide-gray-100 rounded-lg shadow w-80 lg:w-96 dark:bg-gray-700 dark:divide-gray-600">
+          <div class="p-3" aria-labelledby="dateRangeButton">
+            <div date-rangepicker datepicker-autohide class="flex items-center">
+                <div class="relative">
+                  <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+                      <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z"/>
+                      </svg>
+                  </div>
+                  <input name="start" type="text" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Start date">
+                </div>
+                <span class="mx-2 text-gray-500 dark:text-gray-400">to</span>
+                <div class="relative">
+                  <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+                      <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z"/>
+                      </svg>
+                  </div>
+                  <input name="end" type="text" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="End date">
+              </div>
+            </div>
+          </div>
+      </div>
     </div>
+    <div class="flex justify-end items-center">
+      <button id="widgetDropdownButton" data-dropdown-toggle="widgetDropdown" data-dropdown-placement="bottom" type="button"  class="inline-flex items-center justify-center text-gray-500 w-8 h-8 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 rounded-lg text-sm"><svg class="w-3.5 h-3.5 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 3">
+          <path d="M2 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Zm6.041 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM14 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Z"/>
+        </svg><span class="sr-only">Open dropdown</span>
+      </button>
+      <div id="widgetDropdown" class="z-10 hidden bg-gray-50 divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700">
+          <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="widgetDropdownButton">
+            <li>
+              <a href="#" class="flex items-center px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"><svg class="w-3 h-3 me-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 21 21">
+                  <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7.418 17.861 1 20l2.139-6.418m4.279 4.279 10.7-10.7a3.027 3.027 0 0 0-2.14-5.165c-.802 0-1.571.319-2.139.886l-10.7 10.7m4.279 4.279-4.279-4.279m2.139 2.14 7.844-7.844m-1.426-2.853 4.279 4.279"/>
+                </svg>Edit widget
+              </a>
+            </li>
+            <li>
+              <a href="#" class="flex items-center px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"><svg class="w-3 h-3 me-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M14.707 7.793a1 1 0 0 0-1.414 0L11 10.086V1.5a1 1 0 0 0-2 0v8.586L6.707 7.793a1 1 0 1 0-1.414 1.414l4 4a1 1 0 0 0 1.416 0l4-4a1 1 0 0 0-.002-1.414Z"/>
+                  <path d="M18 12h-2.55l-2.975 2.975a3.5 3.5 0 0 1-4.95 0L4.55 12H2a2 2 0 0 0-2 2v4a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-4a2 2 0 0 0-2-2Zm-3 5a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"/>
+                </svg>Download data
+              </a>
+            </li>
+            <li>
+              <a href="#" class="flex items-center px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"><svg class="w-3 h-3 me-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18">
+                  <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5.953 7.467 6.094-2.612m.096 8.114L5.857 9.676m.305-1.192a2.581 2.581 0 1 1-5.162 0 2.581 2.581 0 0 1 5.162 0ZM17 3.84a2.581 2.581 0 1 1-5.162 0 2.581 2.581 0 0 1 5.162 0Zm0 10.322a2.581 2.581 0 1 1-5.162 0 2.581 2.581 0 0 1 5.162 0Z"/>
+                </svg>Add to repository
+              </a>
+            </li>
+            <li>
+              <a href="#" class="flex items-center px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"><svg class="w-3 h-3 me-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 18 20">
+                  <path d="M17 4h-4V2a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v2H1a1 1 0 0 0 0 2h1v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V6h1a1 1 0 1 0 0-2ZM7 2h4v2H7V2Zm1 14a1 1 0 1 1-2 0V8a1 1 0 0 1 2 0v8Zm4 0a1 1 0 0 1-2 0V8a1 1 0 0 1 2 0v8Z"/>
+                </svg>Delete widget
+              </a>
+            </li>
+          </ul>
+    </div>
+  </div>
+  </div>
+
+  <!-- Line Chart -->
+  <div class="py-6" id="pie-chart"></div>
+
+  <div class="grid grid-cols-1 items-center border-gray-200 border-t dark:border-gray-700 justify-between">
+    <div class="flex justify-between items-center pt-5">
+      <!-- Button -->
+      <button
+        id="dropdownDefaultButton"
+        data-dropdown-toggle="lastDaysdropdown"
+        data-dropdown-placement="bottom"
+        class="text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-gray-900 text-center inline-flex items-center dark:hover:text-white"
+        type="button">
+        Last 7 days
+        <svg class="w-2.5 m-2.5 ms-1.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+          <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
+        </svg>
+      </button>
+      <div id="lastDaysdropdown" class="z-10 hidden bg-gray-50 divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700">
+          <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownDefaultButton">
+            <li>
+              <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Yesterday</a>
+            </li>
+            <li>
+              <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Today</a>
+            </li>
+            <li>
+              <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Last 7 days</a>
+            </li>
+            <li>
+              <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Last 30 days</a>
+            </li>
+            <li>
+              <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Last 90 days</a>
+            </li>
+          </ul>
+      </div>
+      <a
+        href="#"
+        class="uppercase text-sm font-semibold inline-flex items-center rounded-lg text-blue-600 hover:text-blue-700 dark:hover:text-blue-500  hover:bg-gray-100 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700 px-3 py-2">
+        Traffic analysis
+        <svg class="w-2.5 h-2.5 ms-1.5 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+          <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4"/>
+        </svg>
+      </a>
+    </div>
+  </div>
 </div>
 
-<!-- Content Row -->
-<div class="row">
-
-    <!-- Content Column -->
-    <div class="col-lg-6 mb-4">
-
-        <!-- Project Card Example -->
-        <div class="card shadow mb-4">
-            <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">Projects</h6>
-            </div>
-            <div class="card-body">
-                <h4 class="small font-weight-bold">Server Migration <span
-                        class="float-right">20%</span></h4>
-                <div class="progress mb-4">
-                    <div class="progress-bar bg-danger" role="progressbar" style="width: 20%"
-                        aria-valuenow="20" aria-valuemin="0" aria-valuemax="100"></div>
-                </div>
-                <h4 class="small font-weight-bold">Sales Tracking <span
-                        class="float-right">40%</span></h4>
-                <div class="progress mb-4">
-                    <div class="progress-bar bg-warning" role="progressbar" style="width: 40%"
-                        aria-valuenow="40" aria-valuemin="0" aria-valuemax="100"></div>
-                </div>
-                <h4 class="small font-weight-bold">Customer Database <span
-                        class="float-right">60%</span></h4>
-                <div class="progress mb-4">
-                    <div class="progress-bar" role="progressbar" style="width: 60%"
-                        aria-valuenow="60" aria-valuemin="0" aria-valuemax="100"></div>
-                </div>
-                <h4 class="small font-weight-bold">Payout Details <span
-                        class="float-right">80%</span></h4>
-                <div class="progress mb-4">
-                    <div class="progress-bar bg-info" role="progressbar" style="width: 80%"
-                        aria-valuenow="80" aria-valuemin="0" aria-valuemax="100"></div>
-                </div>
-                <h4 class="small font-weight-bold">Account Setup <span
-                        class="float-right">Complete!</span></h4>
-                <div class="progress">
-                    <div class="progress-bar bg-success" role="progressbar" style="width: 100%"
-                        aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Color System -->
-        <div class="row">
-            <div class="col-lg-6 mb-4">
-                <div class="card bg-primary text-white shadow">
-                    <div class="card-body">
-                        Primary
-                        <div class="text-white-50 small">#4e73df</div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-6 mb-4">
-                <div class="card bg-success text-white shadow">
-                    <div class="card-body">
-                        Success
-                        <div class="text-white-50 small">#1cc88a</div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-6 mb-4">
-                <div class="card bg-info text-white shadow">
-                    <div class="card-body">
-                        Info
-                        <div class="text-white-50 small">#36b9cc</div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-6 mb-4">
-                <div class="card bg-warning text-white shadow">
-                    <div class="card-body">
-                        Warning
-                        <div class="text-white-50 small">#f6c23e</div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-6 mb-4">
-                <div class="card bg-danger text-white shadow">
-                    <div class="card-body">
-                        Danger
-                        <div class="text-white-50 small">#e74a3b</div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-6 mb-4">
-                <div class="card bg-secondary text-white shadow">
-                    <div class="card-body">
-                        Secondary
-                        <div class="text-white-50 small">#858796</div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-6 mb-4">
-                <div class="card bg-light text-black shadow">
-                    <div class="card-body">
-                        Light
-                        <div class="text-black-50 small">#f8f9fc</div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-6 mb-4">
-                <div class="card bg-dark text-white shadow">
-                    <div class="card-body">
-                        Dark
-                        <div class="text-white-50 small">#5a5c69</div>
-                    </div>
-                </div>
-            </div>
-        </div>
 
     </div>
-
-    <div class="col-lg-6 mb-4">
-
-        <!-- Illustrations -->
-        <div class="card shadow mb-4">
-            <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">Illustrations</h6>
-            </div>
-            <div class="card-body">
-                <div class="text-center">
-                    <img class="img-fluid px-3 px-sm-4 mt-3 mb-4" style="width: 25rem;"
-                        src="img/undraw_posting_photo.svg" alt="...">
-                </div>
-                <p>Add some quality, svg illustrations to your project courtesy of <a
-                        target="_blank" rel="nofollow" href="https://undraw.co/">unDraw</a>, a
-                    constantly updated collection of beautiful svg images that you can use
-                    completely free and without attribution!</p>
-                <a target="_blank" rel="nofollow" href="https://undraw.co/">Browse Illustrations on
-                    unDraw &rarr;</a>
-            </div>
-        </div>
-
-        <!-- Approach -->
-        <div class="card shadow mb-4">
-            <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">Development Approach</h6>
-            </div>
-            <div class="card-body">
-                <p>SB Admin 2 makes extensive use of Bootstrap 4 utility classes in order to reduce
-                    CSS bloat and poor page performance. Custom CSS classes are used to create
-                    custom components and custom utility classes.</p>
-                <p class="mb-0">Before working with this theme, you should become familiar with the
-                    Bootstrap framework, especially the utility classes.</p>
-            </div>
-        </div>
-
-    </div>
+    <!-- chart -->
+        
 </div>
+
+
+
+
+
+
+      <div class="border-2 border-dashed rounded-lg border-gray-300 dark:border-gray-600 h-96 mb-4"></div>
+
+
+
+      <div class="grid grid-cols-2 gap-4">
+        <div
+          class="border-2 border-dashed rounded-lg border-gray-300 dark:border-gray-600 h-48 md:h-72"
+        ></div>
+        <div
+          class="border-2 border-dashed rounded-lg border-gray-300 dark:border-gray-600 h-48 md:h-72"
+        ></div>
+        <div
+          class="border-2 border-dashed rounded-lg border-gray-300 dark:border-gray-600 h-48 md:h-72"
+        ></div>
+        <div
+          class="border-2 border-dashed rounded-lg border-gray-300 dark:border-gray-600 h-48 md:h-72"
+        ></div>
+      </div>
+
+
+<script>
+     document.addEventListener("DOMContentLoaded", function(event) {
+
+          const socket = io('http://localhost:6050', {transports: ['websocket']}, { autoConnect: false });
+
+
+    socket.on('orders', (data) => {
+        document.getElementById('pending-orders').textContent = data.pendingOrders;
+        document.getElementById('in-progress-orders').textContent = data.inProgressOrders;
+        document.getElementById('shipped-orders').textContent = data.shippedOrders;
+        document.getElementById('completed-orders').textContent = data.completedOrders;
+    });
+
+const options = {
+  colors: ["#1A56DB", "#FDBA8C"],
+  series: [
+    {
+      name: "Organic",
+      color: "#1A56DB",
+      data: [
+        { x: "Mon", y: 231 },
+        { x: "Tue", y: 122 },
+        { x: "Wed", y: 63 },
+        { x: "Thu", y: 421 },
+        { x: "Fri", y: 122 },
+        { x: "Sat", y: 323 },
+        { x: "Sun", y: 111 },
+      ],
+    },
+    {
+      name: "Social media",
+      color: "#FDBA8C",
+      data: [
+        { x: "Mon", y: 232 },
+        { x: "Tue", y: 113 },
+        { x: "Wed", y: 341 },
+        { x: "Thu", y: 224 },
+        { x: "Fri", y: 522 },
+        { x: "Sat", y: 411 },
+        { x: "Sun", y: 243 },
+      ],
+    },
+  ],
+  chart: {
+    type: "bar",
+    height: "320px",
+    fontFamily: "Inter, sans-serif",
+    toolbar: {
+      show: false,
+    },
+  },
+  plotOptions: {
+    bar: {
+      horizontal: false,
+      columnWidth: "70%",
+      borderRadiusApplication: "end",
+      borderRadius: 8,
+    },
+  },
+  tooltip: {
+    shared: true,
+    intersect: false,
+    style: {
+      fontFamily: "Inter, sans-serif",
+    },
+  },
+  states: {
+    hover: {
+      filter: {
+        type: "darken",
+        value: 1,
+      },
+    },
+  },
+  stroke: {
+    show: true,
+    width: 0,
+    colors: ["transparent"],
+  },
+  grid: {
+    show: false,
+    strokeDashArray: 4,
+    padding: {
+      left: 2,
+      right: 2,
+      top: -14
+    },
+  },
+  dataLabels: {
+    enabled: false,
+  },
+  legend: {
+    show: false,
+  },
+  xaxis: {
+    floating: false,
+    labels: {
+      show: true,
+      style: {
+        fontFamily: "Inter, sans-serif",
+        cssClass: 'text-xs font-normal fill-gray-500 dark:fill-gray-400'
+      }
+    },
+    axisBorder: {
+      show: false,
+    },
+    axisTicks: {
+      show: false,
+    },
+  },
+  yaxis: {
+    show: false,
+  },
+  fill: {
+    opacity: 1,
+  },
+}
+
+if(document.getElementById("column-chart") && typeof ApexCharts !== 'undefined') {
+  const chart = new ApexCharts(document.getElementById("column-chart"), options);
+  chart.render();
+}
+
+const options2 = {
+  chart: {
+    height: "100%",
+    maxWidth: "100%",
+    type: "line",
+    fontFamily: "Inter, sans-serif",
+    dropShadow: {
+      enabled: false,
+    },
+    toolbar: {
+      show: false,
+    },
+  },
+  tooltip: {
+    enabled: true,
+    x: {
+      show: false,
+    },
+  },
+  dataLabels: {
+    enabled: false,
+  },
+  stroke: {
+    width: 6,
+  },
+  grid: {
+    show: true,
+    strokeDashArray: 4,
+    padding: {
+      left: 2,
+      right: 2,
+      top: -26
+    },
+  },
+  series: [
+    {
+      name: "Clicks",
+      data: [6500, 6418, 6456, 6526, 6356, 6456],
+      color: "#1A56DB",
+    },
+    {
+      name: "CPC",
+      data: [6456, 6356, 6526, 6332, 6418, 6500],
+      color: "#7E3AF2",
+    },
+  ],
+  legend: {
+    show: false
+  },
+  stroke: {
+    curve: 'smooth'
+  },
+  xaxis: {
+    categories: ['01 Feb', '02 Feb', '03 Feb', '04 Feb', '05 Feb', '06 Feb', '07 Feb'],
+    labels: {
+      show: true,
+      style: {
+        fontFamily: "Inter, sans-serif",
+        cssClass: 'text-xs font-normal fill-gray-500 dark:fill-gray-400'
+      }
+    },
+    axisBorder: {
+      show: false,
+    },
+    axisTicks: {
+      show: false,
+    },
+  },
+  yaxis: {
+    show: false,
+  },
+}
+
+if (document.getElementById("line-chart") && typeof ApexCharts !== 'undefined') {
+  const chart2 = new ApexCharts(document.getElementById("line-chart"), options2);
+  chart2.render();
+}
+
+
+const getChartOptions = () => {
+  return {
+    series: [35.1, 23.5, 2.4, 5.4],
+    colors: ["#1C64F2", "#16BDCA", "#FDBA8C", "#E74694"],
+    chart: {
+      height: 320,
+      width: "100%",
+      type: "donut",
+    },
+    stroke: {
+      colors: ["transparent"],
+      lineCap: "",
+    },
+    plotOptions: {
+      pie: {
+        donut: {
+          labels: {
+            show: true,
+            name: {
+              show: true,
+              fontFamily: "Inter, sans-serif",
+              offsetY: 20,
+            },
+            total: {
+              showAlways: true,
+              show: true,
+              label: "Unique visitors",
+              fontFamily: "Inter, sans-serif",
+              formatter: function (w) {
+                const sum = w.globals.seriesTotals.reduce((a, b) => {
+                  return a + b
+                }, 0)
+                return '$' + sum + 'k'
+              },
+            },
+            value: {
+              show: true,
+              fontFamily: "Inter, sans-serif",
+              offsetY: -20,
+              formatter: function (value) {
+                return value + "k"
+              },
+            },
+          },
+          size: "80%",
+        },
+      },
+    },
+    grid: {
+      padding: {
+        top: -2,
+      },
+    },
+    labels: ["Direct", "Sponsor", "Affiliate", "Email marketing"],
+    dataLabels: {
+      enabled: false,
+    },
+    legend: {
+      position: "bottom",
+      fontFamily: "Inter, sans-serif",
+    },
+    yaxis: {
+      labels: {
+        formatter: function (value) {
+          return value + "k"
+        },
+      },
+    },
+    xaxis: {
+      labels: {
+        formatter: function (value) {
+          return value  + "k"
+        },
+      },
+      axisTicks: {
+        show: false,
+      },
+      axisBorder: {
+        show: false,
+      },
+    },
+  }
+}
+
+if (document.getElementById("donut-chart") && typeof ApexCharts !== 'undefined') {
+  const chart = new ApexCharts(document.getElementById("donut-chart"), getChartOptions());
+  chart.render();
+
+  // Get all the checkboxes by their class name
+  const checkboxes = document.querySelectorAll('#devices input[type="checkbox"]');
+
+  // Function to handle the checkbox change event
+  function handleCheckboxChange(event, chart) {
+      const checkbox = event.target;
+      if (checkbox.checked) {
+          switch(checkbox.value) {
+            case 'desktop':
+              chart.updateSeries([15.1, 22.5, 4.4, 8.4]);
+              break;
+            case 'tablet':
+              chart.updateSeries([25.1, 26.5, 1.4, 3.4]);
+              break;
+            case 'mobile':
+              chart.updateSeries([45.1, 27.5, 8.4, 2.4]);
+              break;
+            default:
+              chart.updateSeries([55.1, 28.5, 1.4, 5.4]);
+          }
+
+      } else {
+          chart.updateSeries([35.1, 23.5, 2.4, 5.4]);
+      }
+  }
+
+  // Attach the event listener to each checkbox
+  checkboxes.forEach((checkbox) => {
+      checkbox.addEventListener('change', (event) => handleCheckboxChange(event, chart));
+  });
+}
+
+
+
+const getChartOptions2 = () => {
+  return {
+    series: [52.8, 26.8, 20.4],
+    colors: ["#1C64F2", "#16BDCA", "#9061F9"],
+    chart: {
+      height: 420,
+      width: "100%",
+      type: "pie",
+    },
+    stroke: {
+      colors: ["white"],
+      lineCap: "",
+    },
+    plotOptions: {
+      pie: {
+        labels: {
+          show: true,
+        },
+        size: "100%",
+        dataLabels: {
+          offset: -25
+        }
+      },
+    },
+    labels: ["Direct", "Organic search", "Referrals"],
+    dataLabels: {
+      enabled: true,
+      style: {
+        fontFamily: "Inter, sans-serif",
+      },
+    },
+    legend: {
+      position: "bottom",
+      fontFamily: "Inter, sans-serif",
+    },
+    yaxis: {
+      labels: {
+        formatter: function (value) {
+          return value + "%"
+        },
+      },
+    },
+    xaxis: {
+      labels: {
+        formatter: function (value) {
+          return value  + "%"
+        },
+      },
+      axisTicks: {
+        show: false,
+      },
+      axisBorder: {
+        show: false,
+      },
+    },
+  }
+}
+
+if (document.getElementById("pie-chart") && typeof ApexCharts !== 'undefined') {
+  const chart = new ApexCharts(document.getElementById("pie-chart"), getChartOptions2());
+  chart.render();
+}
+
+
+ });
+</script>
+
 @endsection

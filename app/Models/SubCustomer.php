@@ -15,7 +15,7 @@ class SubCustomer extends Model
      * @var string
      */
     protected $table = 'tbl_subcustomers';
-
+    public $timestamps = true;
     protected $fillable = [
         'title',
         'cus_id',

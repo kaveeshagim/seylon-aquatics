@@ -7,232 +7,232 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use App\Models\PrivCategory;
+use App\Models\PrivSubcategory;
+use App\Models\PrivilegeSection;
+use App\Models\PrivilegeMst;
 
 class PrivilegeController extends Controller
 {
 
-    public function getusers() {
+    public function addcategory(Request $request) {
+        $category = $request->input('category');
 
-        $data = DB::table('tbl_users')
-            ->select('tbl_users.*', 'tbl_usertype.title AS usertype')
-            ->join('tbl_usertype', 'tbl_usertype.id','=','tbl_users.user_type')
-            ->get();
+        $existingCategory = PrivCategory::where('name', $category)->first();
 
-            // dd($users);
+        if ($existingCategory) {
+            $result = "fail";
+        }else{
+            PrivCategory::create([
+                'name' => $category,
+            ]);
 
-        return $data;    
-
-    }
-
-    // public function adduser(Request $request){
-
-    //     dd($request->all());
-
-    //     $username = $request->input('username');
-    //     $avatar = $request->file('avatar');
-
-    //     $users = DB::table('tbl_users')
-    //         ->select('tbl_users.username')
-    //         ->get();
-
-    //         dd($avatar);
-
-    //     $found = false;
-    //     $result = "";
-
-    //         foreach ($users as $user) {
-    //             if ($user->username === $username) {
-    //                 $found = true;
-    //                 break;
-    //             }
-    //         }
-
-            
-    //         if ($found) {
-
-    //             $result = "failed";
-
-    //         }else{
-
-    //             // $path = $avatar->store('avatars', 'public');
-
-    //             if ($avatar) {
-    //                 // Store the uploaded file in storage and get the path
-    //                 $path = $avatar->store('avatars');
-    //                 // $path = $avatar->store('avatars', 'public');
-                    
-
-    //                 DB::table('tbl_users')
-    //                 ->insert([
-    //                     'user_type' => $request->input('usertype'),
-    //                     'username' => $request->input('username'),
-    //                     'fname' => $request->input('firstname'),
-    //                     'lname' => $request->input('lastname'),
-    //                     'password' => $request->input('password'),
-    //                     'active_status' => $request->input('inline-radio-group'),
-    //                     'company' => $request->input('company'),
-    //                     'email' => $request->input('email'),
-    //                     'primary_contact' => $request->input('primary_contact'),
-    //                     'secondary_contact' => $request->input('secondary_contact'),
-    //                     'avatar' => $path,
-    //                 ]);
-
-    //                 $ipaddress = Util::get_client_ip();
-    //                 Util::user_auth_log($ipaddress,"user added ",$username, "User Added");
-
-    //                 $result = "success";
-
-    //             }
-    //         }
-
-    //         return $result;
-    // }
-
-    public function adduser(Request $request)
-    {
-        // Validate the form data
-        $validatedData = $request->validate([
-            'usertype' => 'required',
-            'username' => 'required|unique:tbl_users,username',
-            'firstname' => 'nullable',
-            'lastname' => 'nullable',
-            'password' => 'required',
-            'inline-radio-group' => 'required|boolean',
-            'company' => 'nullable',
-            'email' => 'nullable|email',
-            'primary_contact' => 'nullable',
-            'secondary_contact' => 'nullable',
-            'avatar' => 'nullable|file|max:2048',
-        ]);
-    
-        $username = $validatedData['username'];
-    
-        // Check if the username already exists
-        $found = DB::table('tbl_users')
-            ->where('username', $username)
-            ->exists();
-    
-        if ($found) {
-            return 'failed';
+            $result = "success";
         }
-    
-        // Handle the file upload
-        $avatarPath = null;
-        if ($request->hasFile('avatar')) {
-            $avatar = $request->file('avatar');
-            $originalExtension = $avatar->getClientOriginalExtension(); // Get the original file extension
-    
-            // Generate a new filename using the username and current date/time
-            $newFileName = $username . '-' . now()->format('Y-m-d-H-i-s') . '.' . $originalExtension;
-    
-            $avatarPath = $avatar->storeAs('avatars', $newFileName, 'public');
-        }
-    
-        // Insert the user data into the database
-        DB::table('tbl_users')->insert([
-            'user_type' => $validatedData['usertype'],
-            'username' => $validatedData['username'],
-            'fname' => $validatedData['firstname'],
-            'lname' => $validatedData['lastname'],
-            'password' => $validatedData['password'],
-            'active_status' => $validatedData['inline-radio-group'],
-            'company' => $validatedData['company'],
-            'email' => $validatedData['email'],
-            'primary_contact' => $validatedData['primary_contact'],
-            'secondary_contact' => $validatedData['secondary_contact'],
-            'avatar' => $avatarPath,
-        ]);
-    
-        $ipaddress = Util::get_client_ip();
-        Util::user_auth_log($ipaddress, "user added ", $username, "User Added");
-    
-        return 'success';
-    }
-
-    public function edituser(Request $request) {
-
-        // Validate the form data
-        $validatedData = $request->validate([
-            'usertype' => 'required',
-            'username' => 'required|unique:tbl_users,username',
-            'firstname' => 'nullable',
-            'lastname' => 'nullable',
-            'password' => 'required',
-            'inline-radio-group' => 'required|boolean',
-            'company' => 'nullable',
-            'email' => 'nullable|email',
-            'primary_contact' => 'nullable',
-            'secondary_contact' => 'nullable',
-            'avatar' => 'nullable|file|max:2048',
-        ]);
-    
-        $username = $validatedData['username'];
-
-        $id = $request->input('userid');
-    
-        // Check if the username already exists
-        // $found = DB::table('tbl_users')
-        // ->where('username', $username)
-        // ->whereNotIn('id', [$id])
-        // ->exists();
-
-    
-        // if ($found) {
-        //     return 'failed';
-        // }
-    
-        // Handle the file upload
-        $avatarPath = null;
-        if ($request->hasFile('avatar')) {
-            $avatar = $request->file('avatar');
-            $originalExtension = $avatar->getClientOriginalExtension(); // Get the original file extension
-    
-            // Generate a new filename using the username and current date/time
-            $newFileName = $username . '-' . now()->format('Y-m-d-H-i-s') . '.' . $originalExtension;
-    
-            $avatarPath = $avatar->storeAs('avatars', $newFileName, 'public');
-        }
-    
-        // Insert the user data into the database
-        DB::table('tbl_users')->where('id', $id)->update([
-            'user_type' => $validatedData['usertype'],
-            'username' => $validatedData['username'],
-            'fname' => $validatedData['firstname'],
-            'lname' => $validatedData['lastname'],
-            'password' => $validatedData['password'],
-            'active_status' => $validatedData['inline-radio-group'],
-            'company' => $validatedData['company'],
-            'email' => $validatedData['email'],
-            'primary_contact' => $validatedData['primary_contact'],
-            'secondary_contact' => $validatedData['secondary_contact'],
-            'avatar' => $avatarPath,
-        ]);
-    
-        $ipaddress = Util::get_client_ip();
-        Util::user_auth_log($ipaddress,"user edited ",$username, "User Edited");
-
-        return 'success';
-    }
-
-    public function deleteuser(Request $request) {
 
 
-        DB::table('tbl_users')
-        ->where('id', $request->input('id'))
-        ->delete();
 
         $username = session()->get('username');
         $ipaddress = Util::get_client_ip();
-        Util::user_auth_log($ipaddress,"user deleted ",$username, "User Deleted");
+        Util::user_auth_log($ipaddress,"category added ",$username, "Category Added");
 
-        return "deleted";
+        return $result;
+    }
+
+    public function addsubcategory(Request $request) {
+        $subcategory = $request->input('subcategory');
+        $category = $request->input('category');
+
+        $existingSubCategory = PrivSubCategory::where('name', $subcategory)->where('cat_id', $category)->first();
+
+        if ($existingSubCategory) {
+            $result = "fail";
+        }else{
+            PrivSubCategory::create([
+                'name' => $subcategory,
+                'cat_id' => $category,
+            ]);
+
+            $result = "success";
+        }
+
+
+
+        $username = session()->get('username');
+        $ipaddress = Util::get_client_ip();
+        Util::user_auth_log($ipaddress,"sub category added ",$username, "Sub Category Added");
+
+        return $result;
+    }
+
+    public function addprivilege(Request $request) {
+        $subcategory = $request->input('subcategory');
+        $category = $request->input('category');
+
+        PrivSubCategory::create([
+            'name' => $subcategory,
+            'cat_id' => $category,
+        ]);
+
+        $result = "success";
+
+        $username = session()->get('username');
+        $ipaddress = Util::get_client_ip();
+        Util::user_auth_log($ipaddress,"privilege added ",$username, "Privilege Added");
+
+        return $result;
+    }
+
+        public function addprivilegesection(Request $request) {
+        $subcategory = $request->input('subcategory');
+        $category = $request->input('category');
+        $sec_name    = $request->input('privilegesection');
+        $route_name  = $request->input('routename');
+        $username = session()->get('username');
+
+        PrivilegeSection::create([
+            'cat_id' => $category,
+            'subcat_id' => $subcategory,
+            'route_name' => $route_name,
+            'section_name' => $sec_name,
+            'cre_user' => $username,
+        ]);
+
+        $result = "success";
+
+        $ipaddress = Util::get_client_ip();
+        Util::user_auth_log($ipaddress,"privilege section added ",$username, "Privilege Section Added");
+
+        return $result;
+    }
+
+    public function get_sub_categories(Request $request){
+
+        $cat_id = $request->input('cat_id');
+
+        if ($cat_id && $cat_id != "All") {
+            $data = PrivSubcategory::where('cat_id', $cat_id)->get();
+        } else {
+
+            $data = PrivSubcategory::all();
+        }
+
+        return response()->json(['data' => $data]);
 
     }
 
-    public function userdetails(Request $request) {
+    public function get_categories(){
 
-        $id = $request->input('id');
+        $data = PrivCategory::all();
 
-        
+        return response()->json(['data' => $data]);
+
     }
+
+    public function get_prev_section(){
+
+        $sub_cat_id = $_GET['sub_cat_id'];
+        $user_type  = $_GET['user_type'];
+
+        $user_id    = session('userid');
+
+        if($sub_cat_id != 'All'){
+            $sub_cat_filter = "AND tbl_prev_sec_mst.sub_cat_id = $sub_cat_id";
+        }else{
+            $sub_cat_filter = "";
+        }
+        if($user_type != 'All'){
+            $user_filter = "AND tbl_prev_mst.user_type_id = $user_type";
+        }else{
+            $user_filter = "";
+        }
+
+        $ext_user = DB::table('tbl_prev_mst')
+                    ->where('user_type_id','=',$user_type)
+                    ->where('sub_cat_id','=',$sub_cat_id)
+                    ->get();
+
+        if(count($ext_user) > 0){
+
+            $data = DB::select("SELECT tbl_prev_sec_mst.*,
+                                    tbl_prev_sec_mst.sec_name,
+                                    tbl_prev_mst.permission,
+                                    concat('row_id_',tbl_prev_mst.sec_id) AS DT_RowId
+                                FROM tbl_prev_mst
+                                INNER JOIN tbl_prev_sec_mst ON tbl_prev_sec_mst.id = tbl_prev_mst.sec_id
+                                WHERE tbl_prev_mst.com_id = $com_id $sub_cat_filter $user_filter");
+
+            return compact('data', $data);
+
+        }else{
+
+            $data = DB::select("SELECT tbl_prev_sec_mst.*, 
+                                    tbl_prev_sec_mst.sec_name,
+                                    concat('row_id_',tbl_prev_sec_mst.id) AS DT_RowId
+                                FROM tbl_prev_sec_mst 
+                                WHERE tbl_prev_sec_mst.com_id = $com_id $sub_cat_filter");
+
+            return compact('data', $data);
+        }
+    }
+
+        public function save_user_prev(){
+
+        $selected_sec   = $_GET['selected'];
+        $deselected_sec = $_GET['deselected'];
+        $cat_id         = $_GET['cat_id'];
+        $sub_cat_id     = $_GET['sub_cat_id'];
+        $user_type      = $_GET['user_type'];
+
+        $user_id     = session('userid');
+        $cre_date    = Carbon::now();
+        $get_com_id  = DB::table('user_master')->where('id',$user_id)->first();
+        $com_id      = $get_com_id->com_id;
+
+        DB::table('tbl_prev_mst')
+            ->where('cat_id', $cat_id)
+            ->where('sub_cat_id', $sub_cat_id)
+            ->where('user_type_id', $user_type)
+            ->delete();
+
+        if($selected_sec !== 'null') {
+
+            foreach ($selected_sec as $section_id) {
+
+                DB::table('tbl_prev_mst')
+                    ->insert([
+                        'user_type_id' => $user_type,
+                        'cat_id' => $cat_id,
+                        'sub_cat_id' => $sub_cat_id,
+                        'route_id' => $section_id,
+                        'sec_id' => $section_id,
+                        'cre_user' => $user_id,
+                        'cre_datetime' => $cre_date,
+                        'com_id' => $com_id,
+                    ]);
+            }
+        }
+
+        if($deselected_sec !== 'null') {
+
+            foreach ($deselected_sec as $section_id) {
+
+                DB::table('tbl_prev_mst')
+                    ->insert([
+                        'user_type_id' => $user_type,
+                        'cat_id' => $cat_id,
+                        'sub_cat_id' => $sub_cat_id,
+                        'route_id' => $section_id,
+                        'sec_id' => $section_id,
+                        'cre_user' => $user_id,
+                        'cre_datetime' => $cre_date,
+                        'com_id' => $com_id,
+                        'permission' => '0'
+                    ]);
+            }
+        }
+
+        return $com_id;
+    }
+
 }

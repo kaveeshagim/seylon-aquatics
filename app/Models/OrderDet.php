@@ -15,4 +15,5 @@ class OrderDet extends Model
      * @var string
      */
     protected $table = 'tbl_order_det';
+    public $timestamps = true;
 }

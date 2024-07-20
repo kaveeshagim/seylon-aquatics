@@ -35,8 +35,8 @@ class PasswordController extends Controller
             'user_id' => $user->id,
             'reason' => $request->input('reason'),
             'cur_password' => $user->password,
-            'cre_datetime' => now(),
             'status' => 'pending',
+            'created_at' => NOW()
         ]);
 
 
@@ -57,7 +57,6 @@ class PasswordController extends Controller
             'old_password' => $request->oldpswd,
             'new_password' => $request->newpswd,
             'updated_by' => session()->get('userid'),
-            'cre_datetime' => now()
         ]);
         
         ResetPasswordReq::where('id', $request->id)->update(['status' => 'completed']);
@@ -67,14 +66,20 @@ class PasswordController extends Controller
 
         $subject = "Password Change Request";
 
-        $body = 'Hi'. $request->username . ',\n\n';
-        $body += 'New Password'. $request->newpswd;
+        $body = 'Hi ' . $request->username . ',<br><br>';
+        $body .= 'New Password: ' . $request->newpswd;
 
-        PHPMailerService::sendEmail($to, $subject, $body);
+        $mailerService = new PHPMailerService();
+        $mailerService->sendEmail($email, $subject, nl2br($body));
+
+        $user->password = $request->newpswd;
+        $user->save();
 
         $username = session()->get('username');
         $ipaddress = Util::get_client_ip();
         Util::user_auth_log($ipaddress,"user updated a password ",$username, "Update User Password");
+
+        return "success";
 
     }
 

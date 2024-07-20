@@ -15,4 +15,10 @@ class FishHabitat extends Model
      * @var string
      */
     protected $table = 'tbl_fishhabitat';
+    public $timestamps = true;
+
+    public function fishh()
+    {
+        return $this->hasMany(Fish::class, 'fish_habitat');
+    }
 }

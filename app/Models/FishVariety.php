@@ -15,4 +15,12 @@ class FishVariety extends Model
      * @var string
      */
     protected $table = 'tbl_fish_variety';
+    public $timestamps = true;
+
+    protected $fillable = ['name', 'code'];
+
+    public function fishv()
+    {
+        return $this->hasMany(Fish::class, 'fish_variety');
+    }
 }

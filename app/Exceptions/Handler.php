@@ -27,4 +27,21 @@ class Handler extends ExceptionHandler
             //
         });
     }
+
+     public function render($request, Throwable $exception)
+    {
+        if ($exception instanceof \Illuminate\Http\Exceptions\HttpResponseException) {
+            return redirect()->route('expired');
+        }
+
+        if ($exception instanceof \Illuminate\Database\Eloquent\ModelNotFoundException) {
+            return redirect()->route('expired');
+        }
+
+        if ($exception instanceof \Symfony\Component\HttpKernel\Exception\NotFoundHttpException) {
+            return redirect()->route('expired');
+        }
+
+        return parent::render($request, $exception);
+    }
 }

@@ -83,10 +83,12 @@ function searchdata() {
         "deferRender": true,
         "data": data,
         "columns": [
-            { "data": "fname" },
-            { "data": "lname" },
-            { "data": "company" },
-            { "data": "country" },
+            { "data": "order_id" },
+            { "data": "customer" },
+            { "data": "subcustomer" },
+            { "data": "executive" },
+            { "data": "status" },
+            { "data": "executive" },
             {
             sortable: false,
             "render": function(data, type, full, meta) {

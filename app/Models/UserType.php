@@ -15,6 +15,7 @@ class UserType extends Model
      * @var string
      */
     protected $table = 'tbl_usertype';
+    public $timestamps = true;
 
     /**
      * The attributes that are mass assignable.
@@ -35,8 +36,11 @@ class UserType extends Model
         'updated_at' => 'datetime',
     ];
 
+    /**
+     * Get the users for the user type.
+     */
     public function users()
     {
-        return $this->hasMany(User::class, 'user_type');
+        return $this->hasMany(User::class, 'tbl_usertype_id');
     }
 }

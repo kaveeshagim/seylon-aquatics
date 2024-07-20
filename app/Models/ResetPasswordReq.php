@@ -15,6 +15,13 @@ class ResetPasswordReq extends Model
      * @var string
      */
     protected $table = 'tbl_reset_password_req';
+    public $timestamps = true;
+    protected $fillable = [
+        'user_id',
+        'reason',
+        'cur_password',
+        'status',
+    ];
 
     public function user()
     {

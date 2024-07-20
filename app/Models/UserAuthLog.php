@@ -15,7 +15,7 @@ class UserAuthLog extends Model
      * @var string
      */
     protected $table = 'tbl_user_auth_log';
-
+    public $timestamps = true;
     protected $fillable = [
         'ip_address',
         'user_id',

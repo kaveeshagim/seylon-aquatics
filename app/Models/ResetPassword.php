@@ -15,4 +15,14 @@ class ResetPassword extends Model
      * @var string
      */
     protected $table = 'tbl_reset_password';
+    public $timestamps = true;
+    protected $fillable = [
+        'psws_reqid',
+        'user_id',
+        'username',
+        'old_password',
+        'new_password',
+        'updated_by',
+    ];
+
 }

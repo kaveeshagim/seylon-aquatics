@@ -16,7 +16,7 @@ class UsertypeController extends Controller
     public function getusertypes() {
 
         $data = UserType::select('tbl_usertype.*', \DB::raw('COUNT(tbl_users.id) as userscount'))
-                ->leftJoin('tbl_users', 'tbl_users.user_type', '=', 'tbl_usertype.id')
+                ->leftJoin('tbl_users', 'tbl_users.tbl_usertype_id', '=', 'tbl_usertype.id')
                 ->groupBy('tbl_usertype.id')
                 ->orderBy('tbl_usertype.id', 'ASC')
                 ->get();
@@ -26,6 +26,18 @@ class UsertypeController extends Controller
     
     }
 
+    public function getusertype($id) {
+
+        $data = DB::table('tbl_usertype')
+            ->select('tbl_usertype.*')
+            ->where('id', $id)
+            ->first();
+
+        return $data;    
+
+    }
+
+
     public function addusertype(Request $request){
 
         $title = $request->input('title');
@@ -33,9 +45,6 @@ class UsertypeController extends Controller
         UserType::create([
             'title' => $title,
         ]);
-
-        $ipaddress = Util::get_client_ip();
-        Util::user_auth_log($ipaddress,"user type added ",$username, "User type Added");
 
         $result = "success";
 

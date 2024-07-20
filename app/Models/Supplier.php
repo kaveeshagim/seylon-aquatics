@@ -15,7 +15,7 @@ class Supplier extends Model
      * @var string
      */
     protected $table = 'tbl_suppliers';
-
+    public $timestamps = true;
     protected $fillable = [
         'title', 'fname', 'lname', 'company', 'country', 'email', 'primary_contact', 'secondary_contact'
     ];

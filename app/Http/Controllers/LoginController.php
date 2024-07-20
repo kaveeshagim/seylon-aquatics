@@ -6,6 +6,7 @@ use App\Http\Util;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use App\Models\UserType;
 use App\Models\User;
 
@@ -26,56 +27,69 @@ class LoginController extends Controller
         $user = User::where('username', $username)->first();
 
         if($user){
-            $user_password = $user->password;
+            $user_password_hashed = $user->password;
             $user_id = $user->id;
             $user_token = $user->token;
             $user_usertype = $user->user_type;
+            $active_status = $user->active_status;
+            $avatar = $user->avatar;
 
+            if($active_status == 0) {
 
-            if ($user_password === $password) {
+                $result = "inactive";
 
-                if($user_token !== ''){
+            }else{
 
-                    $user->token = '';
-                    $user->save();
+                // if ($user_password === $password) {
 
-                    $datetime = now()->format('YmdHis');
-                    $token = $user->id . '_' . $datetime;
-                    $user->token = $token;
-                    $user->save();
+                if (Hash::check($password, $user_password_hashed)) {
 
-                    session()->put('userid',$user_id);
-                    session()->put('user_token',$token);
-                    session()->put('username',$username);
-                    session()->put('user_type',$user_usertype);
+                    if($user_token !== ''){
     
-                    $ipaddress = Util::get_client_ip();
-                    Util::user_auth_log($ipaddress,"user logged in successfully",$username,"User Logged In");
-
-                    $result = 'correct';
-
-                }else{
-
-                    $datetime = now()->format('YmdHis');
-                    $token = $user->id . '_' . $datetime;
-
-                    $user->token = $token;
-                    $user->save();
-
-                    session()->put('userid',$user_id);
-                    session()->put('user_token',$token);
-                    session()->put('username',$username);
-                    session()->put('user_type',$user_usertype);
+                        $user->token = '';
+                        $user->save();
     
-                    $ipaddress = Util::get_client_ip();
-                    Util::user_auth_log($ipaddress,"user logged in successfully",$username,"User Logged In");
-
-                    $result = 'correct';
-
+                        $datetime = now()->format('YmdHis');
+                        $token = $user->id . '_' . $datetime;
+                        $user->token = $token;
+                        $user->save();
+    
+                        session()->put('userid',$user_id);
+                        session()->put('user_token',$token);
+                        session()->put('username',$username);
+                        session()->put('user_type',$user_usertype);
+                        session()->put('avatar',$avatar);
+        
+                        $ipaddress = Util::get_client_ip();
+                        Util::user_auth_log($ipaddress,"user logged in successfully",$username,"User Logged In");
+    
+                        $result = 'correct';
+    
+                    }else{
+    
+                        $datetime = now()->format('YmdHis');
+                        $token = $user->id . '_' . $datetime;
+    
+                        $user->token = $token;
+                        $user->save();
+                        session()->put('last_activity_time', Carbon::now());
+                        session()->put('userid',$user_id);
+                        session()->put('user_token',$token);
+                        session()->put('username',$username);
+                        session()->put('user_type',$user_usertype);
+                        session()->put('avatar',$avatar);
+        
+                        $ipaddress = Util::get_client_ip();
+                        Util::user_auth_log($ipaddress,"user logged in successfully",$username,"User Logged In");
+    
+                        $result = 'correct';
+    
+                    }
+                    
+                } else {
+                    $result = 'incorrect';
                 }
-                
-            } else {
-                $result = 'incorrect';
+
             }
 
         }else{
@@ -91,6 +105,10 @@ class LoginController extends Controller
     public function logout(Request $request)
     {
 
+        if (!session()->has('userid') || !session()->has('username')) {
+            return redirect('/expired');
+        }
+
         $userid = session()->get('userid');
         $username=session()->get('username');
 
@@ -102,11 +120,7 @@ class LoginController extends Controller
         $ipaddress = Util::get_client_ip();
         Util::user_auth_log($ipaddress,"user logged out successfully",$username,"User Logged Out");
 
-
-        session()->forget('userid');
-        session()->forget('username');
-        session()->forget('user_type');
-        session()->forget('user_token');
+        session()->flush();
 
         return redirect('/');
     }
