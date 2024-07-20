@@ -17,3 +17,5 @@ yarn-error.log
 /.fleet
 /.idea
 /.vscode
+/realtime-server.node_modules
+/public/admin_assets/vendor
