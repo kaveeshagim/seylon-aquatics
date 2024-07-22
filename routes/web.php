@@ -27,6 +27,15 @@ Route::get('/ordersoverview', function () {
 Route::get('/orderconfirmation', function () {
     return view('orderconfirmation');
 });
+Route::get('/invoicesummary', function () {
+    return view('invoice');
+});
+Route::get('/orderconfirmation', function () {
+    return view('orderconfirmation');
+});
+Route::get('/orderconfirmation', function () {
+    return view('orderconfirmation');
+});
 Route::get('/expired', function () {
     return view('404pageexpired');
 })->name('expired');
@@ -40,6 +49,7 @@ Route::get('/broadcast', [BroadcastController::class, 'broadcastMessage']);
 Route::namespace('App\Livewire')->group(function () {
     Route::get('/livewiredashboard', Dashboard::class)->name('dashboard');
 });
+Route::get('/download-pdf', [App\Http\Controllers\PDFController::class, 'downloadPDF']);
 
 
 // Grouping routes under the 'App\Http\Controllers' namespace
@@ -163,12 +173,29 @@ Route::namespace('App\Http\Controllers')->group(function () {
         Route::get('/deletefishsize', 'FishController@deletefishsize')->name('deletefishsize');
 
         // fish family
-        Route::get('/family', 'PageController@fish_size')->name('fish_family');
+        Route::get('/fish_family', 'PageController@fish_family')->name('fish_family');
         Route::get('/getfishfamily', 'FishController@getfishfamily')->name('getfishfamily');
         Route::get('/getfamily/{id}', 'FishController@getfamily')->name('getsize');
         Route::post('/addfishfamily', 'FishController@addfishfamily');
         Route::post('/editfishfamily', 'FishController@editfishfamily')->name('editfishfamily');
         Route::get('/deletefishfamily', 'FishController@deletefishfamily')->name('deletefishfamily');
+
+        // fish species
+        Route::get('/fish_species', 'PageController@fish_species')->name('fish_species');
+        Route::get('/getfishspecies', 'FishController@getfishspecies')->name('getfishspecies');
+        Route::get('/getspecies/{id}', 'FishController@getspecies')->name('getspecies');
+        Route::post('/addfishspecies', 'FishController@addfishspecies');
+        Route::post('/editfishspecies', 'FishController@editfishspecies')->name('editfishspecies');
+        Route::get('/deletefishspecies', 'FishController@deletefishspecies')->name('deletefishspecies');
+
+        // fish weekly
+        Route::get('/fish_weekly', 'PageController@fish_weekly')->name('fish_weekly');
+        Route::get('/getfishweekly', 'FishController@getfishweekly')->name('getfishweekly');
+        Route::get('/getweekly/{id}', 'FishController@getweekly')->name('getweekly');
+        Route::get('/addfishweeklypage', 'PageController@addfishweeklypage')->name('addfishweeklypage');
+        Route::post('/addfishweekly', 'FishController@addfishweekly')->name('addfishweekly');
+        Route::post('/editfishweekly', 'FishController@editfishweekly')->name('editfishweekly');
+        Route::get('/deletefishweekly', 'FishController@deletefishweekly')->name('deletefishweekly');
 
         // Privilege routes
         Route::get('/categorysection', 'PageController@categorysection')->name('categorysection');

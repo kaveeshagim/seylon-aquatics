@@ -66,4 +66,32 @@ class User extends Authenticatable
     {
         return $this->belongsTo(UserType::class, 'tbl_usertype_id');
     }
+
+    public function authlog() {
+        return $this->hasMany(UserAuthLog::class, 'user_id');
+    }
+
+    public function customer() {
+         return $this->hasMany(Customer::class, 'executive_id');
+    }
+
+    public function notification()
+    {
+        return $this->hasMany(FishVariety::class, 'user_id');
+    }
+
+    public function passwordreq()
+    {
+        return $this->hasMany(ResetPasswordReq::class, 'user_id');
+    }
+
+        public function passwordreqrec()
+    {
+        return $this->hasMany(ResetPassword::class, 'user_id');
+    }
+
+        public function order()
+    {
+        return $this->hasMany(Order::class, 'executive_id');
+    }
 }

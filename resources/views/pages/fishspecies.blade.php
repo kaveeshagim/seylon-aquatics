@@ -79,16 +79,16 @@
             <div class="flex flex-col md:flex-row md:items-center md:justify-between space-y-3 md:space-y-0 md:space-x-4 p-4">
                 <div class="flex-1 flex items-center space-x-2">
                     <h5>
-                        <span class="text-gray-500 dark:text-white">Fish Family</span>
+                        <span class="text-gray-500 dark:text-white">Fish Species</span>
                     </h5>
                     
                 </div>
                 <div class="w-full md:w-auto flex flex-col md:flex-row space-y-2 md:space-y-0 items-stretch md:items-center justify-end md:space-x-3 flex-shrink-0">
-                    <button type="button" id="addnewfamilyButton" data-modal-toggle="create-modal" data-modal-target="create-modal" class="flex items-center justify-center text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-primary-600 dark:hover:bg-primary-700 focus:outline-none dark:focus:ring-primary-800">
+                    <button type="button" id="addnewspeciesButton" data-modal-toggle="create-modal" data-modal-target="create-modal" class="flex items-center justify-center text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-primary-600 dark:hover:bg-primary-700 focus:outline-none dark:focus:ring-primary-800">
                         <svg class="h-3.5 w-3.5 mr-1.5 -ml-1" fill="currentColor" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                             <path clip-rule="evenodd" fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" />
                         </svg>
-                        Add Fish Family
+                        Add Fish Species
                     </button>
                     <button type="button" onclick="searchdata()" class="flex items-center justify-center text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-primary-600 dark:hover:bg-primary-700 focus:outline-none dark:focus:ring-primary-800">
                         <svg aria-hidden="true" class="h-3.5 w-3.5 mr-1.5 -ml-1" fill="currentColor" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
@@ -105,11 +105,12 @@
 
 
             <div class="overflow-x-auto">
-                <table id="fishfamily-table" class="dataTable w-full text-sm text-left text-gray-500 dark:text-gray-400">
+                <table id="fishspecies-table" class="dataTable w-full text-sm text-left text-gray-500 dark:text-gray-400">
                     <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                         <tr>
+                            <th scope="col" class="p-4">Species Code</th>
+                            <th scope="col" class="p-4">Fish Species</th>
                             <th scope="col" class="p-4">Fish Family</th>
-                            <th scope="col" class="p-4">Fish Habitat</th>
                             <th scope="col" class="p-4">Edit</th>
                             <th scope="col" class="p-4">Delete</th>
                         </tr>
@@ -135,7 +136,7 @@
             <!-- Modal header -->
             <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
                 <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
-                    Add Fish Family
+                    Add Fish Species
                 </h3>
                 <button type="button" class="end-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="create-modal">
                     <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
@@ -150,11 +151,11 @@
                     @csrf
                     <input type="hidden" name="_token" value="{{ csrf_token() }}">
                     <div>
-                        <label for="family" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Family </label>
-                        <input type="text" name="family" id="family" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" required />
+                        <label for="species" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Species </label>
+                        <input type="text" name="species" id="species" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" required />
                     </div>
                     <div class="flex items-center p-4 md:p-5 border-t border-gray-200 rounded-b dark:border-gray-600">
-                        <button type="button" onclick="addnewfishfamily()" data-modal-hide="create-modal" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Submit</button>
+                        <button type="button" onclick="addnewfishspecies()" data-modal-hide="create-modal" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Submit</button>
                         <button type="button" onclick="refresh()"  class="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 focus:outline-none bg-gray-50 rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">Cancel</button>
                     </div>
                 </form>
@@ -177,7 +178,7 @@ Toggle modal
             <!-- Modal header -->
             <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
                 <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
-                    Edit Fish Family
+                    Edit Fish Species
                 </h3>
                 <button type="button" class="end-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="edit-modal">
                     <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
@@ -193,8 +194,8 @@ Toggle modal
                     <input type="hidden" name="_token" value="{{ csrf_token() }}">
                     <input hidden="true" id="editid"/>
                     <div>
-                        <label for="family-edit" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Name </label>
-                        <input type="text" name="family-edit" id="family-edit" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" required />
+                        <label for="species-edit" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Name </label>
+                        <input type="text" name="species-edit" id="species-edit" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" required />
                     </div>
                     <button type="submit" class="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Submit</button>
                 </form>
@@ -224,7 +225,7 @@ Toggle modal
                 </svg>
                 <input hidden="true" id="deleteid"/>
                 <h3 class="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">Are you sure you want to delete this record?</h3>
-                <button onclick="deletefishfamily()" data-modal-hide="delete-modal" type="button" class="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center">
+                <button onclick="deletefishspecies()" data-modal-hide="delete-modal" type="button" class="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center">
                     Yes
                 </button>
                 <button data-modal-hide="delete-modal" type="button" class="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 focus:outline-none bg-gray-50 rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">Cancel</button>
@@ -244,26 +245,27 @@ Toggle modal
 <script>
 
 function searchdata() {
-  $('#fishfamily-table').DataTable().destroy();
+  $('#fishspecies-table').DataTable().destroy();
 
   $.ajax({
-    url: "getfishfamily",
+    url: "getfishspecies",
     type: "GET",
     dataSrc: "data",
     success: function(data) {
       console.log("Data:", data);
 
       // Initialize the DataTable with the retrieved data
-      $('#fishfamily-table').DataTable({
+      $('#fishspecies-table').DataTable({
         "processing": true,
         "deferRender": true,
         "data": data,
         "columns": [
+          { "data": "species_code" },
           { "data": "name" },
         {
               sortable: false,
               "render": function(data, type, full, meta) {
-                  return '<span class="bg-primary-100 text-primary-800 text-xs font-medium px-2 py-0.5 rounded dark:bg-primary-900 dark:text-primary-300">' + full.fish_habitat + '</span>';
+                  return '<span class="bg-primary-100 text-primary-800 text-xs font-medium px-2 py-0.5 rounded dark:bg-primary-900 dark:text-primary-300">' + full.fish_family + '</span>';
               }
           },
           {
@@ -325,7 +327,7 @@ function searchdata() {
             });
         },
         "columnDefs": [
-          { className: "text-center", "targets": [0,1] }
+          { className: "text-center", "targets": [0,1,2] }
         ],
         "pageLength": 25,
         // "order": [[0, "desc"]],
@@ -339,13 +341,13 @@ function searchdata() {
 }
 
 
-    function addnewfishfamily(){
+    function addnewfishspecies(){
 
         const form = document.getElementById('create-form');
         const formData = new FormData(form);
 
         $.ajax({
-            url: 'addfishfamily',
+            url: 'addfishspecies',
             type: 'POST',
             data: formData,
             processData: false,
@@ -376,10 +378,10 @@ function deletemodal(id) {
 }
 
 
-function deletefishfamily() {
+function deletefishspecies() {
   const id = document.getElementById('deleteid').value;
   $.ajax({
-    url: 'deletefishfamily',
+    url: 'deletefishspecies',
     type: 'GET',
     data: { id: id },
     success: function (response) {
@@ -396,10 +398,10 @@ function editmodal(id) {
     document.getElementById('editid').value = id;
 
    $.ajax({
-    url: '/getfamily/' + id,
+    url: '/getspecies/' + id,
     type: 'GET',
     success: function (response) {
-      document.getElementById('family-edit').value = response.name;
+      document.getElementById('species-edit').value = response.name;
     }
   });
     const editmodal = document.getElementById('edit-modal');
@@ -408,13 +410,13 @@ function editmodal(id) {
 }
 
 
-function editfishfamily() {
+function editfishspecies() {
 
     const form = document.getElementById('edit-form');
     const formData = new FormData(form);
 
     $.ajax({
-      url: 'editfishfamily',
+      url: 'editfishspecies',
       type: 'POST',
       data: formData,
       processData: false,

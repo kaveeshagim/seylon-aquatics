@@ -5,27 +5,22 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class OrderDet extends Model
+class Invoice extends Model
 {
     use HasFactory;
-
-    /**
+            /**
      * The table associated with the model.
      *
      * @var string
      */
-    protected $table = 'tbl_order_det';
+    protected $table = 'tbl_invoice_mst';
     public $timestamps = true;
 
     protected $fillable = [
         'order_id',
-        'fish_code',
-        'size',
-        'per_bag',
-        'orders',
-        'bags',
-        'boxes',
-        'approval_status',
+        'gross_total',
+        'final_total',
+        'shipment_date',
     ];
 
     public function order()
@@ -35,6 +30,7 @@ class OrderDet extends Model
 
     public function invoicedet()
     {
-        return $this->hasMany(InvoiceDet::class, 'orderdet_id');
+        return $this->hasMany(InvoiceDet::class, 'invoice_id');
     }
+
 }

@@ -127,7 +127,7 @@ function searchdata() {
   $('#fishweekly-table').DataTable().destroy();
 
   $.ajax({
-    url: "getusers",
+    url: "getfishweekly",
     type: "GET",
     dataSrc: "data",
     success: function(data) {
@@ -140,7 +140,7 @@ function searchdata() {
         "deferRender": true,
         "data": data,
         "columns": [
-            { "data": "datetime" },
+        // { "data": "datetime" },
           { "data": "fish_code" },
           { "data": "common_name" },
           { "data": "scientific_name" },
@@ -239,7 +239,7 @@ function searchdata() {
 }
 
 function addnewfishweeklypage() {
-    location.href = "{{url('addfishweeklpage')}}";
+    location.href = "{{url('addfishweeklypage')}}";
 }
 
 function editfishweekl(id) {

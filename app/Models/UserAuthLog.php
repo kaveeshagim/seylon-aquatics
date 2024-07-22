@@ -23,4 +23,8 @@ class UserAuthLog extends Model
         'description',
         'event',
     ];
+
+    public function users() {
+        return $this->belongsTo(User::class, 'user_id');
+    }
 }

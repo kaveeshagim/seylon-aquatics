@@ -15,5 +15,12 @@ class FishWeekly extends Model
      * @var string
      */
     protected $table = 'tbl_fishweekly';
+        protected $fillable = [
+        'fish_code', 
+        'family_id', 
+        'name', 
+        'scientific_name', 
+    ];
+
     public $timestamps = true;
 }

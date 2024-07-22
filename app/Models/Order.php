@@ -16,4 +16,38 @@ class Order extends Model
      */
     protected $table = 'tbl_order_mst';
     public $timestamps = true;
+    protected $fillable = [
+        'cus_id',
+        'executive_id',
+        'status',
+        'advanced_payment',
+        'shipping_address',
+    ];
+
+    public function executive()
+    {
+        return $this->belongsTo(User::class, 'executive_id');
+    }
+
+    public function customer()
+    {
+        return $this->belongsTo(Customer::class, 'cus_id');
+    }
+
+    
+    public function order()
+    {
+        return $this->hasMany(OrderDet::class, 'order_id');
+    }
+
+        public function invoice()
+    {
+        return $this->hasOne(Invoice::class, 'order_id');
+    }
+
+        public function invoicedet()
+    {
+        return $this->hasMany(InvoiceDet::class, 'order_id');
+    }
+
 }

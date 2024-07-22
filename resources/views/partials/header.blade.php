@@ -41,16 +41,16 @@
                         <div id="dropdownFish" class="z-10 hidden font-normal bg-gray-50 divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700 dark:divide-gray-600">
                             <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownLargeButton">
                             <li>
-                                <a href="{{ route('fish_family') }}" class="block px-4 py-2 no-underline text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Fish Family</a>
-                            </li>
-                            <li>
-                                <a href="" class="block px-4 py-2 no-underline text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Fish Species</a>
-                            </li>
-                            <li>
                                 <a href="{{ route('fish_weekly') }}" class="block px-4 py-2 no-underline text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Weekly Fish Stock</a>
                             </li>
                             <li>
                                 <a href="{{ route('fish_habitat') }}" class="block px-4 py-2 no-underline text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Fish Habitat</a>
+                            </li>
+                            <li>
+                                <a href="{{ route('fish_family') }}" class="block px-4 py-2 no-underline text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Fish Family</a>
+                            </li>
+                            <li>
+                                <a href="{{ route('fish_species') }}" class="block px-4 py-2 no-underline text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Fish Species</a>
                             </li>
                             <li>
                                 <a href="{{ route('fish_variety') }}" class="block px-4 py-2 no-underline text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Fish Variety</a>

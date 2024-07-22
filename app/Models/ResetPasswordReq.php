@@ -27,4 +27,9 @@ class ResetPasswordReq extends Model
     {
         return $this->belongsTo(User::class, 'user_id');
     }
+
+    public function passwordreqrec()
+    {
+        return $this->hasMany(ResetPassword::class, 'psws_reqid');
+    }
 }

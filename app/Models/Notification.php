@@ -5,34 +5,25 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class ResetPassword extends Model
+class Notification extends Model
 {
     use HasFactory;
 
-    /**
+                /**
      * The table associated with the model.
      *
      * @var string
      */
-    protected $table = 'tbl_reset_password';
+    protected $table = 'tbl_notifications';
     public $timestamps = true;
+
     protected $fillable = [
-        'psws_reqid',
-        'user_id',
-        'username',
-        'old_password',
-        'new_password',
-        'updated_by',
+        'user_id', 
+        'notification', 
     ];
 
         public function user()
     {
         return $this->belongsTo(User::class, 'user_id');
     }
-
-        public function passwordreq()
-    {
-        return $this->belongsTo(ResetPasswordReq::class, 'psws_reqid');
-    }
-
 }

@@ -459,6 +459,44 @@ class PageController extends Controller
 
     }
 
+    public function fish_species() {
+
+
+        $updateLastActivityTime = Util::updateLastActivityTime();
+
+        if($updateLastActivityTime == 'false') {
+            return redirect('/expired');
+        }elseif($updateLastActivityTime == 'invalid') {
+            return redirect('/');
+        }
+
+        $username = session()->get('username');
+        $ipaddress = Util::get_client_ip();
+        Util::user_auth_log($ipaddress,"user opened fish species interface ",$username, "View Fish Species Page");
+
+        return view('pages.fishspecies');
+
+    }
+
+    public function addfishweeklypage() {
+
+
+        $updateLastActivityTime = Util::updateLastActivityTime();
+
+        if($updateLastActivityTime == 'false') {
+            return redirect('/expired');
+        }elseif($updateLastActivityTime == 'invalid') {
+            return redirect('/');
+        }
+
+        $username = session()->get('username');
+        $ipaddress = Util::get_client_ip();
+        Util::user_auth_log($ipaddress,"user opened add fish weekly interface ",$username, "View Add Fish Weekly Page");
+
+        return view('pages.addfishweekly');
+
+    }
+
     public function addfishpage() {
 
 
@@ -747,6 +785,24 @@ class PageController extends Controller
         Util::user_auth_log($ipaddress,"user opened user notifications interface ",$username, "View Notifications Page");
 
         return view('pages.notifications');
+
+    }
+
+    public function orderconfirmation(){
+
+        $updateLastActivityTime = Util::updateLastActivityTime();
+
+        if($updateLastActivityTime == 'false') {
+            return redirect('/expired');
+        }elseif($updateLastActivityTime == 'invalid') {
+            return redirect('/');
+        }
+
+        $username = session()->get('username');
+        $ipaddress = Util::get_client_ip();
+        Util::user_auth_log($ipaddress,"user opened order confirmation interface ",$username, "View Order Confirmation Page");
+
+        return view('pages.orderconfirmation');
 
     }
 }

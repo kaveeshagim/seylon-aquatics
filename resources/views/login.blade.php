@@ -197,7 +197,7 @@
                 <!-- Dark mode switcher end -->
               </div>
 
-              <button type="button" id="loginButton" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mb-4 w-full">
+              <button type="button" onclick="login()" id="loginButton" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mb-4 w-full">
                 Login
               </button>
             </form>
@@ -216,8 +216,7 @@
 
 
 <script>
-  $(document).ready(function() {
-    $("#loginButton").click(function() {
+  function login() {
       var username = $("#username").val();
       var password = $("#password").val();
 
@@ -243,9 +242,7 @@
           }
         });
       }
-    });
-
-  });
+    }
 
 
   $(document).ready(function() {

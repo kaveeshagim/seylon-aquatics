@@ -17,8 +17,8 @@ class FishHabitat extends Model
     protected $table = 'tbl_fishhabitat';
     public $timestamps = true;
 
-    public function fishh()
+    public function fishFamilies()
     {
-        return $this->hasMany(Fish::class, 'fish_habitat');
+        return $this->hasMany(FishFamily::class, 'habitat_id');
     }
 }

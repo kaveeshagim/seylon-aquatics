@@ -25,7 +25,16 @@ class Customer extends Model
         'email',
         'primary_contact',
         'secondary_contact',
-        'executive',
+        'executive_id',
     ];
 
+        public function executive()
+    {
+        return $this->belongsTo(User::class, 'executive_id');
+    }
+
+    public function order()
+    {
+        return $this->hasMany(Order::class, 'cus_id');
+    }
 }

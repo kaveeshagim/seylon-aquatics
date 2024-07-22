@@ -17,10 +17,17 @@ class FishVariety extends Model
     protected $table = 'tbl_fish_variety';
     public $timestamps = true;
 
-    protected $fillable = ['name', 'code'];
+    protected $fillable = [
+        'fish_code', 
+        'species_id', 
+        'common_name', 
+        'scientific_name', 
+        'size_cm', 
+        'size',
+    ];
 
-    public function fishv()
+    public function species()
     {
-        return $this->hasMany(Fish::class, 'fish_variety');
+        return $this->belongsTo(FishSpecies::class, 'species_id');
     }
 }

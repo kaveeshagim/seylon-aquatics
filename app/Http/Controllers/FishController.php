@@ -37,6 +37,54 @@ public function getFish() {
     return response()->json($data);
 }
 
+public function getfishfamily() {
+
+    $data = FishFamily::with(['habitat'])->get();
+    
+    $data = $data->map(function ($fish) {
+        return [
+            'name' => $fish->name,
+            'fish_habitat' => $fish->habitat ? $fish->habitat->name : null,
+            'id' => $fish->id,
+        ];
+    });
+
+    return response()->json($data);
+}
+
+
+public function getfishspecies() {
+
+    $data = FishSpecies::with(['family'])->get();
+    
+    $data = $data->map(function ($fish) {
+        return [
+            'species_code' => $fish->species_code,
+            'name' => $fish->name,
+            'fish_family' => $fish->family ? $fish->family->name : null,
+            'id' => $fish->id,
+        ];
+    });
+
+    return response()->json($data);
+}
+
+public function getfishweekly() {
+
+    $data = FishSpecies::with(['family'])->get();
+    
+    $data = $data->map(function ($fish) {
+        return [
+            'species_code' => $fish->species_code,
+            'name' => $fish->name,
+            'fish_family' => $fish->family ? $fish->family->name : null,
+            'id' => $fish->id,
+        ];
+    });
+
+    return response()->json($data);
+}
+
     
 
     public function addfish(Request $request) {
@@ -405,5 +453,45 @@ public function getFish() {
         return "deleted";
 
     }
+public function addfishweekly(Request $request) {
+    // Validate the incoming request
+    $request->validate([
+        'excel_input' => 'required|file|mimes:xlsx,xls,csv',
+    ]);
+
+    // Get the uploaded file
+    $file = $request->file('excel_input');
+
+    try {
+        // Load the file into an array
+        $rows = Excel::toArray([], $file);
+
+        // Remove the first row (header row)
+        array_shift($rows[0]);
+
+        // Insert data into the database
+        foreach ($rows[0] as $row) {
+            DB::table('tbl_fishweekly')->insert([
+                'fish_code' => $row[0] ?? null,
+                'year' => null,
+                'month' => null,
+                'week' => null,
+                'gross_price' => $row[1] ?? null,
+                'quantity' => $row[2] ?? null,
+                'special_offer' => $row[3] ?? null,
+                'discount' => $row[4] ?? null,
+                'stock_status' => 'in stock',
+            ]);
+        }
+
+        // Return a JSON response for AJAX success
+        return response()->json(['success' => true]);
+
+    } catch (\Exception $e) {
+        // Handle the exception and return a JSON response for AJAX error
+        return response()->json(['success' => false, 'message' => 'An error occurred while processing the file: ' . $e->getMessage()]);
+    }
+}
+
 
 }
