@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Carbon\Carbon;
 
 class FishHabitat extends Model
 {
@@ -15,10 +16,16 @@ class FishHabitat extends Model
      * @var string
      */
     protected $table = 'tbl_fishhabitat';
+    protected $fillable = ['name'];
     public $timestamps = true;
 
     public function fishFamilies()
     {
         return $this->hasMany(FishFamily::class, 'habitat_id');
+    }
+
+     public function getCreatedAtAttribute($value)
+    {
+        return Carbon::parse($value)->format('Y-m-d H:i:s');
     }
 }

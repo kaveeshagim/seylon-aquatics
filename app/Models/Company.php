@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Carbon\Carbon;
 
 class Company extends Model
 {
@@ -16,4 +17,9 @@ class Company extends Model
      */
     protected $table = 'tbl_company';
     public $timestamps = true;
+    
+     public function getCreatedAtAttribute($value)
+    {
+        return Carbon::parse($value)->format('Y-m-d H:i:s');
+    }
 }

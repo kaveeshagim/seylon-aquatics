@@ -2,10 +2,13 @@ const express = require("express");
 const http = require("http");
 const socketIo = require("socket.io");
 const cors = require("cors"); // Import cors
+const pino = require('express-pino-logger')();
 
 const app = express();
 const server = http.createServer(app);
 const io = socketIo(server);
+
+app.use(pino);
 
 // Use cors middleware
 app.use(cors()); // Enable all CORS requests

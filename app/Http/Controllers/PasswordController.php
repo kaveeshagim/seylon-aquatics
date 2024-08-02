@@ -16,72 +16,129 @@ class PasswordController extends Controller
 
     public function getpasswordreq() {
 
-        $data = ResetPasswordReq::select('tbl_reset_password_req.*', 'tbl_users.username')
-                ->join('tbl_users', 'tbl_reset_password_req.user_id', '=', 'tbl_users.id')
-                ->where('status', 'pending')
-                ->get();
+        $data = DB::table('tbl_reset_password_req')
+        ->select('tbl_reset_password_req.*', 'tbl_users.username')
+        ->join('tbl_users', 'tbl_reset_password_req.user_id', '=', 'tbl_users.id')
+        ->where('tbl_reset_password_req.status', 'pending')
+        ->get();
 
         return $data;    
 
     }
 
     public function addpasswordresetreq(Request $request) {
-
         $username = $request->input('username-reset');
-
         $user = User::where('username', $username)->first();
-
-        ResetPasswordReq::insert([
+        
+        if (!$user) {
+            return response()->json(['status' => 'error', 'message' => 'User not found']);
+        }
+    // dd($user->password);
+        ResetPasswordReq::create([
             'user_id' => $user->id,
             'reason' => $request->input('reason'),
-            'cur_password' => $user->password,
             'status' => 'pending',
-            'created_at' => NOW()
         ]);
+    
+        $username = session()->get('username');
+        $ipaddress = Util::get_client_ip();
+        Util::user_auth_log($ipaddress, "user added a password reset request", $username, "Add Password Reset Request");
+    
+        return response()->json(['status' => 'success', 'message' => 'Password Change request successfull!']);
+    }
+    
 
+
+    public function rejectpasswordrequest(Request $request) {
+        $id = $request->input('id');
+
+        ResetPasswordReq::destroy($id);
 
         $username = session()->get('username');
         $ipaddress = Util::get_client_ip();
-        Util::user_auth_log($ipaddress,"user added a password reset request ",$username, "Add Password Reset Request");
+        Util::user_auth_log($ipaddress,"user deleted a password request ",$username, "Delete password request");
 
-        return "success";
-
-    }
-
-    public function editnewpassword(Request $request) {
-
-        ResetPassword::create([
-            'psws_reqid' => $request->req_id, 
-            'user_id' => $request->user_id,
-            'username' => $request->username,
-            'old_password' => $request->oldpswd,
-            'new_password' => $request->newpswd,
-            'updated_by' => session()->get('userid'),
-        ]);
-        
-        ResetPasswordReq::where('id', $request->id)->update(['status' => 'completed']);
-        
-        $user = User::find($request->user_id);
-        $email = $user->email;
-
-        $subject = "Password Change Request";
-
-        $body = 'Hi ' . $request->username . ',<br><br>';
-        $body .= 'New Password: ' . $request->newpswd;
-
-        $mailerService = new PHPMailerService();
-        $mailerService->sendEmail($email, $subject, nl2br($body));
-
-        $user->password = $request->newpswd;
-        $user->save();
-
-        $username = session()->get('username');
-        $ipaddress = Util::get_client_ip();
-        Util::user_auth_log($ipaddress,"user updated a password ",$username, "Update User Password");
-
-        return "success";
+        return response()->json(['status' => 'success', 'message' => 'Password Request Rejected successfully!']);
 
     }
 
+    public function approvepasswordrequest(Request $request) {
+
+        try {
+            // Validate the input
+            $request->validate([
+                'editid' => 'required|exists:tbl_reset_password_req,id',
+                'newpassword' => [
+                    'required',
+                    'string',
+                    'min:8',  // Minimum length of 8 characters
+                    'regex:/[A-Z]/',  // At least one uppercase letter
+                    'regex:/[!@#$%^&*(),.?":{}|<>]/',  // At least one symbol
+                    'regex:/[0-9]/',  // At least one number
+                ],
+            ]);
+
+            $id = $validated['editid'];
+            $newpassword = $validated['newpassword'];
+            
+        
+            // Find the password request record
+            $passwordRequest = ResetPasswordReq::find($id);
+        
+            if (!$passwordRequest) {
+                return response()->json(['status' => 'error', 'message' => 'Password Request not found']);
+            }
+        
+            // Update the password request status
+            $passwordRequest->update([
+                'status' => 'approved',
+                'new_password' => $newpassword,
+                'updated_by' => session()->get('userid'),
+            ]);
+        
+            // Find the associated user
+            $user = User::find($passwordRequest->user_id);
+        
+            if (!$user) {
+                return response()->json(['status' => 'error', 'message' => 'User not found']);
+            }
+        
+            $username = $user->username;
+            $email = $user->email;
+        
+            $subject = "Password Change Request";
+            $body = 'Hi ' . $username . ',<br><br>';
+            $body .= 'New Password: ' . $newpassword;
+        
+            // Send the email
+            try {
+                $mailerService = new PHPMailerService();
+                $mailerService->sendEmail($email, $subject, nl2br($body));
+            } catch (\Exception $e) {
+                return response()->json(['status' => 'error', 'message' => 'Password update successful. Failed to send email']);
+            }
+        
+            $passwordRequest->update([
+                'email_status' => 'sent'
+            ]);
+
+            $username = session()->get('username');
+            $ipaddress = Util::get_client_ip();
+            Util::user_auth_log($ipaddress, "User approved a password request", $username, "Approved a password request");
+
+            return response()->json(['status' => 'success', 'message' => 'Password request approved successfully']);
+
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            // Validation failed, return custom error response
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Password format incorrect',
+                'errors' => $e->errors(), // Return the specific validation errors
+            ], 422); // 422 Unprocessable Entity status code
+        }
+        
+
+    }
+    
    
 }

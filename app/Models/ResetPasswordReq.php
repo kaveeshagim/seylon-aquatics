@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Carbon\Carbon;
 
 class ResetPasswordReq extends Model
 {
@@ -31,5 +32,10 @@ class ResetPasswordReq extends Model
     public function passwordreqrec()
     {
         return $this->hasMany(ResetPassword::class, 'psws_reqid');
+    }
+
+    public function getCreatedAtAttribute($value)
+    {
+        return Carbon::parse($value)->format('Y-m-d H:i:s');
     }
 }

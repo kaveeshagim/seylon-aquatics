@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Carbon\Carbon;
 
 class Invoice extends Model
 {
@@ -31,6 +32,10 @@ class Invoice extends Model
     public function invoicedet()
     {
         return $this->hasMany(InvoiceDet::class, 'invoice_id');
+    }
+     public function getCreatedAtAttribute($value)
+    {
+        return Carbon::parse($value)->format('Y-m-d H:i:s');
     }
 
 }

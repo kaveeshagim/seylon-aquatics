@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Carbon\Carbon;
 
 class FishWeekly extends Model
 {
@@ -15,12 +16,25 @@ class FishWeekly extends Model
      * @var string
      */
     protected $table = 'tbl_fishweekly';
-        protected $fillable = [
-        'fish_code', 
-        'family_id', 
-        'name', 
-        'scientific_name', 
+       protected $fillable = [
+        'fish_code',
+        'year',
+        'month',
+        'week',
+        'gross_price',
+        'quantity',
+        'special_offer',
+        'discount',
+        'stock_status',
     ];
-
     public $timestamps = true;
+
+    public function variety()
+    {
+        return $this->belongsTo(FishVariety::class, 'fish_code', 'fish_code');
+    }
+     public function getCreatedAtAttribute($value)
+    {
+        return Carbon::parse($value)->format('Y-m-d H:i:s');
+    }
 }

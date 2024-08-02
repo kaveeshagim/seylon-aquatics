@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Carbon\Carbon;
 
 class FishSpecies extends Model
 {
@@ -32,5 +33,10 @@ class FishSpecies extends Model
         public function variety()
     {
         return $this->hasMany(FishVariety::class, 'species_id');
+    }
+
+     public function getCreatedAtAttribute($value)
+    {
+        return Carbon::parse($value)->format('Y-m-d H:i:s');
     }
 }

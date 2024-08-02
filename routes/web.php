@@ -45,6 +45,15 @@ Route::get('/', function () {
 Route::get('/livedashboard', function () {
     return view('/livedashboard');
 });
+Route::get('/customerorderreport', function () {
+    return view('/customerorderreport');
+});
+Route::get('/salesreport', function () {
+    return view('/salesreport');
+});
+Route::get('/shipmentreport', function () {
+    return view('/shipmentreport');
+});
 Route::get('/broadcast', [BroadcastController::class, 'broadcastMessage']);
 Route::namespace('App\Livewire')->group(function () {
     Route::get('/livewiredashboard', Dashboard::class)->name('dashboard');
@@ -84,6 +93,7 @@ Route::namespace('App\Http\Controllers')->group(function () {
         Route::get('/addusertypepage', 'PageController@addusertypepage')->name('addusertypepage');
         Route::post('/addusertype', 'UserTypeController@addusertype');
         Route::get('/getusertype/{id}', 'UserTypeController@getusertype')->name('getusertype');
+        Route::get('/getuserslist/{id}', 'UserTypeController@getuserslist')->name('getuserslist');
         Route::get('/getusertypes', 'UserTypeController@getusertypes')->name('getusertypes');
         Route::get('/deleteusertype', 'UserTypeController@deleteusertype')->name('deleteusertype');
         Route::get('/editusertypepage/{id}', 'PageController@editusertypepage')->name('editusertypepage');
@@ -115,9 +125,15 @@ Route::namespace('App\Http\Controllers')->group(function () {
         Route::get('/orderupload', 'PageController@orderupload')->name('orderupload');
         Route::get('/orders', 'PageController@orders')->name('orders');
         Route::get('/addorderpage', 'PageController@addorderpage')->name('addorderpage');
+        Route::post('/addorderexcel', 'OrderController@addorderexcel')->name('addorderexcel');
+        Route::post('/addorderform', 'OrderController@addorderform')->name('addorderform');
         Route::get('/getorders', 'OrderController@getorders')->name('getorders');
+        Route::get('/orderhistory', 'PageController@orderhistory')->name('orderhistory');
+        Route::get('/customerorders', 'PageController@customerorders')->name('customerorders');
+        Route::get('/getorderhistory', 'OrderController@getorderhistory')->name('getorderhistory');
         
         // Invoice routes
+        Route::get('/invoices', 'PageController@invoices')->name('invoices');
         Route::get('/getinvoices', 'InvoiceController@getinvoices')->name('getinvoices');
 
 
@@ -126,7 +142,8 @@ Route::namespace('App\Http\Controllers')->group(function () {
         Route::get('/resetpasswordpage/{id}', 'PageController@resetpasswordpage')->name('resetpasswordpage');
         Route::get('/getpasswordreq', 'PasswordController@getpasswordreq')->name('getpasswordreq');
         Route::post('/addpasswordresetreq', 'PasswordController@addpasswordresetreq')->name('addpasswordresetreq');
-        Route::post('/editnewpassword', 'PasswordController@editnewpassword')->name('editnewpassword');
+        Route::post('/approvepasswordrequest', 'PasswordController@approvepasswordrequest')->name('approvepasswordrequest');
+        Route::get('/rejectpasswordrequest', 'PasswordController@rejectpasswordrequest')->name('rejectpasswordrequest');
 
         // Fish routes
         Route::get('/genfishcode', 'FishController@genfishcode')->name('genfishcode');
@@ -174,7 +191,7 @@ Route::namespace('App\Http\Controllers')->group(function () {
 
         // fish family
         Route::get('/fish_family', 'PageController@fish_family')->name('fish_family');
-        Route::get('/getfishfamily', 'FishController@getfishfamily')->name('getfishfamily');
+        Route::get('/getfishfamilies', 'FishController@getfishfamilies')->name('getfishfamilies');
         Route::get('/getfamily/{id}', 'FishController@getfamily')->name('getsize');
         Route::post('/addfishfamily', 'FishController@addfishfamily');
         Route::post('/editfishfamily', 'FishController@editfishfamily')->name('editfishfamily');

@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Carbon\Carbon;
+
 
 class PrivilegeMst extends Model
 {
@@ -32,4 +34,10 @@ class PrivilegeMst extends Model
     {
         return $this->belongsTo(PrivSubcategory::class, 'subcat_id');
     }
+
+    public function getCreatedAtAttribute($value)
+    {
+        return Carbon::parse($value)->format('Y-m-d H:i:s');
+    }
+    
 }

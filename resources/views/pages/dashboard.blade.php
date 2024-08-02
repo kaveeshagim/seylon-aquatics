@@ -512,7 +512,7 @@
 <script>
      document.addEventListener("DOMContentLoaded", function(event) {
 
-          const socket = io('http://localhost:6050', {transports: ['websocket']}, { autoConnect: false });
+      const socket = io('http://localhost:6050', {transports: ['websocket']}, { autoConnect: false });
 
 
     socket.on('orders', (data) => {

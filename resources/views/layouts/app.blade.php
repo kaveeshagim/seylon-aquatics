@@ -4,17 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Seylon Aquatics</title>
- @vite('resources/css/app.css')
+    @vite('resources/css/app.css')
     <!-- Styles -->
     <link rel="icon" type="image/png" href="{{ asset('images/logo-icon.png') }}" />
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <!-- <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400..700&display=swap" rel="stylesheet" /> -->
-
-    <!-- Fontawesome -->
-    <link rel="stylesheet" href="https://cdn.datatables.net/2.0.8/css/dataTables.tailwindcss.css" />
-
-    <!-- <link rel="stylesheet" href="{{ asset('../node_modules/datatables.net-buttons-dt/css/buttons.dataTables.min.css') }}"> -->
-
+    <script src="{{ asset('plugins/jquery.js') }}"></script>
   <script>
       if (
           localStorage.getItem('color-theme') === 'dark' ||
@@ -81,23 +74,24 @@
 
     @stack('styles')
     @stack('scripts')
- @vite('resources/js/app.js')
+
      <!-- Scripts -->
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/datepicker.min.js"></script>
-    <!-- <script src="{{ asset('../node_modules/datatables.net-buttons-dt/js/dataTables.buttons.min.js') }}"></script>
-    <script src="{{ asset('../node_modules/jszip/dist/jszip.min.js') }}"></script>
-    <script src="{{ asset('../node_modules/pdfmake/build/pdfmake.min.js') }}"></script>
-    <script src="{{ asset('../node_modules/pdfmake/build/vfs_fonts.js') }}"></script>
-    <script src="{{ asset('assets/js/lib/data-table/buttons.html5.min.js') }}"></script> -->
-<script src="https://cdn.socket.io/4.5.0/socket.io.min.js"></script>
-
+    
+    <script src="{{ asset('plugins/bootbox.js') }}"></script>
+    <script src="{{ asset('plugins/socket.io.js') }}"></script>
+    <script src="{{ asset('plugins/dataTables.buttons.min.js') }}"></script>
+    <script src="{{ asset('plugins/jszip.min.js') }}"></script>
+    <script src="{{ asset('plugins/buttons.html5.min.js') }}"></script>
+    <script src="{{ asset('plugins/buttons.print.min.js') }}"></script>
     <script src="{{ asset ('js/dark-mode.js') }}"></script>
-
+    @vite('resources/js/app.js')
     <script>
         function userprofile() {
             location.href = "{{ url('userprofile') }}";
+        }
+        function notifications() {
+            location.href = "{{ url('notifications') }}";
         }
     </script>
 </body>

@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Carbon\Carbon;
+
 
 class PrivCategory extends Model
 {
@@ -15,5 +17,10 @@ class PrivCategory extends Model
     public function subcategories()
     {
         return $this->hasMany(PrivSubcategory::class, 'cat_id');
+    }
+
+     public function getCreatedAtAttribute($value)
+    {
+        return Carbon::parse($value)->format('Y-m-d H:i:s');
     }
 }

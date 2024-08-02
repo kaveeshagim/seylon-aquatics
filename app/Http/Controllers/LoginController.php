@@ -36,11 +36,9 @@ class LoginController extends Controller
 
             if($active_status == 0) {
 
-                $result = "inactive";
+                return response()->json(['status' => 'error', 'message' => 'User account inactive. Contact Administrator to activate your account']);
 
             }else{
-
-                // if ($user_password === $password) {
 
                 if (Hash::check($password, $user_password_hashed)) {
 
@@ -63,7 +61,8 @@ class LoginController extends Controller
                         $ipaddress = Util::get_client_ip();
                         Util::user_auth_log($ipaddress,"user logged in successfully",$username,"User Logged In");
     
-                        $result = 'correct';
+                        return response()->json(['status' => 'success', 'message' => 'Login successfull!']);
+
     
                     }else{
     
@@ -82,24 +81,25 @@ class LoginController extends Controller
                         $ipaddress = Util::get_client_ip();
                         Util::user_auth_log($ipaddress,"user logged in successfully",$username,"User Logged In");
     
-                        $result = 'correct';
+                        return response()->json(['status' => 'success', 'message' => 'Login successfull!']);
+
     
                     }
                     
                 } else {
-                    $result = 'incorrect';
+                    return response()->json(['status' => 'error', 'message' => 'Incorrect password']);
+
                 }
 
             }
 
         }else{
 
-            $result = 'incorrect';
+            return response()->json(['status' => 'error', 'message' => 'User not found']);
+
 
         }
 
-
-        return $result;
     }
 
     public function logout(Request $request)

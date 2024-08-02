@@ -14,6 +14,7 @@ use App\Models\FishHabitat;
 use App\Models\FishVariety;
 use App\Models\FishFamily;
 use App\Models\FishSpecies;
+use App\Models\FishWeekly;
 
 class FishController extends Controller
 {
@@ -37,7 +38,7 @@ public function getFish() {
     return response()->json($data);
 }
 
-public function getfishfamily() {
+public function getfishfamilies() {
 
     $data = FishFamily::with(['habitat'])->get();
     
@@ -52,16 +53,112 @@ public function getfishfamily() {
     return response()->json($data);
 }
 
+public function getfamily($id) {
+    $data = DB::table('tbl_fish_family')
+        ->select('tbl_fish_family.*')
+        ->where('id', $id)
+        ->first();
+
+    $habitatlist = FishHabitat::select('id', 'name')->get();
+
+    return response()->json([
+        'data' => $data,
+        'habitatlist' => $habitatlist
+    ]);
+}
+
+
+public function addfishfamily(Request $request) {
+
+    $family = $request->input('family');
+    $habitat = $request->input('habitat');
+
+    // Check if a record with the same title (case insensitive) already exists
+    $existingRecord = FishFamily::whereRaw('LOWER(name) = ?', [strtolower($family)])->first();
+
+    if ($existingRecord) {
+        // If a duplicate is found, return an error response
+        return response()->json(['status' => 'error', 'message' => 'Fish Family already exists. Please choose a different fish family.']);
+    }
+
+        FishFamily::create([
+            'name' => $name,
+            'habitat-id' => $habitat
+        ]);
+
+        $username = session()->get('username');
+        $ipaddress = Util::get_client_ip();
+        Util::user_auth_log($ipaddress,"fish family added ",$username, "Fish Family Added");
+
+    
+        return response()->json(['status' => 'success', 'message' => 'Fish Family added successfully!']);
+}
+
+public function editfishfamily(Request $request) {
+
+    $id = $request->input('editid');
+    $family = $request->input('family-edit');
+    $habitat = $request->input('habitat-edit');
+
+    // Check if there's any other record with the same title but a different ID (case-insensitive)
+    $existingRecord = FishFamily::whereRaw('LOWER(name) = ?', [strtolower($family)])
+    ->where('id', '!=', $id)
+    ->first();
+
+    if ($existingRecord) {
+        return response()->json(['status' => 'error', 'message' => 'Fish Family already exists. Please choose a different Fish Family.']);
+    }
+
+
+    $fishHabitat = FishFamily::find($id);
+    $fishHabitat->name = $family;
+    $fishHabitat->habitat_id = $habitat;
+    $fishHabitat->save();
+
+    $username = session()->get('username');
+    $ipaddress = Util::get_client_ip();
+    Util::user_auth_log($ipaddress,"fish habitat added ",$username, "Fish Family Updated");
+
+    return response()->json(['status' => 'success', 'message' => 'Fish Family updated successfully!']);
+
+}
+
+
+
+
+public function deletefishfamily(Request $request) {
+
+    $id = $request->input('id');
+
+    $fishFamily = FishFamily::with('species')->find($id);
+
+    if ($fishFamily && $fishFamily->species->isNotEmpty()) {
+        return response()->json(['status' => 'error', 'message' => 'Cannot delete Fish Family because it has related species!']);
+    }
+
+    FishFamily::destroy($id);
+
+    $username = session()->get('username');
+    $ipaddress = Util::get_client_ip();
+    Util::user_auth_log($ipaddress,"fish habitat deleted ",$username, "Fish Habitat Deleted");
+
+    return response()->json(['status' => 'success', 'message' => 'Fish Habitat deleted successfully!']);
+
+}
+
+
 
 public function getfishspecies() {
 
-    $data = FishSpecies::with(['family'])->get();
+    $data = FishSpecies::with(['family.habitat'])->get();
     
     $data = $data->map(function ($fish) {
         return [
             'species_code' => $fish->species_code,
-            'name' => $fish->name,
+            'commonname' => $fish->name,
+            'scientificname' => $fish->scientific_name,
             'fish_family' => $fish->family ? $fish->family->name : null,
+            'fish_habitat' => $fish->family && $fish->family->habitat ? $fish->family->habitat->name : null,
             'id' => $fish->id,
         ];
     });
@@ -69,21 +166,123 @@ public function getfishspecies() {
     return response()->json($data);
 }
 
-public function getfishweekly() {
+public function getspecies($id) {
+    $data = DB::table('tbl_fish_species')
+        ->select('tbl_fish_species.*')
+        ->where('id', $id)
+        ->first();
 
-    $data = FishSpecies::with(['family'])->get();
+    $familylist = FishFamily::select('id', 'name')->get();
+
+    return response()->json([
+        'data' => $data,
+        'familylist' => $familylist
+    ]);
+}
+
+
+public function addfishspecies(Request $request) {
+
+    $commonname = $request->input('common-name');
+    $scientificname = $request->input('scientific-name');
+    $family = $request->input('family');
+
+    // Check if a record with the same title (case insensitive) already exists
+    $existingRecord = FishSpecies::whereRaw('LOWER(name) = ?', [strtolower($commonname)])->first();
+
+    if ($existingRecord) {
+        // If a duplicate is found, return an error response
+        return response()->json(['status' => 'error', 'message' => 'Fish Species already exists. Please choose a different fish species.']);
+    }
+
+    FishSpecies::create([
+        'name' => $commonname,
+        'scientific_name' => $scientificname,
+        'family_id' => $family
+    ]);
+
+    $username = session()->get('username');
+    $ipaddress = Util::get_client_ip();
+    Util::user_auth_log($ipaddress,"fish species added ",$username, "Fish Species Added");
+
     
-    $data = $data->map(function ($fish) {
+    return response()->json(['status' => 'success', 'message' => 'Fish Species added successfully!']);
+}
+
+public function editfishspecies(Request $request) {
+
+    $id = $request->input('editid');
+    $commonname = $request->input('commonname-edit');
+    $scientificname = $request->input('scientificname-edit');
+    $family = $request->input('family-edit');
+
+    // Check if there's any other record with the same title but a different ID (case-insensitive)
+    $existingRecord = FishSpecies::whereRaw('LOWER(name) = ?', [strtolower($commonname)])
+    ->where('id', '!=', $id)
+    ->first();
+
+    if ($existingRecord) {
+        return response()->json(['status' => 'error', 'message' => 'Fish Species already exists. Please choose a different Fish Species.']);
+    }
+
+
+    $fishSpecies = FishSpecies::find($id);
+    $fishSpecies->name = $commonname;
+    $fishSpecies->scientific_name = $scientificname;
+    $fishSpecies->family_id = $family;
+    $fishSpecies->save();
+
+    $username = session()->get('username');
+    $ipaddress = Util::get_client_ip();
+    Util::user_auth_log($ipaddress,"fish species added ",$username, "Fish Species Updated");
+
+    return response()->json(['status' => 'success', 'message' => 'Fish Species updated successfully!']);
+
+}
+
+
+
+
+public function deletefishspecies(Request $request) {
+
+    $id = $request->input('id');
+
+    $fishSpecies = FishSpecies::with('variety')->find($id);
+
+    if ($fishSpecies && $fishSpecies->variety->isNotEmpty()) {
+        return response()->json(['status' => 'error', 'message' => 'Cannot delete Fish Species because it has related variety!']);
+    }
+
+    FishSpecies::destroy($id);
+
+    $username = session()->get('username');
+    $ipaddress = Util::get_client_ip();
+    Util::user_auth_log($ipaddress,"fish species deleted ",$username, "Fish Species Deleted");
+
+    return response()->json(['status' => 'success', 'message' => 'Fish Species deleted successfully!']);
+
+}
+
+    public function getfishweekly() {
+
+        $data = FishWeekly::with(['variety'])->get();
+
+          $data = $data->map(function ($fish) {
         return [
-            'species_code' => $fish->species_code,
-            'name' => $fish->name,
-            'fish_family' => $fish->family ? $fish->family->name : null,
+            'fish_code' => $fish->fish_code,
+            'common_name' => $fish->variety ? $fish->variety->common_name : null,
+            'scientific_name' => $fish->variety ? $fish->variety->scientific_name : null,
+            'gross_price' => $fish->gross_price,
+            'quantity' => $fish->quantity,
+            'special_offer' => $fish->special_offer,
+            'discount' => $fish->discount,
+            'created_at' => $fish->created_at,
             'id' => $fish->id,
         ];
     });
 
-    return response()->json($data);
-}
+        return response()->json($data);
+    }
 
     
 
@@ -168,75 +367,85 @@ public function getfishweekly() {
 
     public function addfishhabitat(Request $request) {
 
-        $name = strtolower($request->input('name'));
+        $name = $request->input('habitat');
 
-        $existingHabitat = FishHabitat::where('name', $name)->first();
+        // Check if a record with the same title (case insensitive) already exists
+        $existingRecord = FishHabitat::whereRaw('LOWER(name) = ?', [strtolower($name)])->first();
+    
+        if ($existingRecord) {
+            // If a duplicate is found, return an error response
+            return response()->json(['status' => 'error', 'message' => 'Fish Habitat already exists. Please choose a different fish habitat.']);
+        }
 
-        
-        if ($existingSize) {
-            $result = "fail";
-        } else {
             FishHabitat::create([
                 'name' => $name,
             ]);
-
-             $result = "success";
 
             $username = session()->get('username');
             $ipaddress = Util::get_client_ip();
             Util::user_auth_log($ipaddress,"fish habitat added ",$username, "Fish Habitat Added");
 
-
-        }
         
-        return $result;
-    }
+            return response()->json(['status' => 'success', 'message' => 'Fish Habitat added successfully!']);
+        }
 
     public function editfishhabitat(Request $request) {
 
         $id = $request->input('editid');
         $name = $request->input('habitat-edit');
 
-        $existingHabitat = FishHabitat::where('name', $name)->where('id', '!=', $id)->first();
+        // Check if there's any other record with the same title but a different ID (case-insensitive)
+        $existingRecord = FishHabitat::whereRaw('LOWER(name) = ?', [strtolower($name)])
+        ->where('id', '!=', $id)
+        ->first();
 
-        if ($existingHabitat) {
-            $result = "fail";
-        } else {
-            $fishHabitat = FishHabitat::find($id);
-            $fishHabitat->name = $name;
-            $fishHabitat->save();
-        
-            $username = session()->get('username');
-            $ipaddress = Util::get_client_ip();
-            Util::user_auth_log($ipaddress,"fish habitat added ",$username, "Fish Habitat Updated");
-
-            $result = "success";
+        if ($existingRecord) {
+            return response()->json(['status' => 'error', 'message' => 'Fish Habitat already exists. Please choose a different Fish Habitat.']);
         }
 
-        return $result;
+
+        $fishHabitat = FishHabitat::find($id);
+        $fishHabitat->name = $name;
+        $fishHabitat->save();
+    
+        $username = session()->get('username');
+        $ipaddress = Util::get_client_ip();
+        Util::user_auth_log($ipaddress,"fish habitat added ",$username, "Fish Habitat Updated");
+
+        return response()->json(['status' => 'success', 'message' => 'Fish Habitat updated successfully!']);
 
     }
 
 
 
+
     public function deletefishhabitat(Request $request) {
 
-        $id = session()->get('id');
+        $id = $request->input('id');
 
-        FishHabitat::where('id', $request->input('id'))->delete();
+        $fishHabitat = FishHabitat::with('fishFamilies')->find($id);
 
+        if ($fishHabitat && $fishHabitat->fishFamilies->isNotEmpty()) {
+            return response()->json(['status' => 'error', 'message' => 'Cannot delete Fish Habitat because it has related fish families!']);
+        }
+    
+        FishHabitat::destroy($id);
+
+        $username = session()->get('username');
         $ipaddress = Util::get_client_ip();
         Util::user_auth_log($ipaddress,"fish habitat deleted ",$username, "Fish Habitat Deleted");
 
-        return "deleted";
+        return response()->json(['status' => 'success', 'message' => 'Fish Habitat deleted successfully!']);
 
     }
 
     public function getfishvariety() {
 
         $data = DB::table('tbl_fish_variety')
-            ->select('tbl_fish_variety.*', 'tbl_fishhabitat.name as habitat')
-            ->join('tbl_fishhabitat', 'tbl_fishhabitat.id', '=', 'tbl_fish_variety.habitat_id')
+            ->select('tbl_fish_variety.*', 'tbl_fish_species.name as species', 'tbl_fishhabitat.name as habitat', 'tbl_fish_family.name as family')
+            ->join('tbl_fish_species', 'tbl_fish_species.id', '=', 'tbl_fish_variety.species_id')
+            ->join('tbl_fish_family', 'tbl_fish_family.id', '=', 'tbl_fish_species.family_id')
+            ->join('tbl_fishhabitat', 'tbl_fishhabitat.id', '=', 'tbl_fish_family.habitat_id')
             ->get();
 
         return $data;    

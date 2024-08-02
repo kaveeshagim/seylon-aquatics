@@ -13,6 +13,8 @@ use App\Models\Fish;
 use App\Models\Size;
 use App\Models\FishHabitat;
 use App\Models\FishVariety;
+use App\Models\FishFamily;
+use App\Models\FishSpecies;
 use App\Models\ResetPasswordReq;
 use App\Models\PrivCategory;
 use App\Models\PrivSubcategory;
@@ -382,6 +384,44 @@ class PageController extends Controller
         return view('pages.orders');
     }
 
+        public function orderhistory()
+    {
+
+        $updateLastActivityTime = Util::updateLastActivityTime();
+
+        if($updateLastActivityTime == 'false') {
+            return redirect('/expired');
+        }elseif($updateLastActivityTime == 'invalid') {
+            return redirect('/');
+        }
+
+
+        $username = session()->get('username');
+        $ipaddress = Util::get_client_ip();
+        Util::user_auth_log($ipaddress,"user opened orders page ",$username, "View Orders Page");
+
+        return view('pages.orderhistory');
+    }
+
+        public function customerorders()
+    {
+
+        $updateLastActivityTime = Util::updateLastActivityTime();
+
+        if($updateLastActivityTime == 'false') {
+            return redirect('/expired');
+        }elseif($updateLastActivityTime == 'invalid') {
+            return redirect('/');
+        }
+
+
+        $username = session()->get('username');
+        $ipaddress = Util::get_client_ip();
+        Util::user_auth_log($ipaddress,"user opened orders page ",$username, "View Orders Page");
+
+        return view('pages.customerorders');
+    }
+
     public function addorderpage()
     {
 
@@ -470,11 +510,13 @@ class PageController extends Controller
             return redirect('/');
         }
 
+        $fishfamilylist = FishFamily::select('id', 'name')->get();
+
         $username = session()->get('username');
         $ipaddress = Util::get_client_ip();
         Util::user_auth_log($ipaddress,"user opened fish species interface ",$username, "View Fish Species Page");
 
-        return view('pages.fishspecies');
+        return view('pages.fishspecies')->with('fishfamilylist',$fishfamilylist);
 
     }
 
@@ -644,11 +686,13 @@ class PageController extends Controller
             return redirect('/');
         }
 
+        $fishhabitatlist = FishHabitat::select('id', 'name')->get();
+
         $username = session()->get('username');
         $ipaddress = Util::get_client_ip();
         Util::user_auth_log($ipaddress,"user opened fish family interface ",$username, "View Fish Family Page");
 
-        return view('pages.fishfamily');
+        return view('pages.fishfamily')->with('fishhabitatlist', $fishhabitatlist);
 
     }
     
@@ -804,5 +848,23 @@ class PageController extends Controller
 
         return view('pages.orderconfirmation');
 
+    }
+
+    public function invoices()
+    {
+
+        $updateLastActivityTime = Util::updateLastActivityTime();
+
+        if($updateLastActivityTime == 'false') {
+            return redirect('/expired');
+        }elseif($updateLastActivityTime == 'invalid') {
+            return redirect('/');
+        }
+
+        $username = session()->get('username');
+        $ipaddress = Util::get_client_ip();
+        Util::user_auth_log($ipaddress,"user opened invoice page",$username, "View Invoice Page");
+
+        return view('pages.invoice');
     }
 }

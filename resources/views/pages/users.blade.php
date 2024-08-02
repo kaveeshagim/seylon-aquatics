@@ -3,35 +3,6 @@
 @section('content')
 
 
-<!-- <div class="px-4">
-  
-<h4 class="text-2xl font-bold dark:text-white">Users</h4>
-
-<hr>
-
-<div class="mb-4">
-<a href="{{ route('adduserpage') }}">
-    <button class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Add new user</button>
-</a>
-
-<button onclick="searchdata()" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 ml-2">Search</button>
-</div>
-
-<table class="table table-bordered dataTable display" id="users-table" style="width:100%">
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>User Type</th>
-                <th>Active status</th>
-                <th>View</th>
-                <th>Edit</th>
-                <th>Delete</th>
-            </tr>
-        </thead>
-</table>
-
-
-</div> -->
 
 <!-- Start block -->
 <section class="bg-gray-50 dark:bg-gray-900 p-3 sm:p-5 antialiased mt-12">
@@ -138,7 +109,6 @@ Toggle modal
         </div>
     </div>
 </div>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/datepicker.min.js"></script>
 
 
 <script>
@@ -180,6 +150,7 @@ function searchdata() {
           },
 
           {
+            "data": null,
             sortable: false,
             "render": function(data, type, full, meta) {
                 //   return '<td class="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white"><button onclick="editusers(\'' + full.id + '\')" type="button" class="py-2 px-3 text-sm font-medium text-center text-white bg-primary-700 rounded-lg hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">'+
@@ -199,6 +170,7 @@ function searchdata() {
 
           },
           {
+            "data": null,
             sortable: false,
             "render": function(data, type, full, meta) {
             //   return '<td class="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white"><button onclick="deletemodal(\'' + full.id + '\')" type="button" class="text-red-700 hover:text-white border border-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-3 py-2 text-center dark:border-red-500 dark:text-red-500 dark:hover:text-white dark:hover:bg-red-600 dark:focus:ring-red-900">'+
@@ -289,7 +261,7 @@ function editusers(id) {
 function deletefishvariety() {
   const id = document.getElementById('deleteid').value;
   $.ajax({
-    url: 'deleteuser',
+    url: '{{ url('deleteuser') }}',
     type: 'GET',
     data: { id: id },
     success: function (response) {

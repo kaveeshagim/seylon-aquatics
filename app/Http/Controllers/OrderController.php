@@ -38,6 +38,67 @@ class OrderController extends Controller
         return response()->json($data);
     }
 
+    public function getorderhistory() {
+
+        $data = Order::all();
+
+        // Return the data, you can return it as JSON or to a view, depending on your requirements
+        return response()->json($data);
+    }
+
+    public function addorderexcel(Request $request) {
+        // Validate the incoming request
+        $request->validate([
+            'excel_input' => 'required|file|mimes:xlsx,xls,csv',
+        ]);
+    
+        // Get the uploaded file
+        $file = $request->file('excel_input');
+    
+        try {
+            // Load the file into an array
+            $rows = Excel::toArray([], $file);
+    
+            // Remove the first row (header row)
+            array_shift($rows[0]);
+    
+            // Get user ID from session
+            $cus_id = session()->get('userid');
+    
+            // Insert a new record into tbl_order_mst
+            $order_id = DB::table('tbl_order_mst')->insertGetId([
+                'cus_id' => $cus_id,
+                'status' => 'pending',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+    
+            // Insert data into the database
+            foreach ($rows[0] as $row) {
+                DB::table('tbl_order_det')->insert([
+                    'order_id' => $order_id,
+                    'fish_code' => $row[0] ?? null,
+                    'year' => null,
+                    'month' => null,
+                    'week' => null,
+                    'gross_price' => $row[1] ?? null,
+                    'quantity' => $row[2] ?? null,
+                    'special_offer' => $row[3] ?? null,
+                    'discount' => $row[4] ?? null,
+                    'stock_status' => 'in stock',
+                ]);
+            }
+    
+            // Return a JSON response for AJAX success
+            return response()->json(['success' => true]);
+    
+        } catch (\Exception $e) {
+            // Handle the exception and return a JSON response for AJAX error
+            return response()->json(['success' => false, 'message' => 'An error occurred while processing the file: ' . $e->getMessage()]);
+        }
+    }
+    
+
     public function orderupload(Request $request){
         $file = $request->file('excel_file');
 

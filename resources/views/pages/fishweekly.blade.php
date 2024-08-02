@@ -62,7 +62,6 @@
                             <th scope="col" class="p-4">Date</th>
                             <th scope="col" class="p-4">Fish Code</th>
                             <th scope="col" class="p-4">Common Name</th>
-                            <!-- <th scope="col" class="p-4">View</th> -->
                             <th scope="col" class="p-4">Scientific Name</th>
                             <th scope="col" class="p-4">Gross Price</th>
                             <th scope="col" class="p-4">Special Offer</th>
@@ -140,7 +139,7 @@ function searchdata() {
         "deferRender": true,
         "data": data,
         "columns": [
-        // { "data": "datetime" },
+            { "data": "created_at" },
           { "data": "fish_code" },
           { "data": "common_name" },
           { "data": "scientific_name" },

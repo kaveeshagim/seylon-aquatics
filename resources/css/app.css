@@ -1,6 +1,13 @@
 
 /* resources/css/app.css */
 @import 'bootstrap/dist/css/bootstrap.min.css';
+@import "@fontsource/inter";
+
+/* Font Awesome CSS */
+@import "@fortawesome/fontawesome-free/css/all.min.css";
+
+/* Google Font Inter */
+@import "@fontsource/inter"; /* Only if you're using @fontsource */
 
 @font-face {
     font-family: 'Inter';
@@ -36,3 +43,4 @@ we still enforce color-scheme: dark, despite the user preference */
         color-scheme: dark;
     }
 }
+

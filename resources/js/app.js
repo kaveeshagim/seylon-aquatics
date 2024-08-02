@@ -1,18 +1,21 @@
-import "./bootstrap";
-import "flowbite";
-import "../css/app.css";
+import "./bootstrap"; // Assuming this is your Laravel Echo/Socket.IO setup or custom bootstrap file
+import "../css/app.css"; // Your main CSS file
 
-// Bootstrap
-import "bootstrap";
+// Import Bootstrap (including Popper.js)
+import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import "bootstrap/dist/css/bootstrap.min.css";
 
-// Popper.js
-import * as Popper from "@popperjs/core";
-window.Popper = Popper;
+// Import Flowbite
+import "flowbite";
 
+import 'bootbox';
+import bootbox from 'bootbox';
+window.bootbox = bootbox;
 
-// Flowbite
-import "flowbite/dist/flowbite.min.js";
+import 'flowbite-datepicker';
+import DateRangePicker from 'flowbite-datepicker/DateRangePicker';
+
+import io from 'socket.io-client';
 
 // DataTables
 import DataTable from "datatables.net-dt";
@@ -63,7 +66,7 @@ import "@fortawesome/fontawesome-free/css/all.min.css";
 
 // Make DataTable globally available
 window.DataTable = DataTable;
-
+window.io = io;
 
 
 // Echo.channel("event-channel").listen("YourEventName", (e) => {
