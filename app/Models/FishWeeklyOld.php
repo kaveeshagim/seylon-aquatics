@@ -16,8 +16,24 @@ class FishWeeklyOld extends Model
      * @var string
      */
     protected $table = 'tbl_fishweekly_old';
+    protected $fillable = [
+        'fish_code',
+        'year',
+        'month',
+        'week',
+        'gross_price',
+        'quantity',
+        'special_offer',
+        'discount',
+        'stock_status',
+    ];
     public $timestamps = true;
 
+    public function variety()
+    {
+        return $this->belongsTo(FishVariety::class, 'fish_code', 'fish_code');
+    }
+    
      public function getCreatedAtAttribute($value)
     {
         return Carbon::parse($value)->format('Y-m-d H:i:s');

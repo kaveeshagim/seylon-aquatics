@@ -46,8 +46,8 @@
                             <th scope="col" class="p-4">Species Code</th>
                             <th scope="col" class="p-4">Common Name</th>
                             <th scope="col" class="p-4">Scientific Name</th>
-                            <th scope="col" class="p-4">Fish Family</th>
-                            <th scope="col" class="p-4">Fish Habitat</th>
+                            <th scope="col" class="p-4">Family</th>
+                            <th scope="col" class="p-4">Habitat</th>
                             <th scope="col" class="p-4">Edit</th>
                             <th scope="col" class="p-4">Delete</th>
                         </tr>
@@ -376,6 +376,14 @@ function deletefishspecies() {
                 }
             }).find('.modal-content').addClass("flex items-center p-4 mb-4 text-sm text-green-800 border border-green-300 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400 dark:border-green-800");
 
+        }else if(response.status == "error"){
+            bootbox.alert({
+                message: response.message,
+                backdrop: true,
+                callback: function () {
+                    searchdata();
+                }
+            }).find('.modal-content').addClass("flex items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800");
         }
     }
   });

@@ -70,6 +70,7 @@
         "flot-pie": "^1.0.0",
         "flot-spline": "^0.0.1",
         "flowbite": "^2.4.1",
+        "html2pdf.js": "^0.10.2",
         "jquery": "^3.7.1",
         "jquery-match-height": "^0.7.2",
         "jquery-ui": "^1.13.3",

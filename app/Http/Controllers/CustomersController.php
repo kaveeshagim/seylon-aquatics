@@ -13,12 +13,21 @@ class CustomersController extends Controller
 {
 
     public function getcustomers() {
-
-        $data = Customer::all();
-
-        return $data;    
-
+        $data = Customer::with('executive')->get();
+    
+        $data = $data->map(function ($customer) {
+            return [
+                'fullname' => $customer->fname . ' ' . $customer->lname,
+                'company' => $customer->company,
+                'country' => $customer->country,
+                'executive' => $customer->executive ? $customer->executive->username : null,
+                'id' => $customer->id,
+            ];
+        });
+    
+        return response()->json($data);
     }
+    
 
     public function getsubcustomers() {
 
@@ -30,51 +39,100 @@ class CustomersController extends Controller
 
     }
 
-public function addcustomers(Request $request) {
-    // Validate the request data
-    $validatedData = $request->validate([
-        'title' => 'required|string|max:255',
-        'firstname' => 'required|string|max:255',
-        'lastname' => 'nullable|string|max:255',
-        'company' => 'nullable|string|max:255',
-        'country' => 'required|string|max:255',
-        'address' => 'required|string|max:255',
-        'email' => 'required|email|max:255|unique:customers,email',
-        'primary_contact' => 'required|string|max:15',
-        'secondary_contact' => 'nullable|string|max:15',
-        'executive' => 'required|string|max:255',
-    ]);
-
-    try {
-        Customer::create([
-            'title' => $validatedData['title'],
-            'fname' => $validatedData['firstname'],
-            'lname' => $validatedData['lastname'],
-            'company' => $validatedData['company'],
-            'country' => $validatedData['country'],
-            'address' => $validatedData['address'],
-            'email' => $validatedData['email'],
-            'primary_contact' => $validatedData['primary_contact'],
-            'secondary_contact' => $validatedData['secondary_contact'],
-            'executive' => $validatedData['executive'],
+    public function addcustomers(Request $request) {
+        // Validate the request data
+        $validatedData = $request->validate([
+            'title' => 'required|string|max:255',
+            'first_name' => 'required|string|max:255',
+            'last_name' => 'nullable|string|max:255',
+            'company' => 'nullable|string|max:255',
+            'country' => 'required|string|max:255',
+            'address' => 'required|string|max:255',
+            'email' => 'required|email|max:255|unique:tbl_customers,email',
+            'primary_contact' => 'required|string|max:15',
+            'secondary_contact' => 'nullable|string|max:15',
+            'executive' => 'required|integer',
         ]);
-
-        $result = "success";
-        $ipaddress = Util::get_client_ip();
-
-        // Assuming $username is retrieved from the authenticated user
-        $username = auth()->user()->username;
-        Util::user_auth_log($ipaddress, "customer added", $username, "Customer Added");
-
-    } catch (\Exception $e) {
-        // Handle the exception and set the result to failure
-        // $result = "failure: " . $e->getMessage();
-        $result = "failed";
+    
+        try {
+            // Create a new customer record
+            Customer::create([
+                'title' => $validatedData['title'],
+                'fname' => $validatedData['first_name'],
+                'lname' => $validatedData['last_name'] ?? null,
+                'company' => $validatedData['company'] ?? null,
+                'country' => $validatedData['country'],
+                'address' => $validatedData['address'],
+                'email' => $validatedData['email'],
+                'primary_contact' => $validatedData['primary_contact'],
+                'secondary_contact' => $validatedData['secondary_contact'] ?? null,
+                'executive' => $validatedData['executive'],
+            ]);
+    
+            // Log the user's action
+            $ipaddress = Util::get_client_ip();
+            $username = session()->get('username');
+            Util::user_auth_log($ipaddress, "customer added", $username, "Customer Added");
+    
+            // Return success response
+            return response()->json(['status' => 'success', 'message' => 'Customer added successfully!']);
+    
+        } catch (\Exception $e) {
+            // Return error response with the exception message
+            return response()->json(['status' => 'error', 'message' => 'Error! '. $e->getMessage()]);
+        }
     }
+    
 
-    return $result;
-}
 
+    public function editcustomer(Request $request) {
+        // Validate the request data
+        $validatedData = $request->validate([
+            'cus_id' => 'required|exists:tbl_customers,id', // Ensure customer ID exists
+            'title' => 'required|string|max:255',
+            'first_name' => 'required|string|max:255',
+            'last_name' => 'nullable|string|max:255',
+            'company' => 'nullable|string|max:255',
+            'country' => 'required|string|max:255',
+            'address' => 'required|string|max:255',
+            'email' => 'required|email|max:255|unique:tbl_customers,email,' . $request->cus_id,
+            'primary_contact' => 'required|string|max:15',
+            'secondary_contact' => 'nullable|string|max:15',
+            'executive' => 'required|integer',
+        ]);
+    
+        try {
+            // Find the customer by cus_id
+            $customer = Customer::findOrFail($validatedData['cus_id']);
+    
+            // Update the customer record
+            $customer->update([
+                'title' => $validatedData['title'],
+                'fname' => $validatedData['first_name'],
+                'lname' => $validatedData['last_name'] ?? null,
+                'company' => $validatedData['company'] ?? null,
+                'country' => $validatedData['country'],
+                'address' => $validatedData['address'],
+                'email' => $validatedData['email'],
+                'primary_contact' => $validatedData['primary_contact'],
+                'secondary_contact' => $validatedData['secondary_contact'] ?? null,
+                'executive' => $validatedData['executive'],
+            ]);
+    
+            // Log the user's action
+            $ipaddress = Util::get_client_ip();
+            $username = session()->get('username');
+            Util::user_auth_log($ipaddress, "customer edited", $username, "Customer Edited");
+    
+            // Return success response
+            return response()->json(['status' => 'success', 'message' => 'Customer updated successfully!']);
+    
+        } catch (\Exception $e) {
+            // Return error response with the exception message
+            return response()->json(['status' => 'error', 'message' => 'Error! '. $e->getMessage()]);
+        }
+    }
+    
 
     public function addsubcustomers(Request $request){
 
@@ -93,5 +151,25 @@ public function addcustomers(Request $request) {
         $result = "success";
 
         return $result;
+    }
+
+    public function deletecustomer(Request $request) {
+
+        $id = $request->input('id');
+
+        $customer = Customer::with('order')->find($id);
+
+        if ($customer && $customer->order->isNotEmpty()) {
+            return response()->json(['status' => 'error', 'message' => 'Cannot delete Customer because it has related orders!']);
+        }
+    
+        Customer::destroy($id);
+
+        $username = session()->get('username');
+        $ipaddress = Util::get_client_ip();
+        Util::user_auth_log($ipaddress,"customer deleted ",$username, "Customer Deleted");
+
+        return response()->json(['status' => 'success', 'message' => 'Customer deleted successfully!']);
+
     }
 }

@@ -8,6 +8,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Facades\Excel;
+use Maatwebsite\Excel\Concerns\FromArray;
+use Illuminate\Support\Facades\Response;
+use App\Exports\SampleExcelExportFishWeekly;
 use App\Models\Fish;
 use App\Models\Size;
 use App\Models\FishHabitat;
@@ -284,6 +287,27 @@ public function deletefishspecies(Request $request) {
         return response()->json($data);
     }
 
+    public function getfishweeklyhistory() {
+
+        $data = FishWeeklyOld::with(['variety'])->get();
+
+          $data = $data->map(function ($fish) {
+        return [
+            'fish_code' => $fish->fish_code,
+            'common_name' => $fish->variety ? $fish->variety->common_name : null,
+            'scientific_name' => $fish->variety ? $fish->variety->scientific_name : null,
+            'gross_price' => $fish->gross_price,
+            'quantity' => $fish->quantity,
+            'special_offer' => $fish->special_offer,
+            'discount' => $fish->discount,
+            'created_at' => $fish->created_at,
+            'id' => $fish->id,
+        ];
+    });
+
+        return response()->json($data);
+    }
+
     
 
     public function addfish(Request $request) {
@@ -447,7 +471,6 @@ public function deletefishspecies(Request $request) {
             ->join('tbl_fish_family', 'tbl_fish_family.id', '=', 'tbl_fish_species.family_id')
             ->join('tbl_fishhabitat', 'tbl_fishhabitat.id', '=', 'tbl_fish_family.habitat_id')
             ->get();
-
         return $data;    
 
     }
@@ -459,7 +482,12 @@ public function deletefishspecies(Request $request) {
             ->where('id', $id)
             ->first();
 
-        return $data;    
+        $specieslist = FishSpecies::select('id', 'name')->get();
+
+        return response()->json([
+            'data' => $data,
+            'specieslist' => $specieslist
+        ]);  
 
     }
 
@@ -526,7 +554,13 @@ public function deletefishspecies(Request $request) {
 
         $id = session()->get('id');
 
-        FishVariety::where('id', $request->input('id'))->delete();
+        $varietycode = DB::table('tbl_fish_variety')->select('fish_code')->where('id', $id)->first();
+
+        $fishVariety = FishVariety::with('fishweekly')->find($varietycode->varietycode);
+
+        if ($fishVariety && $fishVariety->fishFamilies->isNotEmpty()) {
+            return response()->json(['status' => 'error', 'message' => 'Cannot delete Fish Variety because it has related fish weekly list!']);
+        }
 
         $ipaddress = Util::get_client_ip();
         Util::user_auth_log($ipaddress,"fish variety deleted ",$username, "Fish Variety Deleted");
@@ -701,6 +735,134 @@ public function addfishweekly(Request $request) {
         return response()->json(['success' => false, 'message' => 'An error occurred while processing the file: ' . $e->getMessage()]);
     }
 }
+
+public function downloadSampleExcel()
+{
+    $filename = 'fishweekly_upload_template.xlsx';
+
+    return Excel::download(new SampleExcelExportFishWeekly, $filename);
+}
+
+public function fishweeklyuploadform(Request $request)
+{
+    // Validate input data
+    $request->validate([
+        'fish_code' => 'required',
+        'gross_price' => 'required|numeric',
+        'quantity' => 'required|integer',
+        'special_offer' => 'required',
+        'discount' => 'nullable|numeric',
+        'fish_week' => 'required|string'
+    ]);
+
+    DB::beginTransaction();
+
+    try {
+        if ($request->fish_week === 'newweek') {
+            // Move all current records to tbl_fishweekly_old
+            DB::table('tbl_fishweekly_old')->insert(
+                DB::table('tbl_fishweekly')->get()->toArray()
+            );
+
+            // Delete current records in tbl_fishweekly
+            DB::table('tbl_fishweekly')->truncate();
+        }
+
+        // Insert the new data to tbl_fishweekly
+        DB::table('tbl_fishweekly')->insert([
+            'fish_code' => $request->fish_code,
+            'gross_price' => $request->gross_price,
+            'quantity' => $request->quantity,
+            'special_offer' => $request->special_offer,
+            'discount' => $request->discount,
+            'stock_status' => $request->input('stock_status', 'in-stock'),
+            'created_at' => now(),
+            'updated_at' => now()
+        ]);
+
+        DB::commit();
+        return response()->json(['status' => 'success', 'message' => 'Fish weekly list uploaded successfully!']);
+    } catch (\Exception $e) {
+        DB::rollBack();
+        return response()->json(['status' => 'error', 'message' => 'Cannot upload fish weekly list!']);
+    }
+}
+
+
+public function fishweeklyuploadexcel(Request $request)
+{
+    // Validate that a file was uploaded
+    $request->validate([
+        'excel_input' => 'required|file|mimes:xlsx,xls',
+        'fish_week' => 'required|string'
+    ]);
+
+    DB::beginTransaction();
+
+    try {
+        // Load the uploaded file
+        $file = $request->file('excel_input');
+        $data = Excel::toArray([], $file)[0]; // Load the first sheet
+
+        // Skip the header row
+        $rows = array_slice($data, 1);
+
+        // Validate fish_code against tbl_fish_variety
+        foreach ($rows as $index => $row) {
+            $fishCode = $row[0];
+            $exists = DB::table('tbl_fish_variety')->where('fish_code', $fishCode)->exists();
+
+            if (!$exists) {
+                // Rollback transaction and return error with line number (index + 2 because of header)
+                DB::rollBack();
+                return response()->json([
+                    'status' => 'error',
+                    'message' => "Fish code '{$fishCode}' not found in tbl_fish_variety on line " . ($index + 2) . ". Please correct the Excel file."
+                ]);
+            }
+        }
+
+        if ($request->fish_week === 'newweek') {
+            // Move all current records to tbl_fishweekly_old
+            DB::table('tbl_fishweekly_old')->insert(
+                DB::table('tbl_fishweekly')->get()->toArray()
+            );
+
+            // Delete current records in tbl_fishweekly
+            DB::table('tbl_fishweekly')->truncate();
+        }
+
+        // Prepare data for insertion
+        $insertData = [];
+        $now = now();
+
+        foreach ($rows as $row) {
+            $insertData[] = [
+                'fish_code' => $row[0],
+                'year' => $now->year,
+                'month' => $now->month,
+                'week' => $now->weekOfMonth,
+                'gross_price' => $row[1],
+                'quantity' => $row[2],
+                'special_offer' => $row[3],
+                'discount' => $row[4],
+                'stock_status' => 'in-stock', // Assuming default is 'in-stock'
+                'created_at' => $now,
+                'updated_at' => $now,
+            ];
+        }
+
+        // Insert new data into tbl_fishweekly
+        DB::table('tbl_fishweekly')->insert($insertData);
+
+        DB::commit();
+        return response()->json(['status' => 'success', 'message' => 'Fish weekly list uploaded successfully!']);
+    } catch (\Exception $e) {
+        DB::rollBack();
+        return response()->json(['status' => 'error', 'message' => 'Cannot upload fish weekly list!']);
+    }
+}
+
 
 
 }

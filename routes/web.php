@@ -109,6 +109,8 @@ Route::namespace('App\Http\Controllers')->group(function () {
         Route::get('/getcustomers', 'CustomersController@getcustomers')->name('getcustomers');
         Route::get('/getsubcustomers', 'CustomersController@getcustomers')->name('getsubcustomers');
         Route::get('/editcustomer/{id}', 'PageController@editcustomer')->name('editcustomer');
+        Route::get('/editcustomerpage/{id}', 'PageController@editcustomerpage')->name('editcustomerpage');
+        Route::get('/viewcustomerpage/{id}', 'PageController@viewcustomerpage')->name('viewcustomerpage');
         Route::post('/editcustomer', 'CustomersController@editcustomer');
         Route::get('/deletecustomer', 'CustomersController@deletecustomer')->name('deletecustomer');
 
@@ -131,6 +133,7 @@ Route::namespace('App\Http\Controllers')->group(function () {
         Route::get('/orderhistory', 'PageController@orderhistory')->name('orderhistory');
         Route::get('/customerorders', 'PageController@customerorders')->name('customerorders');
         Route::get('/getorderhistory', 'OrderController@getorderhistory')->name('getorderhistory');
+        Route::get('/getorderdetail/{id}', 'OrderController@getorderdetail')->name('getorderdetail');
         
         // Invoice routes
         Route::get('/invoices', 'PageController@invoices')->name('invoices');
@@ -210,9 +213,11 @@ Route::namespace('App\Http\Controllers')->group(function () {
         Route::get('/getfishweekly', 'FishController@getfishweekly')->name('getfishweekly');
         Route::get('/getweekly/{id}', 'FishController@getweekly')->name('getweekly');
         Route::get('/addfishweeklypage', 'PageController@addfishweeklypage')->name('addfishweeklypage');
-        Route::post('/addfishweekly', 'FishController@addfishweekly')->name('addfishweekly');
+        Route::post('/fishweeklyuploadexcel', 'FishController@fishweeklyuploadexcel')->name('fishweeklyuploadexcel');
+        Route::post('/fishweeklyuploadform', 'FishController@fishweeklyuploadform')->name('fishweeklyuploadform');
         Route::post('/editfishweekly', 'FishController@editfishweekly')->name('editfishweekly');
         Route::get('/deletefishweekly', 'FishController@deletefishweekly')->name('deletefishweekly');
+        Route::get('/downloadsampleexcel', 'FishController@downloadsampleexcel')->name('downloadsampleexcel');
 
         // Privilege routes
         Route::get('/categorysection', 'PageController@categorysection')->name('categorysection');

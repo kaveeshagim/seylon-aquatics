@@ -84,6 +84,8 @@
     <script src="{{ asset('plugins/jszip.min.js') }}"></script>
     <script src="{{ asset('plugins/buttons.html5.min.js') }}"></script>
     <script src="{{ asset('plugins/buttons.print.min.js') }}"></script>
+    <script src="{{ asset('plugins/html2pdf.js') }}"></script>
+    <script src="{{ asset('plugins/jspdf-plugin.js') }}"></script>
     <script src="{{ asset ('js/dark-mode.js') }}"></script>
     @vite('resources/js/app.js')
     <script>

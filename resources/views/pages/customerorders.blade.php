@@ -40,7 +40,7 @@
 
 
             <div class="overflow-x-auto">
-                <table id="fishweekly-table" class="dataTable w-full text-sm text-left text-gray-500 dark:text-gray-400">
+                <table id="orders-table" class="dataTable w-full text-sm text-left text-gray-500 dark:text-gray-400">
                     <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                         <tr>
                             <th scope="col" class="p-4">Date</th>
@@ -107,7 +107,7 @@ Toggle modal
 <script>
 
 function searchdata() {
-  $('#fishweekly-table').DataTable().destroy();
+  $('#orders-table').DataTable().destroy();
 
   $.ajax({
     url: "getfishweekly",
@@ -118,7 +118,7 @@ function searchdata() {
 
 
         // Initialize the DataTable with the retrieved data
-      $('#fishweekly-table').DataTable({
+      $('#orders-table').DataTable({
         "processing": true,
         "deferRender": true,
         "data": data,

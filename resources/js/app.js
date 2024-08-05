@@ -16,6 +16,8 @@ import 'flowbite-datepicker';
 import DateRangePicker from 'flowbite-datepicker/DateRangePicker';
 
 import io from 'socket.io-client';
+import html2pdf from 'html2pdf.js';
+window.html2pdf = html2pdf;
 
 // DataTables
 import DataTable from "datatables.net-dt";
@@ -67,8 +69,8 @@ import "@fortawesome/fontawesome-free/css/all.min.css";
 // Make DataTable globally available
 window.DataTable = DataTable;
 window.io = io;
+window.html2pdf = html2pdf;
 
 
 // Echo.channel("event-channel").listen("YourEventName", (e) => {
 //     console.log(e.message);
-// });

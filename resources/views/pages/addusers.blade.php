@@ -116,6 +116,9 @@
             <button onclick="refresh()" class="inline-flex items-center px-5 py-2.5 mt-4 ml-2 sm:mt-6 text-sm font-medium text-center text-white bg-red-700 rounded-lg focus:ring-4 focus:ring-red-200 dark:focus:ring-red-900 hover:bg-red-800">
               Cancel
           </button>
+          <button onclick="userspage()" class="inline-flex items-center px-5 py-2.5 mt-4 ml-2 sm:mt-6 text-sm font-medium text-center text-white bg-primary-700 rounded-lg focus:ring-4 focus:ring-primary-200 dark:focus:ring-primary-900 hover:bg-primary-800">
+              Back to users
+          </button>
       </form>
   </div>
   </div>
@@ -153,7 +156,7 @@ $(document).ready(function() {
         formData.append('inline-radio-group', $('input[name="inline-radio-group"]:checked').val());
 
         $.ajax({
-            url: 'adduser',
+            url: '{{url('adduser')}}',
             type: 'POST',
             data: formData,
             processData: false,
@@ -161,16 +164,20 @@ $(document).ready(function() {
             success: function(response) {
                 console.log(response);
                 var alertArea = document.getElementById('alertArea');
+                if(response.status == "success") {
+                    bootbox.alert({
+                        message: response.message,
+                        backdrop: true,
+                        callback: function () {
+                        }
+                    }).find('.modal-content').addClass("flex items-center p-4 mb-4 text-sm text-green-800 border border-green-300 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400 dark:border-green-800");
 
-                if(response === "failed"){
-
-                    $('#toast-success').removeClass('hidden');
-
-                } else {
-
-                    $('#toast-danger').removeClass('hidden');
-
-                    window.location.reload();
+                } else if(response.status == "error"){
+                    bootbox.alert({
+                        message: response.message,
+                        backdrop: true,
+                        callback: function () {}
+                    }).find('.modal-content').addClass("flex items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800");
                 }
             },
             error: function(jqXHR, textStatus, errorThrown) {
@@ -180,6 +187,11 @@ $(document).ready(function() {
     });
 });
     
+function userspage() {
+    location.href = '{{url('users')}}';
+}
+
+
 </script>
 
 <script>

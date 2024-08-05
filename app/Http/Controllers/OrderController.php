@@ -151,4 +151,15 @@ public function updateStatus()
     return response()->json(['status' => 'Order status updated']);
 }
 
+public function getorderdetail($id) {
+
+    $data = DB::table('tbl_order_mst')
+              ->select('*')
+              ->where('cus_id', $id)
+              ->get();
+
+    return response()->json($data);
+}
+
+
 }

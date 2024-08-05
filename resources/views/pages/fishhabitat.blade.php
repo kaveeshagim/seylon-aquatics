@@ -310,7 +310,7 @@ function deletemodal(id) {
 function deletefishhabitat() {
   const id = document.getElementById('deleteid').value;
   $.ajax({
-    url: 'deletefishhabitat',
+    url: '{{url('deletefishhabitat')}}',
     type: 'GET',
     data: { id: id },
     success: function (response) {
@@ -323,6 +323,14 @@ function deletefishhabitat() {
                 }
             }).find('.modal-content').addClass("flex items-center p-4 mb-4 text-sm text-green-800 border border-green-300 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400 dark:border-green-800");
 
+        }else if(response.status == "error"){
+            bootbox.alert({
+                message: response.message,
+                backdrop: true,
+                callback: function () {
+                    searchdata();
+                }
+            }).find('.modal-content').addClass("flex items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800");
         }
     }
   });

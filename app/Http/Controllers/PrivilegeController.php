@@ -16,74 +16,54 @@ class PrivilegeController extends Controller
 {
 
     public function addcategory(Request $request) {
-        $category = $request->input('category');
+        
+        $category = strtolower($request->input('category'));
 
-        $existingCategory = PrivCategory::where('name', $category)->first();
+        $existingCategory = PrivCategory::whereRaw('LOWER(name) = ?', [$category])->first();
 
         if ($existingCategory) {
-            $result = "fail";
+            return response()->json(['status' => 'error', 'message' => 'Category already exists!']);
         }else{
             PrivCategory::create([
                 'name' => $category,
             ]);
 
-            $result = "success";
+            return response()->json(['status' => 'success', 'message' => 'Category added successfully!']);
         }
-
-
 
         $username = session()->get('username');
         $ipaddress = Util::get_client_ip();
         Util::user_auth_log($ipaddress,"category added ",$username, "Category Added");
-
-        return $result;
     }
 
     public function addsubcategory(Request $request) {
-        $subcategory = $request->input('subcategory');
+        $subcategory = strtolower($request->input('subcategory'));
         $category = $request->input('category');
-
-        $existingSubCategory = PrivSubCategory::where('name', $subcategory)->where('cat_id', $category)->first();
-
+    
+        // Corrected the whereRaw clause to properly handle the query
+        $existingSubCategory = PrivSubCategory::whereRaw('LOWER(name) = ?', [$subcategory])
+                                              ->where('cat_id', $category)
+                                              ->first();
+    
         if ($existingSubCategory) {
-            $result = "fail";
-        }else{
+            return response()->json(['status' => 'error', 'message' => 'Sub Category already exists!']);
+        } else {
             PrivSubCategory::create([
                 'name' => $subcategory,
                 'cat_id' => $category,
             ]);
-
-            $result = "success";
+    
+            // Log the user's action after subcategory creation
+            $username = session()->get('username');
+            $ipaddress = Util::get_client_ip();
+            Util::user_auth_log($ipaddress, "sub category added", $username, "Sub Category Added");
+    
+            return response()->json(['status' => 'success', 'message' => 'Sub Category added successfully!']);
         }
-
-
-
-        $username = session()->get('username');
-        $ipaddress = Util::get_client_ip();
-        Util::user_auth_log($ipaddress,"sub category added ",$username, "Sub Category Added");
-
-        return $result;
     }
+    
 
-    public function addprivilege(Request $request) {
-        $subcategory = $request->input('subcategory');
-        $category = $request->input('category');
-
-        PrivSubCategory::create([
-            'name' => $subcategory,
-            'cat_id' => $category,
-        ]);
-
-        $result = "success";
-
-        $username = session()->get('username');
-        $ipaddress = Util::get_client_ip();
-        Util::user_auth_log($ipaddress,"privilege added ",$username, "Privilege Added");
-
-        return $result;
-    }
-
-        public function addprivilegesection(Request $request) {
+    public function addprivilegesection(Request $request) {
         $subcategory = $request->input('subcategory');
         $category = $request->input('category');
         $sec_name    = $request->input('privilegesection');
@@ -98,12 +78,13 @@ class PrivilegeController extends Controller
             'cre_user' => $username,
         ]);
 
-        $result = "success";
+        return response()->json(['status' => 'success', 'message' => 'Privilege added successfully!']);
+
 
         $ipaddress = Util::get_client_ip();
         Util::user_auth_log($ipaddress,"privilege section added ",$username, "Privilege Section Added");
 
-        return $result;
+
     }
 
     public function get_sub_categories(Request $request){
@@ -131,6 +112,7 @@ class PrivilegeController extends Controller
 
     public function get_prev_section(){
 
+        $cat_id = $_GET['cat_id'];
         $sub_cat_id = $_GET['sub_cat_id'];
         $user_type  = $_GET['user_type'];
 

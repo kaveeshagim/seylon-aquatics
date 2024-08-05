@@ -224,6 +224,79 @@ class PageController extends Controller
 
     }
 
+    public function editcustomerpage($id) {
+        $updateLastActivityTime = Util::updateLastActivityTime();
+
+        if($updateLastActivityTime == 'false') {
+            return redirect('/expired');
+        }elseif($updateLastActivityTime == 'invalid') {
+            return redirect('/');
+        }
+
+        $data = Customer::find($id);
+        $executivelist = User::select('id', 'username')->where('tbl_usertype_id', '3')->get();
+
+        $username = session()->get('username');
+        $ipaddress = Util::get_client_ip();
+        Util::user_auth_log($ipaddress,"user opened edit customer page ",$username, "View Edit Customer Page");
+        
+        return view('pages.editcustomer')->with('data', $data)->with('executivelist', $executivelist);   
+
+    }
+
+    public function viewcustomerpage($id) {
+
+        $updateLastActivityTime = Util::updateLastActivityTime();
+
+        if($updateLastActivityTime == 'false') {
+            return redirect('/expired');
+        }elseif($updateLastActivityTime == 'invalid') {
+            return redirect('/');
+        }
+
+        $data = Customer::find($id);
+
+        $ordercount = DB::table('tbl_order_mst')
+        ->where('cus_id', $id)
+        ->count();
+    
+        $completedordercount = DB::table('tbl_order_mst')
+            ->where('cus_id', $id)
+            ->where('status', 'completed')
+            ->count();
+        
+        $pendingordercount = DB::table('tbl_order_mst')
+            ->where('cus_id', $id)
+            ->where('status', 'pending')
+            ->count();
+        
+        $rejectedordercount = DB::table('tbl_order_mst')
+            ->where('cus_id', $id)
+            ->where('status', 'rejected')
+            ->count();
+        
+        $completedinvoicecount = DB::table('tbl_invoice_mst')
+            ->join('tbl_order_mst', 'tbl_order_mst.id', '=', 'tbl_invoice_mst.order_id')
+            ->where('tbl_order_mst.cus_id', $id)
+            ->where('tbl_order_mst.status', 'completed')
+            ->count();
+    
+
+        $username = session()->get('username');
+        $ipaddress = Util::get_client_ip();
+        Util::user_auth_log($ipaddress,"user opened add customer page",$username, "View Add Customer Page");
+
+        return view('pages.customerdetail')
+        ->with('data', $data)
+        ->with('ordercount', $ordercount)
+        ->with('completedordercount', $completedordercount)
+        ->with('pendingordercount', $pendingordercount)
+        ->with('rejectedordercount', $rejectedordercount)
+        ->with('completedinvoicecount', $completedinvoicecount)
+        ;
+
+    }
+
     public function addsubcustomerspage(){
 
 
@@ -521,23 +594,24 @@ class PageController extends Controller
     }
 
     public function addfishweeklypage() {
-
-
         $updateLastActivityTime = Util::updateLastActivityTime();
-
-        if($updateLastActivityTime == 'false') {
+    
+        if ($updateLastActivityTime == 'false') {
             return redirect('/expired');
-        }elseif($updateLastActivityTime == 'invalid') {
+        } elseif ($updateLastActivityTime == 'invalid') {
             return redirect('/');
         }
+    
+        $fishvarietylist = DB::table('tbl_fish_variety')->select('fish_code', 'common_name')->get();
 
+    
         $username = session()->get('username');
         $ipaddress = Util::get_client_ip();
-        Util::user_auth_log($ipaddress,"user opened add fish weekly interface ",$username, "View Add Fish Weekly Page");
-
-        return view('pages.addfishweekly');
-
+        Util::user_auth_log($ipaddress, "user opened add fish weekly interface ", $username, "View Add Fish Weekly Page");
+    
+        return view('pages.addfishweekly')->with('fishvarietylist', $fishvarietylist);
     }
+    
 
     public function addfishpage() {
 
@@ -648,13 +722,13 @@ class PageController extends Controller
             return redirect('/');
         }
 
-        $fishhabitatlist = FishHabitat::select('id', 'name')->get();
+        $fishspecieslist = FishSpecies::select('id', 'name')->get();
 
         $username = session()->get('username');
         $ipaddress = Util::get_client_ip();
         Util::user_auth_log($ipaddress,"user opened fish variety interface ",$username, "View Fish Variety Page");
 
-        return view('pages.fishvariety')->with('fishhabitatlist', $fishhabitatlist);
+        return view('pages.fishvariety')->with('fishspecieslist', $fishspecieslist);
 
     }
 
