@@ -50,10 +50,14 @@
                 <table id="fishweekly-table" class="dataTable w-full text-sm text-left text-gray-500 dark:text-gray-400">
                     <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                         <tr>
-                            <th scope="col" class="p-4">Date</th>
+                            <th scope="col" class="p-4">Year</th>
+                            <th scope="col" class="p-4">Week</th>
                             <th scope="col" class="p-4">Fish Code</th>
                             <th scope="col" class="p-4">Common Name</th>
                             <th scope="col" class="p-4">Scientific Name</th>
+                            <th scope="col" class="p-4">Quantity</th>
+                            <th scope="col" class="p-4">Size</th>
+                            <th scope="col" class="p-4">Size in cm</th>
                             <th scope="col" class="p-4">Gross Price</th>
                             <th scope="col" class="p-4">Special Offer</th>
                             <th scope="col" class="p-4">Discount</th>
@@ -130,10 +134,14 @@ function searchdata() {
         "deferRender": true,
         "data": data,
         "columns": [
-          { "data": "created_at" },
+          { "data": "year" },
+          { "data": "week" },
           { "data": "fish_code" },
           { "data": "common_name" },
           { "data": "scientific_name" },
+          { "data": "quantity" },
+          { "data": "size" },
+          { "data": "size_cm" },
           { "data": "gross_price" },
           { "data": "special_offer" },
           { "data": "discount" },
@@ -185,23 +193,37 @@ function searchdata() {
             });
         },
         "columnDefs": [
-          { className: "text-center", "targets": [0, 1] }
+          { className: "text-center", "targets": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10] }
         ],
-        // "dom": 'Bfrtip',
-        // "buttons": [
-        //     {
-        //         extend: 'excelHtml5',
-        //         title: 'My Excel Export',
-        //         text: 'Export to Excel'
-        //     },
-        //     {
-        //         extend: 'pdfHtml5',
-        //         title: 'My PDF Export',
-        //         text: 'Export to PDF',
-        //         orientation: 'landscape',
-        //         pageSize: 'A4'
-        //     }
-        // ],
+        "dom": 'Bfrtip',
+        "buttons": [
+            {
+                extend: 'excelHtml5',
+                title: 'Fish Weekly List - Week',
+                text: 'Export to Excel',
+                exportOptions: {
+                  columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10] 
+                }
+            },
+            {
+                extend: 'pdfHtml5',
+                title: 'Fish Weekly List - Week',
+                text: 'Export to PDF',
+                orientation: 'landscape',
+                pageSize: 'A4',
+                exportOptions: {
+                  columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]  
+                }
+            },
+            {
+                extend: 'print',
+                title: 'Fish Weekly List - Week',
+                text: 'Print',
+                exportOptions: {
+                  columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10] 
+                }
+            }
+        ],
         "pageLength": 25,
         // "order": [[0, "desc"]],
         "searching": true
@@ -220,105 +242,123 @@ function searchdata() {
 function historysearchdata() {
   $('#fishweekly-table').DataTable().destroy();
 
-  $.ajax({
-    url: "getfishweeklyhistory",
-    type: "GET",
-    dataSrc: "data",
-    success: function(data) {
-      console.log("Data:", data);
+$.ajax({
+  url: "{{url('getfishweeklyhistory')}}",
+  type: "GET",
+  dataSrc: "data",
+  success: function(data) {
+    console.log("Data:", data);
 
 
-        // Initialize the DataTable with the retrieved data
-      $('#fishweekly-table').DataTable({
-        "processing": true,
-        "deferRender": true,
-        "data": data,
-        "columns": [
-          { "data": "created_at" },
-          { "data": "fish_code" },
-          { "data": "common_name" },
-          { "data": "scientific_name" },
-          { "data": "gross_price" },
-          { "data": "special_offer" },
-          { "data": "discount" },
+      // Initialize the DataTable with the retrieved data
+    $('#fishweekly-table').DataTable({
+      "processing": true,
+      "deferRender": true,
+      "data": data,
+      "columns": [
+        { "data": "year" },
+        { "data": "week" },
+        { "data": "fish_code" },
+        { "data": "common_name" },
+        { "data": "scientific_name" },
+        { "data": "quantity" },
+        { "data": "size" },
+        { "data": "size_cm" },
+        { "data": "gross_price" },
+        { "data": "special_offer" },
+        { "data": "discount" },
+        {
+          sortable: false,
+          "render": function(data, type, full, meta) {
+          return '<td><button type="button" onclick="editfishweekly(\'' + full.id + '\')" data-modal-target="edit-modal" data-modal-toggle="edit-modal" class="text-xs py-2 px-3 flex items-center text-sm font-medium text-center text-white bg-primary-700 rounded-lg hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">'+
+                  '<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2 -ml-0.5" viewbox="0 0 20 20" fill="currentColor" aria-hidden="true">'+
+                      '<path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z" />'+
+                      '<path fill-rule="evenodd" d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" clip-rule="evenodd" />'+
+                  '</svg>'+
+                  'Edit'+
+              '</button>';
+          }
+
+        },
+        {
+          sortable: false,
+          "render": function(data, type, full, meta) {
+           return    '<td><button type="button" onclick="deletemodal(\'' + full.id + '\')" data-modal-target="delete-modal" data-modal-toggle="delete-modal" class="text-xs flex items-center text-red-700 hover:text-white border border-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-3 py-2 text-center dark:border-red-500 dark:text-red-500 dark:hover:text-white dark:hover:bg-red-600 dark:focus:ring-red-900">'+
+                                      '<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2 -ml-0.5" viewbox="0 0 20 20" fill="currentColor" aria-hidden="true">'+
+                                          '<path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />'+
+                                      '</svg>'+
+                                      'Delete'+
+                                  '</button>';
+          }
+        }
+      ],
+       "initComplete": function(settings, json) {
+          $('.dt-info').addClass('text-sm font-normal text-gray-500 dark:text-gray-400 ml-3');
+          $('.dt-paging').addClass('inline-flex items-stretch -space-x-px');
+          $('.pagination').addClass('inline-flex items-stretch -space-x-px');
+          $('#dt-search-1').addClass('bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-72 float-right pl-10 p-2 mb-3 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500').attr('placeholder', 'Search');
+          $('.dt-length').addClass('ml-3');
+          $('#dt-search-1').find('label').addClass('text-gray-700 dark:text-white');
+          $('.dt-length').find('label').addClass('text-gray-700 dark:text-white');
+          $('#dt-length-1').addClass('text-gray-700 dark:text-white bg-gray-50 dark:bg-gray-700');
+
+          const tbody = $('table tbody');
+          const rows = tbody.find('tr');
+
+          rows.each(function() {
+              // $(this).addClass('border-b dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700');
+              
+              const cells = $(this).find('td');
+              cells.each(function() {
+                  $(this).addClass('p-2 w-4');
+              });
+          });
+      },
+      "columnDefs": [
+        { className: "text-center", "targets": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10] }
+      ],
+      "dom": 'Bfrtip',
+      "buttons": [
           {
-            sortable: false,
-            "render": function(data, type, full, meta) {
-            return '<td><button type="button" onclick="editfishweekly(\'' + full.id + '\')" data-modal-target="edit-modal" data-modal-toggle="edit-modal" class="text-xs py-2 px-3 flex items-center text-sm font-medium text-center text-white bg-primary-700 rounded-lg hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">'+
-                    '<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2 -ml-0.5" viewbox="0 0 20 20" fill="currentColor" aria-hidden="true">'+
-                        '<path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z" />'+
-                        '<path fill-rule="evenodd" d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" clip-rule="evenodd" />'+
-                    '</svg>'+
-                    'Edit'+
-                '</button>';
-            }
-
+              extend: 'excelHtml5',
+              title: 'Fish Weekly List Old - Week',
+              text: 'Export to Excel',
+              exportOptions: {
+                columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10] 
+              }
           },
           {
-            sortable: false,
-            "render": function(data, type, full, meta) {
-             return    '<td><button type="button" onclick="deletemodal(\'' + full.id + '\')" data-modal-target="delete-modal" data-modal-toggle="delete-modal" class="text-xs flex items-center text-red-700 hover:text-white border border-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-3 py-2 text-center dark:border-red-500 dark:text-red-500 dark:hover:text-white dark:hover:bg-red-600 dark:focus:ring-red-900">'+
-                                        '<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2 -ml-0.5" viewbox="0 0 20 20" fill="currentColor" aria-hidden="true">'+
-                                            '<path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />'+
-                                        '</svg>'+
-                                        'Delete'+
-                                    '</button>';
-            }
+              extend: 'pdfHtml5',
+              title: 'Fish Weekly List Old - Week',
+              text: 'Export to PDF',
+              orientation: 'landscape',
+              pageSize: 'A4',
+              exportOptions: {
+                columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]  
+              }
+          },
+          {
+              extend: 'print',
+              title: 'Fish Weekly List Old - Week',
+              text: 'Print',
+              exportOptions: {
+                columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10] 
+              }
           }
-        ],
-         "initComplete": function(settings, json) {
-            $('.dt-info').addClass('text-sm font-normal text-gray-500 dark:text-gray-400 ml-3');
-            $('.dt-paging').addClass('inline-flex items-stretch -space-x-px');
-            $('.pagination').addClass('inline-flex items-stretch -space-x-px');
-            $('#dt-search-1').addClass('bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-72 float-right pl-10 p-2 mb-3 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500').attr('placeholder', 'Search');
-            $('.dt-length').addClass('ml-3');
-            $('#dt-search-1').find('label').addClass('text-gray-700 dark:text-white');
-            $('.dt-length').find('label').addClass('text-gray-700 dark:text-white');
-            $('#dt-length-1').addClass('text-gray-700 dark:text-white bg-gray-50 dark:bg-gray-700');
-
-            const tbody = $('table tbody');
-            const rows = tbody.find('tr');
-
-            rows.each(function() {
-                // $(this).addClass('border-b dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700');
-                
-                const cells = $(this).find('td');
-                cells.each(function() {
-                    $(this).addClass('p-2 w-4');
-                });
-            });
-        },
-        "columnDefs": [
-          { className: "text-center", "targets": [0, 1] }
-        ],
-        // "dom": 'Bfrtip',
-        // "buttons": [
-        //     {
-        //         extend: 'excelHtml5',
-        //         title: 'My Excel Export',
-        //         text: 'Export to Excel'
-        //     },
-        //     {
-        //         extend: 'pdfHtml5',
-        //         title: 'My PDF Export',
-        //         text: 'Export to PDF',
-        //         orientation: 'landscape',
-        //         pageSize: 'A4'
-        //     }
-        // ],
-        "pageLength": 25,
-        // "order": [[0, "desc"]],
-        "searching": true
-      });
+      ],
+      "pageLength": 25,
+      // "order": [[0, "desc"]],
+      "searching": true
+    });
 
 
 
 
-    },
-    "error": function(xhr, status, error) {
-      console.error("Error:", error);
-    }
-  });
+  },
+  "error": function(xhr, status, error) {
+    console.error("Error:", error);
+  }
+});
 }
 
 

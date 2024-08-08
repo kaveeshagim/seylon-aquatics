@@ -32,6 +32,11 @@ class FishVariety extends Model
         return $this->belongsTo(FishSpecies::class, 'species_id');
     }
 
+    public function size()
+    {
+        return $this->belongsTo(Size::class, 'size');
+    }
+
      public function fishweekly()
     {
         return $this->hasMany(FishWeekly::class, 'fish_code', 'fish_code');

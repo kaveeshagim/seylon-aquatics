@@ -18,6 +18,7 @@ use App\Models\FishVariety;
 use App\Models\FishFamily;
 use App\Models\FishSpecies;
 use App\Models\FishWeekly;
+use App\Models\FishWeeklyOld;
 
 class FishController extends Controller
 {
@@ -276,6 +277,10 @@ public function deletefishspecies(Request $request) {
             'common_name' => $fish->variety ? $fish->variety->common_name : null,
             'scientific_name' => $fish->variety ? $fish->variety->scientific_name : null,
             'gross_price' => $fish->gross_price,
+            'size' => $fish->size,
+            'size_cm' => $fish->size_cm,
+            'year' => $fish->year,
+            'week' => $fish->week,
             'quantity' => $fish->quantity,
             'special_offer' => $fish->special_offer,
             'discount' => $fish->discount,
@@ -292,17 +297,21 @@ public function deletefishspecies(Request $request) {
         $data = FishWeeklyOld::with(['variety'])->get();
 
           $data = $data->map(function ($fish) {
-        return [
-            'fish_code' => $fish->fish_code,
-            'common_name' => $fish->variety ? $fish->variety->common_name : null,
-            'scientific_name' => $fish->variety ? $fish->variety->scientific_name : null,
-            'gross_price' => $fish->gross_price,
-            'quantity' => $fish->quantity,
-            'special_offer' => $fish->special_offer,
-            'discount' => $fish->discount,
-            'created_at' => $fish->created_at,
-            'id' => $fish->id,
-        ];
+            return [
+                'fish_code' => $fish->fish_code,
+                'common_name' => $fish->variety ? $fish->variety->common_name : null,
+                'scientific_name' => $fish->variety ? $fish->variety->scientific_name : null,
+                'gross_price' => $fish->gross_price,
+                'size' => $fish->size,
+                'size_cm' => $fish->size_cm,
+                'year' => $fish->year,
+                'week' => $fish->week,
+                'quantity' => $fish->quantity,
+                'special_offer' => $fish->special_offer,
+                'discount' => $fish->discount,
+                'created_at' => $fish->created_at,
+                'id' => $fish->id,
+            ];
     });
 
         return response()->json($data);
@@ -483,89 +492,135 @@ public function deletefishspecies(Request $request) {
             ->first();
 
         $specieslist = FishSpecies::select('id', 'name')->get();
+        $sizelist = Size::select('id', 'name')->get();
 
         return response()->json([
             'data' => $data,
-            'specieslist' => $specieslist
+            'specieslist' => $specieslist,
+            'sizelist' => $sizelist,
         ]);  
 
     }
 
 
     public function addfishvariety(Request $request) {
-
-        $name = strtolower($request->input('variety'));
-
-        $existingname = FishVariety::where('name', $name)->first();
-
+        $commonName = strtoupper($request->input('commonname'));
+        $scientificName = strtolower($request->input('scientificname'));
+        $speciesId = $request->input('species');
+        $qtyperbag = $request->input('qtyperbag');
+        $size = strtoupper($request->input('size'));
+        $sizeCm = strtoupper($request->input('size_cm'));
+    
+        // Check if fish variety already exists
+        $existingname = FishVariety::where('common_name', $commonName)
+                                   ->where('scientific_name', $scientificName)
+                                   ->where('species_id', $speciesId)
+                                   ->where('size', $size)
+                                   ->where('size_cm', $sizeCm)
+                                   ->first();
+    
         if ($existingname) {
-            $result = "fail";
+            return response()->json(['status' => 'error', 'message' => 'Fish variety already exists!']);
         } else {
-            $lastVarietyCode = FishVariety::orderBy('code', 'desc')->value('code');
-            $nextVarietyCode = Util::getNextVarietyCode($lastVarietyCode);
+            // Generate fish code using Util function
+            $fishCode = Util::generateFishCode($speciesId, $size, $sizeCm);
 
+    
+            // Create new FishVariety record
             FishVariety::create([
-                'name' => $name,
-                'code' => $nextVarietyCode,
+                'common_name' => $commonName,
+                'scientific_name' => $scientificName,
+                'species_id' => $speciesId,
+                'size' => $size,
+                'size_cm' => $sizeCm,
+                'qtyperbag' => $qtyperbag,
+                'fish_code' => $fishCode,
             ]);
-
-            $result = "success";
-
+    
+            // Log the user's action
             $username = session()->get('username');
             $ipaddress = Util::get_client_ip();
-            Util::user_auth_log($ipaddress,"fish variety added ",$username, "Fish Variety Added");
+            Util::user_auth_log($ipaddress, "fish variety added", $username, "Fish Variety Added");
+    
+            return response()->json(['status' => 'success', 'message' => 'Fish Variety added successfully!']);
         }
-
-        return $result;
-        
     }
+    
 
     public function editfishvariety(Request $request) {
-
         $id = $request->input('editid');
-        $name = $request->input('variety-edit');
-        $code = $request->input('code-edit');
-
-        $existingVarietyName = FishVariety::where('name', $name)->where('id', '!=', $id)->first();
-        $existingVarietyCode = FishVariety::where('code', $code)->where('id', '!=', $id)->first();
-
-        if ($existingVarietyName || $existingVarietyCode) {
-            $result = "fail";
+        $commonName = strtoupper($request->input('commonname-edit'));
+        $scientificName = strtolower($request->input('scientificname-edit'));
+        $speciesId = $request->input('species-edit');
+        $qtyperbag = $request->input('qtyperbag-edit');
+        $size = strtoupper($request->input('size-edit'));
+        $sizeCm = strtoupper($request->input('size_cm-edit'));
+    
+        // Check if a variety with the same details already exists (excluding the current record)
+        $existingVariety = FishVariety::where('id', '!=', $id)
+                                      ->where('common_name', $commonName)
+                                      ->where('scientific_name', $scientificName)
+                                      ->where('species_id', $speciesId)
+                                      ->where(function($query) use ($size, $sizeCm) {
+                                          $query->where('size', $size)
+                                                ->orWhere('size_cm', $sizeCm);
+                                      })
+                                      ->first();
+    
+        if ($existingVariety) {
+            return response()->json(['status' => 'error', 'message' => 'Fish variety with these details already exists!']);
         } else {
-
+            // Find the fish variety to be edited
             $fishVariety = FishVariety::find($id);
-            $fishVariety->name = $name;
+    
+            // Check if fields affecting fish code have changed
+            $codeRequiresUpdate = $fishVariety->species_id != $speciesId || $fishVariety->size != $size || $fishVariety->size_cm != $sizeCm;
+    
+            // Update fields
+            $fishVariety->common_name = $commonName;
+            $fishVariety->scientific_name = $scientificName;
+            $fishVariety->species_id = $speciesId;
+            $fishVariety->size = $size;
+            $fishVariety->size_cm = $sizeCm;
+            $fishVariety->qtyperbag = $qtyperbag;
+    
+            // Regenerate fish code if necessary
+            if ($codeRequiresUpdate) {
+                $fishVariety->fish_code = Util::generateFishCode($speciesId, $size, $sizeCm);
+            }
+    
+            // Save the changes
             $fishVariety->save();
-
-            $result = "success";
-
+    
+            // Log the user's action
             $username = session()->get('username');
             $ipaddress = Util::get_client_ip();
-            Util::user_auth_log($ipaddress,"fish habitat added ",$username, "Fish Habitat Updated");
-
+            Util::user_auth_log($ipaddress, "fish variety updated", $username, "Fish Variety Updated");
+    
+            return response()->json(['status' => 'success', 'message' => 'Fish Variety updated successfully!']);
         }
-
-        return $result;
     }
+    
 
 
 
     public function deletefishvariety(Request $request) {
 
-        $id = session()->get('id');
+        $id = $request->input('id');
 
-        $varietycode = DB::table('tbl_fish_variety')->select('fish_code')->where('id', $id)->first();
+        $fishVariety = FishVariety::with('fishFamilies')->find($id);
 
-        $fishVariety = FishVariety::with('fishweekly')->find($varietycode->varietycode);
-
-        if ($fishVariety && $fishVariety->fishFamilies->isNotEmpty()) {
-            return response()->json(['status' => 'error', 'message' => 'Cannot delete Fish Variety because it has related fish weekly list!']);
+        if ($fishHabitat && $fishHabitat->fishFamilies->isNotEmpty()) {
+            return response()->json(['status' => 'error', 'message' => 'Cannot delete Fish Variety because it has related fish families!']);
         }
+    
+        FishHabitat::destroy($id);
 
+        $username = session()->get('username');
         $ipaddress = Util::get_client_ip();
-        Util::user_auth_log($ipaddress,"fish variety deleted ",$username, "Fish Variety Deleted");
+        Util::user_auth_log($ipaddress,"fish habitat deleted ",$username, "Fish Variety Deleted");
 
-        return "deleted";
+        return response()->json(['status' => 'success', 'message' => 'Fish Variety deleted successfully!']);
 
     }
 
@@ -631,29 +686,30 @@ public function deletefishspecies(Request $request) {
 
     }
 
-    public function addFishSize(Request $request){
+    public function addfishsize(Request $request){
 
         $size = strtoupper($request->input('size'));
         $description = $request->input('description');
 
-        $existingSize = Size::where('name', $size)->first();
+        $existingSize = Size::whereRaw('LOWER(name) = ?', [strtolower($size)])->first();
 
         if ($existingSize) {
-            $result = "fail";
-        } else {
-            Size::create([
-                'name' => $size,
-                'description' => $description,
-            ]);
+            return response()->json(['status' => 'error', 'message' => 'Fish Size already exists. Please choose a different fish size.']);
 
-            $result = "success";
+        }             
+        
+        Size::create([
+            'name' => $size,
+            'description' => $description,
+        ]);
+
 
             $username = session()->get('username');
             $ipaddress = Util::get_client_ip();
             Util::user_auth_log($ipaddress, "fish size added", $username, "Fish Size Added");
-        }
 
-        return $result;
+            return response()->json(['status' => 'success', 'message' => 'Fish Size added successfully!']);
+
     }
 
 
@@ -663,22 +719,25 @@ public function deletefishspecies(Request $request) {
         $name = $request->input('size-edit');
         $description = $request->input('description-edit');
 
-        $existingSize = Size::where('name', $name)->where('id', '!=', $id)->first();
+        $existingSize = Size::whereRaw('LOWER(name) = ?', [strtolower($name)])
+        ->where('id', '!=', $id)
+        ->first();
 
         if ($existingSize) {
-            return "fail";
-        } else {
-            $fishSize = Size::find($id);
-            $fishSize->name = $name;
-            $fishSize->description = $description;
-            $fishSize->save();
-
-            $username = session()->get('username');
-            $ipaddress = Util::get_client_ip();
-            Util::user_auth_log($ipaddress, "fish size updated", $username, "Fish Size Updated");
-
-            return "success";
+            return response()->json(['status' => 'error', 'message' => 'Fish Size already exists. Please choose a different Fish Size.']);
         }
+
+        $fishSize = Size::find($id);
+        $fishSize->name = $name;
+        $fishSize->description = $description;
+        $fishSize->save();
+
+        $username = session()->get('username');
+        $ipaddress = Util::get_client_ip();
+        Util::user_auth_log($ipaddress, "fish size updated", $username, "Fish Size Updated");
+
+        return response()->json(['status' => 'success', 'message' => 'Fish Size updated successfully!']);
+
     }
 
 
@@ -687,15 +746,22 @@ public function deletefishspecies(Request $request) {
 
         $id = session()->get('id');
 
-        Size::where('id', $request->input('id'))->delete();
+        $fishSize = Size::with('variety')->find($id);
+
+        if ($fishSize && $fishSize->variety->isNotEmpty()) {
+            return response()->json(['status' => 'error', 'message' => 'Cannot delete Fish Size because it has related fish varieties!']);
+        }
+    
+        Size::destroy($id);
 
         $username = session()->get('username');
         $ipaddress = Util::get_client_ip();
         Util::user_auth_log($ipaddress,"fish size deleted ",$username, "Fish Size Deleted");
 
-        return "deleted";
+        return response()->json(['status' => 'success', 'message' => 'Fish Size deleted successfully!']);
 
     }
+
 public function addfishweekly(Request $request) {
     // Validate the incoming request
     $request->validate([
@@ -736,6 +802,33 @@ public function addfishweekly(Request $request) {
     }
 }
 
+public function getfishsizedata(Request $request) {
+    $fishCode = $request->input('fish_code');
+    
+    $fishVariety = DB::table('tbl_fish_variety')
+        ->join('tbl_size', 'tbl_fish_variety.size', '=', 'tbl_size.id')
+        ->select('tbl_fish_variety.size_cm', 'tbl_size.name as size_name')
+        ->where('tbl_fish_variety.fish_code', $fishCode)
+        ->first();
+    
+    if ($fishVariety) {
+        return response()->json([
+            'status' => 'success',
+            'data' => [
+                'size' => $fishVariety->size_name, // Use the correct property name
+                'size_cm' => $fishVariety->size_cm
+            ]
+        ]);
+    } else {
+        return response()->json([
+            'status' => 'error',
+            'message' => 'Fish code not found.'
+        ]);
+    }
+}
+
+
+
 public function downloadSampleExcel()
 {
     $filename = 'fishweekly_upload_template.xlsx';
@@ -743,50 +836,89 @@ public function downloadSampleExcel()
     return Excel::download(new SampleExcelExportFishWeekly, $filename);
 }
 
+public function fetchfishweeklyexceldata(Request $request) {
+
+    $fishCodes = $request->input('fish_codes');
+    $fishData = FishVariety::whereIn('fish_code', $fishCodes)
+                ->get(['fish_code', 'size', 'size_cm'])
+                ->keyBy('fish_code');
+    return response()->json($fishData);
+
+}
+
 public function fishweeklyuploadform(Request $request)
 {
-    // Validate input data
+    // Validate the fish_week input
     $request->validate([
-        'fish_code' => 'required',
-        'gross_price' => 'required|numeric',
-        'quantity' => 'required|integer',
-        'special_offer' => 'required',
-        'discount' => 'nullable|numeric',
-        'fish_week' => 'required|string'
+        'fish_week' => 'required|string',
+        'table_data' => 'required|array',
+        'table_data.*.fish_code' => 'required|string',
+        'table_data.*.size' => 'required|string',
+        'table_data.*.size_in_cm' => 'required|string',
+        'table_data.*.gross_price' => 'required|numeric',
+        'table_data.*.quantity' => 'required|integer',
+        'table_data.*.special_offer' => 'required|string',
+        'table_data.*.discount' => 'nullable|numeric'
     ]);
 
-    DB::beginTransaction();
+    // Log the received data for debugging purposes
+    \Log::info('Received data for fish weekly upload:', $request->all());
+
 
     try {
         if ($request->fish_week === 'newweek') {
-            // Move all current records to tbl_fishweekly_old
-            DB::table('tbl_fishweekly_old')->insert(
-                DB::table('tbl_fishweekly')->get()->toArray()
-            );
+            \Log::info('Handling new week logic.');
+            
+            // Fetch all records from tbl_fishweekly, excluding the 'id' field
+            $fishWeeklyRecords = DB::table('tbl_fishweekly')->get()->map(function($record) {
+                $recordArray = (array) $record; // Convert stdClass object to array
+                unset($recordArray['id']); // Remove the 'id' field
+                return $recordArray;
+            })->toArray();
+
+            // Insert the converted records into tbl_fishweekly_old
+            DB::table('tbl_fishweekly_old')->insert($fishWeeklyRecords);
+            \Log::info('Old records inserted into tbl_fishweekly_old.');
 
             // Delete current records in tbl_fishweekly
             DB::table('tbl_fishweekly')->truncate();
+            \Log::info('tbl_fishweekly truncated.');
         }
 
-        // Insert the new data to tbl_fishweekly
-        DB::table('tbl_fishweekly')->insert([
-            'fish_code' => $request->fish_code,
-            'gross_price' => $request->gross_price,
-            'quantity' => $request->quantity,
-            'special_offer' => $request->special_offer,
-            'discount' => $request->discount,
-            'stock_status' => $request->input('stock_status', 'in-stock'),
-            'created_at' => now(),
-            'updated_at' => now()
-        ]);
+        // Insert the new data into tbl_fishweekly
+        foreach ($request->table_data as $record) {
+            DB::table('tbl_fishweekly')->insert([
+                'fish_code' => $record['fish_code'],
+                'year' => now()->year,
+                'month' => now()->month,
+                'week' => now()->weekOfYear,
+                'size' => $record['size'],
+                'size_cm' => $record['size_in_cm'],
+                'gross_price' => round($record['gross_price'], 2), // Round to 2 decimal places
+                'quantity' => $record['quantity'],
+                'special_offer' => $record['special_offer'],
+                'discount' => round($record['discount'], 2), // Round to 2 decimal places
+                'stock_status' => 'in-stock', // Assuming default value is 'in-stock'
+                'created_at' => now(),
+                'updated_at' => now()
+            ]);
+            \Log::info('New record inserted into tbl_fishweekly.');
+        }
 
-        DB::commit();
+
+        \Log::info('Transaction committed successfully.');
+
         return response()->json(['status' => 'success', 'message' => 'Fish weekly list uploaded successfully!']);
     } catch (\Exception $e) {
-        DB::rollBack();
+
+        \Log::error('Error during transaction rollback: ' . $e->getMessage(), [
+            'stack' => $e->getTraceAsString(),
+        ]);
         return response()->json(['status' => 'error', 'message' => 'Cannot upload fish weekly list!']);
     }
 }
+
+
 
 
 public function fishweeklyuploadexcel(Request $request)
@@ -797,7 +929,7 @@ public function fishweeklyuploadexcel(Request $request)
         'fish_week' => 'required|string'
     ]);
 
-    DB::beginTransaction();
+    // DB::beginTransaction();
 
     try {
         // Load the uploaded file
@@ -807,58 +939,73 @@ public function fishweeklyuploadexcel(Request $request)
         // Skip the header row
         $rows = array_slice($data, 1);
 
-        // Validate fish_code against tbl_fish_variety
+        // Fetch sizes for fish codes
+        $fishCodes = array_column($rows, 0); // Extract fish codes from rows
+        $fishVarieties = DB::table('tbl_fish_variety')
+            ->whereIn('fish_code', $fishCodes)
+            ->get()
+            ->keyBy('fish_code'); // Key by fish_code for quick lookup
+
+        // Validate fish codes and retrieve size and size_cm
+        $insertData = [];
         foreach ($rows as $index => $row) {
             $fishCode = $row[0];
-            $exists = DB::table('tbl_fish_variety')->where('fish_code', $fishCode)->exists();
-
-            if (!$exists) {
+            if (!isset($fishVarieties[$fishCode])) {
                 // Rollback transaction and return error with line number (index + 2 because of header)
-                DB::rollBack();
+                // DB::rollBack();
                 return response()->json([
                     'status' => 'error',
                     'message' => "Fish code '{$fishCode}' not found in tbl_fish_variety on line " . ($index + 2) . ". Please correct the Excel file."
                 ]);
             }
+
+            $fishDetails = $fishVarieties[$fishCode];
+            $insertData[] = [
+                'fish_code' => $fishCode,
+                'year' => now()->year,
+                'month' => now()->month,
+                'week' => now()->weekOfMonth,
+                'size' => $fishDetails->size, // Ensure this is a string or properly formatted value
+                'size_cm' => $fishDetails->size_cm, // Ensure this is a string or properly formatted value
+                'gross_price' => $row[1],
+                'quantity' => $row[2],
+                'special_offer' => $row[3],
+                'discount' => $row[4],
+                'stock_status' => 'in-stock',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ];
         }
 
+        // Handle new week logic
         if ($request->fish_week === 'newweek') {
-            // Move all current records to tbl_fishweekly_old
-            DB::table('tbl_fishweekly_old')->insert(
-                DB::table('tbl_fishweekly')->get()->toArray()
-            );
+            // Move all current records to tbl_fishweekly_old, ignoring the primary key
+            $currentRecords = DB::table('tbl_fishweekly')
+                ->select('fish_code', 'year', 'month', 'week', 'size', 'size_cm', 'gross_price', 'quantity', 'special_offer', 'discount', 'stock_status', 'created_at', 'updated_at')
+                ->get();
+
+            // Debug the current records
+            \Log::info('Current records:', $currentRecords->toArray());
+
+            // Convert objects to arrays
+            $formattedRecords = $currentRecords->map(function ($record) {
+                return (array) $record; // Convert object to array
+            })->toArray();
+
+            DB::table('tbl_fishweekly_old')->insert($formattedRecords);
 
             // Delete current records in tbl_fishweekly
             DB::table('tbl_fishweekly')->truncate();
         }
 
-        // Prepare data for insertion
-        $insertData = [];
-        $now = now();
-
-        foreach ($rows as $row) {
-            $insertData[] = [
-                'fish_code' => $row[0],
-                'year' => $now->year,
-                'month' => $now->month,
-                'week' => $now->weekOfMonth,
-                'gross_price' => $row[1],
-                'quantity' => $row[2],
-                'special_offer' => $row[3],
-                'discount' => $row[4],
-                'stock_status' => 'in-stock', // Assuming default is 'in-stock'
-                'created_at' => $now,
-                'updated_at' => $now,
-            ];
-        }
-
         // Insert new data into tbl_fishweekly
         DB::table('tbl_fishweekly')->insert($insertData);
 
-        DB::commit();
+        // DB::commit();
         return response()->json(['status' => 'success', 'message' => 'Fish weekly list uploaded successfully!']);
     } catch (\Exception $e) {
-        DB::rollBack();
+        // DB::rollBack();
+        \Log::error('Error during fishweeklyuploadexcel:', ['exception' => $e]);
         return response()->json(['status' => 'error', 'message' => 'Cannot upload fish weekly list!']);
     }
 }

@@ -61,16 +61,38 @@
                 <form id="weeklylistForm" enctype="multipart/form-data">
                     @csrf
                     <div class="grid gap-4 sm:grid-cols-4 sm:gap-6 w-full">
-                    <div class="w-full">
-                        <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white" for="excel_input">Upload file</label>
-                        <input class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" aria-describedby="excel_input_help" id="excel_input" name="excel_input" type="file" onchange="validateFile()">
-                        <p class="mt-1 text-sm text-gray-500 dark:text-gray-300" id="excel_input_help">Supported formats: .xlsx, .xls. Max file size: 5MB.</p>
+                        <div class="w-full">
+                            <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white" for="excel_input">Upload file</label>
+                            <input class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" aria-describedby="excel_input_help" id="excel_input" name="excel_input" type="file" onchange="validateFile()">
+                            <p class="mt-1 text-sm text-gray-500 dark:text-gray-300" id="excel_input_help">Supported formats: .xlsx, .xls. Max file size: 5MB.</p>
+                        </div>
+                        <div class="w-full">
+                            <button type="button" onclick="validateExcel()" id="validateButton" class="inline-flex items-center px-3 py-2 mt-4 sm:mt-6 text-sm font-medium text-center text-white bg-red-700 rounded-lg focus:ring-4 focus:ring-red-200 dark:focus:ring-red-900 hover:bg-red-800">
+                                Validate Excel
+                            </button>
+                        </div>
                     </div>
-                    </div>
+
+                    <table id="recordsTableExcel" class="min-w-full divide-y divide-gray-200 dark:divide-gray-600 mt-5">
+                            <thead>
+                            <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Fish Code</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Size</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Size in cm</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Gross Price(USD)</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Quantity</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Special Offer</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Discount(%)</th>
+                                </tr>
+                            </thead>
+                            <tbody id="recordsBodyExcel">
+                                <!-- Dynamic rows go here -->
+                            </tbody>
+                        </table>
 
                     <hr class="h-px bg-gray-200 border-0 dark:bg-gray-600">
 
-                    <button type="button" onclick="submitFishList('excel')" id="submitButton" class="inline-flex items-center px-5 py-2.5 mt-4 sm:mt-6 text-sm font-medium text-center text-white bg-green-700 rounded-lg focus:ring-4 focus:ring-green-200 dark:focus:ring-green-900 hover:bg-green-800">
+                    <button type="button" onclick="submitFishListExcel('excel')" id="submitButtonExcel" class="inline-flex items-center px-5 py-2.5 mt-4 sm:mt-6 text-sm font-medium text-center text-white bg-green-700 rounded-lg focus:ring-4 focus:ring-green-200 dark:focus:ring-green-900 hover:bg-green-800" disabled="true">
                         Submit
                     </button>
                     <button type="button" onclick="refresh()" class="inline-flex items-center px-5 py-2.5 mt-4 ml-2 sm:mt-6 text-sm font-medium text-center text-white bg-red-700 rounded-lg focus:ring-4 focus:ring-red-200 dark:focus:ring-red-900 hover:bg-red-800">
@@ -83,19 +105,33 @@
             </div>
 
 
+
                 <div id="formSubmission" class="hidden flex flex-col md:flex-row items-stretch md:items-center md:space-x-3 space-y-3 md:space-y-0 justify-between mx-4 py-4 border-t dark:border-gray-700">
                     <form id="weeklylistForm" enctype="multipart/form-data">
                         @csrf
+                        <input type="hidden" name="_token" value="{{ csrf_token() }}">
                         <div class="grid gap-4 sm:grid-cols-6 sm:gap-6 w-full">
-                        <div class="w-full">
-                            <label for="fish_code" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Fish Code</label>
-                            <select name="fish_code" id="fish_code" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required>
-                                <option value="" disabled selected>Select a Fish Code</option>
-                                @foreach($fishvarietylist as $fish)
-                                    <option value="{{ $fish->fish_code }}">{{ $fish->common_name }}</option>
-                                @endforeach
-                            </select>
-                        </div>
+                            <div class="w-full">
+                                <label for="fish_code" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Fish Code</label>
+                                <select name="fish_code" id="fish_code" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required>
+                                    <option value="" disabled selected>Select a Fish Code</option>
+                                    @foreach($fishvarietylist as $fish)
+                                        <option value="{{ $fish->fish_code }}">{{ $fish->fish_code }} - {{ $fish->common_name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+
+                            <div class="w-full">
+                                <label for="size" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Size</label>
+                                <input type="text" name="size" id="size" class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" required>
+
+                            </div>
+
+                            <div class="w-full">
+                                <label for="size_cm" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Size</label>
+                                <input type="text" name="size_cm" id="size_cm" class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" required>
+
+                            </div>
 
                             <div class="w-full">
                                 <label for="gross_price" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Gross Price</label>
@@ -130,10 +166,12 @@
                             <thead>
                                 <tr>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Fish Code</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Gross Price</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Size</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Size in cm</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Gross Price(USD)</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Quantity</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Special Offer</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Discount</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Discount(%)</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Actions</th>
                                 </tr>
                             </thead>
@@ -203,6 +241,171 @@ function validateFile() {
         }
     }
 
+    function showBootboxAlert(message, color) {
+    bootbox.alert({
+        message: message,
+        size: 'small'
+    }).find('.modal-content').addClass(`flex items-center p-4 mb-4 text-sm text-${color}-800 border border-${color}-300 rounded-lg bg-${color}-50 dark:bg-gray-800 dark:text-${color}-400 dark:border-${color}-800`);
+}
+
+
+function displayTable(fishData, rows) {
+    console.log('Displaying table data:', fishData, rows); // Debugging line
+    const tbody = document.getElementById('recordsBodyExcel');
+    
+    if (!tbody) {
+        console.error('Could not find tbody with ID "recordsBodyExcel"');
+        return;
+    }
+    
+    tbody.innerHTML = ''; // Clear existing rows
+
+    rows.forEach(row => {
+        const fishDetails = fishData[row.fish_code] || { size: 'N/A', size_cm: 'N/A' };
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td class="px-6 py-4 whitespace-nowrap text-gray-900 dark:text-gray-50">${row.fish_code}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-gray-900 dark:text-gray-50">${fishDetails.size}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-gray-900 dark:text-gray-50">${fishDetails.size_cm}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-gray-900 dark:text-gray-50">${row.gross_price}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-gray-900 dark:text-gray-50">${row.quantity}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-gray-900 dark:text-gray-50">${row.special_offer}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-gray-900 dark:text-gray-50">${row.discount}</td>
+        `;
+        tbody.appendChild(tr);
+    });
+
+    console.log('Table populated successfully'); // Debugging line
+}
+
+
+function fetchFishData(validatedRows) {
+    const fishCodes = validatedRows.map(row => row.fish_code);
+
+    $.ajax({
+        url: '{{url('fetchfishweeklyexceldata')}}',
+        type: 'POST',
+        dataType: 'json',
+        data: {
+            fish_codes: fishCodes,
+            _token: $('meta[name="csrf-token"]').attr('content')
+        },
+        success: function(fishData) {
+            console.log(fishData);
+            displayTable(fishData, validatedRows);
+            $('#submitButtonExcel').prop('disabled', false);
+        },
+        error: function(xhr, status, error) {
+            console.error('Error fetching fish data:', error);
+            showBootboxAlert('An error occurred while fetching fish data.', 'red');
+        }
+    });
+}
+
+
+
+
+    function validateExcel() {
+    const fileInput = document.getElementById('excel_input');
+    const file = fileInput.files[0];
+
+    if (!file) {
+        showBootboxAlert('Please select an Excel file.', 'red');
+        return;
+    }
+
+    if (!['application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'application/vnd.ms-excel'].includes(file.type)) {
+        showBootboxAlert('Invalid file type. Please upload an .xlsx or .xls file.', 'red');
+        return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+        showBootboxAlert('File size exceeds 5MB.', 'red');
+        return;
+    }
+
+    const reader = new FileReader();
+
+    reader.onload = function(event) {
+        try {
+            const data = new Uint8Array(event.target.result);
+            const workbook = XLSX.read(data, { type: 'array' });
+            const sheetName = workbook.SheetNames[0];
+            const worksheet = workbook.Sheets[sheetName];
+            const json = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+
+            if (json.length === 0) {
+                showBootboxAlert('Excel file is empty.', 'red');
+                return;
+            }
+
+            const headers = json[0];
+            const requiredHeaders = ['fish_code', 'gross_price', 'quantity', 'special_offer', 'discount'];
+
+            if (!requiredHeaders.every(header => headers.includes(header))) {
+                showBootboxAlert('Invalid column headers.', 'red');
+                return;
+            }
+
+            const rows = json.slice(1);
+            if (rows.length === 0) {
+                showBootboxAlert('There must be at least one data row.', 'red');
+                return;
+            }
+
+            const validatedRows = [];
+            for (const row of rows) {
+                if (row.length !== headers.length) {
+                    showBootboxAlert('Invalid number of columns in a row.', 'red');
+                    return;
+                }
+
+                const [fish_code, gross_price, quantity, special_offer, discount] = row;
+
+                if (!fish_code || !gross_price || !quantity || !special_offer) {
+                    showBootboxAlert('Required fields are missing in a row.', 'red');
+                    return;
+                }
+
+                if (isNaN(gross_price) || parseFloat(gross_price) <= 0) {
+                    showBootboxAlert('Invalid gross price.', 'red');
+                    return;
+                }
+
+                if (isNaN(quantity) || parseInt(quantity) <= 0) {
+                    showBootboxAlert('Invalid quantity.', 'red');
+                    return;
+                }
+
+                if (!['yes', 'no'].includes(special_offer)) {
+                    showBootboxAlert('Invalid special offer value. Must be "yes" or "no".', 'red');
+                    return;
+                }
+
+                if (discount !== '' && (isNaN(discount) || parseFloat(discount) < 0)) {
+                    showBootboxAlert('Invalid discount value.', 'red');
+                    return;
+                }
+
+                // Push validated row
+                validatedRows.push({ fish_code, gross_price, quantity, special_offer, discount });
+            }
+
+            // Fetch size and size_cm for each fish_code using jQuery AJAX
+            fetchFishData(validatedRows);
+
+        } catch (error) {
+            console.error('Error reading Excel file:', error);
+            showBootboxAlert('An error occurred while processing the Excel file.', 'red');
+        }
+    };
+
+    reader.readAsArrayBuffer(file);
+}
+
+
+
+
 function toggleForms(uploadMethod) {
     const excelForm = document.getElementById('excelForm');
     const formSubmission = document.getElementById('formSubmission');
@@ -220,18 +423,41 @@ let records = [];
 
 function addRecord() {
     const fishCode = document.getElementById('fish_code').value;
+    const size = document.getElementById('size').value;
+    const sizeCm = document.getElementById('size_cm').value;
     const grossPrice = document.getElementById('gross_price').value;
     const quantity = document.getElementById('quantity').value;
     const specialOffer = document.getElementById('special_offer').value;
-    const discount = document.getElementById('discount').value;
+    const discountValue = document.getElementById('discount').value;
+
+    // Convert discount to a number or set it to null if empty
+    const discount = discountValue === '' ? '' : parseFloat(discountValue);
 
     // Check if all fields are filled
-    if (fishCode && grossPrice && quantity && specialOffer && (specialOffer === 'no' || (specialOffer === 'yes' && discount))) {
-        const record = { fishCode, grossPrice, quantity, specialOffer, discount };
-        records.push(record);
+    if (fishCode && grossPrice && quantity && specialOffer && (specialOffer === 'no' || (specialOffer === 'yes' && discount !== null && !isNaN(discount)))) {
+        // Check if discount is greater than 100%
+        if (discount !== null && discount > 100) {
+            bootbox.alert({
+                message: "Discount cannot be greater than 100%. Please enter a valid discount.",
+                size: 'small'
+            }).find('.modal-content').addClass("flex items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800");
+        } else {
+            // Check if a record with the same fish code already exists
+            const recordExists = records.some(record => record.fishCode === fishCode);
 
-        updateTable();
-        clearForm();
+            if (recordExists) {
+                bootbox.alert({
+                    message: "A record with this fish code already exists. Please use a different fish code.",
+                    size: 'small'
+                }).find('.modal-content').addClass("flex items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800");
+            } else {
+                const record = { fishCode, size, sizeCm, grossPrice, quantity, specialOffer, discount };
+                records.push(record);
+
+                updateTable();
+                clearForm();
+            }
+        }
     } else {
         // Display Bootbox alert if any required field is empty
         bootbox.alert({
@@ -243,6 +469,7 @@ function addRecord() {
 
 
 
+
 function updateTable() {
     const tableBody = document.getElementById('recordsBody');
     tableBody.innerHTML = '';
@@ -251,6 +478,8 @@ function updateTable() {
         tableBody.innerHTML += `
             <tr>
                 <td class="px-6 py-4 whitespace-nowrap text-gray-900 dark:text-gray-50">${record.fishCode}</td>
+                <td class="px-6 py-4 whitespace-nowrap text-gray-900 dark:text-gray-50">${record.size}</td>
+                <td class="px-6 py-4 whitespace-nowrap text-gray-900 dark:text-gray-50">${record.sizeCm}</td>
                 <td class="px-6 py-4 whitespace-nowrap text-gray-900 dark:text-gray-50">${record.grossPrice}</td>
                 <td class="px-6 py-4 whitespace-nowrap text-gray-900 dark:text-gray-50">${record.quantity}</td>
                 <td class="px-6 py-4 whitespace-nowrap text-gray-900 dark:text-gray-50">${record.specialOffer}</td>
@@ -265,8 +494,23 @@ function updateTable() {
 }
 
 function clearForm() {
-    document.getElementById('weeklylistForm')[0].reset();
+    alert('Form will be cleared now');
+
+    // Manually clear each form element by their ID
+    document.getElementById('fish_code').selectedIndex = 0; // Reset select to first option
+    document.getElementById('size').value = '';
+    document.getElementById('size_cm').value = '';
+    document.getElementById('gross_price').value = '';
+    document.getElementById('quantity').value = '';
+    document.getElementById('special_offer').selectedIndex = 0; // Reset select to first option
+    document.getElementById('discount').value = '';
+    document.getElementById('stock_status').value = 'in-stock'; // Set to default value if needed
+
+    // Optionally, if you have additional fields or dynamic content, you can reset them here
 }
+
+
+
 
 function editRecord(index) {
     const record = records[index];
@@ -287,11 +531,44 @@ function deleteRecord(index) {
 
 
 function submitFishList(method) {
-    const form = document.getElementById('weeklylistForm');
-    const formData = new FormData(form);
 
+    if (records.length === 0) {
+        bootbox.alert({
+            message: "No records to submit. Please add at least one record before submitting.",
+            size: 'small'
+        }).find('.modal-content').addClass("flex items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800");
+        return;
+    }
+
+    //csrf token
+    const csrfToken = document.querySelector('input[name="_token"]').value;
+
+    // Extract the selected week
     const selectedWeek = document.querySelector('input[name="week-radio"]:checked').value;
-    formData.append('fish_week', selectedWeek);
+
+    // Extract table data
+    const tableRows = document.querySelectorAll('#recordsTable tbody tr');
+    const tableData = [];
+
+    tableRows.forEach(row => {
+        const cells = row.querySelectorAll('td');
+        const rowData = {
+            fish_code: cells[0].textContent.trim(),
+            size: cells[1].textContent.trim(),
+            size_in_cm: cells[2].textContent.trim(),
+            gross_price: cells[3].textContent.trim(),
+            quantity: cells[4].textContent.trim(),
+            special_offer: cells[5].textContent.trim(),
+            discount: cells[6].textContent.trim()
+        };
+        tableData.push(rowData);
+    });
+
+    // Prepare the payload
+    const payload = {
+        fish_week: selectedWeek,
+        table_data: tableData
+    };
 
     let ajaxUrl;
 
@@ -304,26 +581,28 @@ function submitFishList(method) {
     $.ajax({
         url: ajaxUrl,
         type: 'POST',
-        data: formData,
-        processData: false,
-        contentType: false,
+        contentType: 'application/json',
+        headers: {
+            'X-CSRF-TOKEN': csrfToken // Include CSRF token in the headers
+        },
+        data: JSON.stringify(payload),
         success: function(response) {
             if(response.status == "success"){
                 bootbox.alert({
                     message: response.message,
                     backdrop: true,
                     callback: function () {
-
+                        records = [];
+                        updateTable();
+                        clearForm();
                     }
                 }).find('.modal-content').addClass("flex items-center p-4 mb-4 text-sm text-green-800 border border-green-300 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400 dark:border-green-800");
 
-                } else if(response.status == "error"){
+            } else if(response.status == "error"){
                 bootbox.alert({
                     message: response.message,
                     backdrop: true,
-                    callback: function () {
- 
-                    }
+                    callback: function () {}
                 }).find('.modal-content').addClass("flex items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800");
             }
         },
@@ -332,6 +611,88 @@ function submitFishList(method) {
         }
     });
 }
+
+function submitFishListExcel(method) {
+    // Check if file is selected
+    const fileInput = document.getElementById('excel_input');
+    if (!fileInput.files.length) {
+        bootbox.alert({
+            message: "Please upload an Excel file before submitting.",
+            size: 'small'
+        }).find('.modal-content').addClass("flex items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800");
+        return;
+    }
+
+    // Get CSRF token
+    const csrfToken = document.querySelector('input[name="_token"]').value;
+
+    // Get selected week
+    const selectedWeek = document.querySelector('input[name="week-radio"]:checked').value;
+
+    // Create FormData object to send file and other data
+    const formData = new FormData();
+    formData.append('excel_input', fileInput.files[0]);
+    formData.append('fish_week', selectedWeek);
+
+    // Set the URL based on the method
+    let ajaxUrl;
+    if (method === 'excel') {
+        ajaxUrl = '{{ url("fishweeklyuploadexcel") }}';
+    }
+
+    $.ajax({
+        url: ajaxUrl,
+        type: 'POST',
+        data: formData,
+        processData: false,
+        contentType: false,
+        headers: {
+            'X-CSRF-TOKEN': csrfToken
+        },
+        success: function(response) {
+            if (response.status === "success") {
+                bootbox.alert({
+                    message: response.message,
+                    backdrop: true,
+                    callback: function () {
+                        refresh(); // Assuming refresh clears the form or updates the UI
+                    }
+                }).find('.modal-content').addClass("flex items-center p-4 mb-4 text-sm text-green-800 border border-green-300 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400 dark:border-green-800");
+            } else if (response.status === "error") {
+                bootbox.alert({
+                    message: response.message,
+                    backdrop: true
+                }).find('.modal-content').addClass("flex items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800");
+            }
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+            alert('Form submission failed: ' + textStatus + ' ' + errorThrown);
+        }
+    });
+}
+
+document.getElementById('fish_code').addEventListener('change', function() {
+    const fishCode = this.value;
+
+    // Make AJAX request to get the size data based on the selected fish code
+    $.ajax({
+        url: '{{url('getfishsizedata')}}',
+        type: 'GET',
+        data: { fish_code: fishCode },
+        success: function(response) {
+            if (response.status === 'success') {
+                $('#size').val(response.data.size || '').trigger('change');
+                $('#size_cm').val(response.data.size_cm || '').trigger('change');
+            } else {
+                // Handle the error (optional)
+                console.error('Failed to retrieve size data:', response.message);
+            }
+        },
+        error: function() {
+            console.error('An error occurred while fetching the size data.');
+        }
+    });
+});
 
 
 function refresh() {

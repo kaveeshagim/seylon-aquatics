@@ -84,8 +84,12 @@
         "pixeden-stroke-7-icon": "^1.2.3",
         "popper.js": "^1.16.1",
         "pusher-js": "^8.4.0-rc2",
+        "simple-datatables": "^9.0.4",
         "socket.io": "^4.7.5",
         "socket.io-client": "^4.7.5",
-        "themify-icons": "^1.0.0"
+        "source-map-js": "^1.2.0",
+        "spin.js": "^4.1.2",
+        "themify-icons": "^1.0.0",
+        "xlsx": "^0.18.5"
     }
 }

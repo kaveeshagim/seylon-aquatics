@@ -46,8 +46,8 @@
                         <tr>
                             <th scope="col" class="p-4">Name</th>
                             <th scope="col" class="p-4">User Type</th>
-                            <th scope="col" class="p-4">Active status</th>
-                            <!-- <th scope="col" class="p-4">View</th> -->
+                            <th scope="col" class="p-4">Online status</th>
+                            <th scope="col" class="p-4">Account Status</th>
                             <th scope="col" class="p-4">Edit</th>
                             <th scope="col" class="p-4">Delete</th>
                         </tr>
@@ -94,7 +94,6 @@ Toggle modal
     </div>
 </div>
 
-
 <script>
     document.addEventListener("DOMContentLoaded", function(event) {
     searchdata();
@@ -121,14 +120,25 @@ function searchdata() {
         "data": data,
         "columns": [
             { "data": "username" },
-          { "data": "usertype" },
-{
+          { 
+            "data": "usertype" },
+            {
+              "data": "active_status",
+              "render": function (data, type, full, meta) {
+                  if (data == 1 ) {
+                      return '<span class="bg-blue-100 text-blue-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-blue-900 dark:text-blue-300">Active</span>';
+                  } else if(data == 0) {
+                      return '<span class="bg-gray-100 text-gray-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-gray-700 dark:text-gray-300">Inactive</span>';
+                  }
+              }
+          },
+            {
               "data": "token",
               "render": function (data, type, full, meta) {
                   if (data !== null && data !== '') {
-                      return '<div class="flex items-center"><div class="h-2.5 w-2.5 rounded-full bg-green-500 me-2"></div> Online</div>';
+                      return '<span class="bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-green-900 dark:text-green-300">Online</span>';
                   } else {
-                      return '<div class="flex items-center"><div class="h-2.5 w-2.5 rounded-full bg-red-500 me-2"></div> Offline</div>';
+                      return '<span class="bg-red-100 text-red-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-red-900 dark:text-red-300">Offline</span>';
                   }
               }
           },
@@ -183,23 +193,28 @@ function searchdata() {
             });
         },
         "columnDefs": [
-          { className: "text-center", "targets": [0, 1] }
+          { className: "text-center", "targets": [0, 1, 2, 3, 4] }
         ],
-        // "dom": 'Bfrtip',
-        // "buttons": [
-        //     {
-        //         extend: 'excelHtml5',
-        //         title: 'My Excel Export',
-        //         text: 'Export to Excel'
-        //     },
-        //     {
-        //         extend: 'pdfHtml5',
-        //         title: 'My PDF Export',
-        //         text: 'Export to PDF',
-        //         orientation: 'landscape',
-        //         pageSize: 'A4'
-        //     }
-        // ],
+        "dom": 'Bfrtip',
+        "buttons": [
+            {
+                extend: 'excelHtml5',
+                title: 'Users',
+                text: 'Export to Excel'
+            },
+            {
+                extend: 'pdfHtml5',
+                title: 'Users',
+                text: 'Export to PDF',
+                orientation: 'landscape',
+                pageSize: 'A4'
+            },
+            {
+                extend: 'print',
+                title: 'Users',
+                text: 'Print'
+            }
+        ],
         "pageLength": 25,
         // "order": [[0, "desc"]],
         "searching": true
@@ -233,6 +248,7 @@ function editusers(id) {
 
 function deleteuser() {
   const id = document.getElementById('deleteid').value;
+  showSpinner(); 
   $.ajax({
     url: '{{ url('deleteuser') }}',
     type: 'GET',
@@ -256,7 +272,36 @@ function deleteuser() {
                 }
             }).find('.modal-content').addClass("flex items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800");
         }
+    },
+    error: function(jqXHR, textStatus, errorThrown) {
+    // Parse the JSON response to get the error messages
+    var response = jqXHR.responseJSON;
+
+    // Default error message
+    var errorMessage = 'Form submission failed.';
+
+    // Check if there are validation errors
+    if (response && response.errors) {
+        // Collect all error messages
+        var errorMessages = [];
+        var errors = response.errors;
+        for (var field in errors) {
+            if (errors.hasOwnProperty(field)) {
+                errorMessages.push(errors[field][0]); // Add each error message to the array
+            }
+        }
+
+        // Join all error messages into a single string
+        errorMessage = errorMessages.join('<br>'); // Using <br> to create new lines between messages
     }
+
+    // Show the error message(s) in a bootbox alert
+    bootbox.alert({
+        message: errorMessage,
+        backdrop: true,
+        callback: function () {}
+    }).find('.modal-content').addClass("flex items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800");
+}
   });
 }
 

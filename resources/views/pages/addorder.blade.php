@@ -5,22 +5,6 @@
 <!-- Start block -->
 <section class="bg-gray-50 dark:bg-gray-900 p-3 sm:p-5 antialiased mt-12">
 
-<div id="toast-success" class="hidden flex items-center w-full max-w-xs p-4 mb-4 text-gray-500 bg-gray-50 rounded-lg shadow dark:text-gray-400 dark:bg-gray-800" role="alert">
-    <div class="inline-flex items-center justify-center flex-shrink-0 w-8 h-8 text-green-500 bg-green-100 rounded-lg dark:bg-green-800 dark:text-green-200">
-        <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-            <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z"/>
-        </svg>
-        <span class="sr-only">Check icon</span>
-    </div>
-    <div class="ms-3 text-sm font-normal">Order added successfully.</div>
-    <button type="button" class="ms-auto -mx-1.5 -my-1.5 bg-gray-50 text-gray-400 hover:text-gray-900 rounded-lg focus:ring-2 focus:ring-gray-300 p-1.5 hover:bg-gray-100 inline-flex items-center justify-center h-8 w-8 dark:text-gray-500 dark:hover:text-white dark:bg-gray-800 dark:hover:bg-gray-700" data-dismiss-target="#toast-success" aria-label="Close">
-        <span class="sr-only">Close</span>
-        <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
-            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
-        </svg>
-    </button>
-</div>
-
 
     <div class="mx-auto max-w-screen-2xl px-4 lg:px-12">
 
@@ -35,123 +19,491 @@
                 </div>
             </div>
 
+
             <div class="flex flex-col md:flex-row items-stretch md:items-center md:space-x-3 space-y-3 md:space-y-0 justify-between mx-4 py-4 border-t dark:border-gray-700">
+
+                <h3 class="mb-4 text-sm font-medium text-gray-900 dark:text-white">Enter shipping address</h3>
+                <div class="w-full">
+                    <textarea name="shippingaddress" id="shippingaddress"  rows="2"
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+                            required></textarea>
+                </div>
 
                 <h3 class="mb-4 text-sm font-medium text-gray-900 dark:text-white">Choose upload method</h3>
                 <ul class="items-center w-full text-sm font-medium text-gray-900 bg-gray-50 border border-gray-200 rounded-lg sm:flex dark:bg-gray-700 dark:border-gray-600 dark:text-white">
                     <li class="w-full border-b border-gray-200 sm:border-b-0 sm:border-r dark:border-gray-600">
                         <div class="flex items-center ps-3">
-                            <input id="horizontal-list-radio-license" type="radio" value="" name="list-radio" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500">
-                            <label for="horizontal-list-radio-license" class="w-full py-3 ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Excel Upload</label>
+                            <input id="excelupload" type="radio" value="excelupload" name="upload-radio" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500">
+                            <label for="excelupload" class="w-full py-3 ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Excel Upload</label>
                         </div>
                     </li>
                     <li class="w-full dark:border-gray-600">
                         <div class="flex items-center ps-3">
-                            <input id="horizontal-list-radio-passport" type="radio" value="" name="list-radio" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500">
-                            <label for="horizontal-list-radio-passport" class="w-full py-3 ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Form Submission</label>
+                            <input id="formsub" type="radio" value="formsub" name="upload-radio" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500">
+                            <label for="formsub" class="w-full py-3 ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Form Submission</label>
                         </div>
                     </li>
                 </ul>
 
-
             </div>
+            <!-- <div class="flex flex-col md:flex-row items-stretch md:items-center md:space-x-3 space-y-3 md:space-y-0 justify-between mx-4 py-4 border-t dark:border-gray-700"> -->
 
-            <div class="flex flex-col md:flex-row items-stretch md:items-center md:space-x-3 space-y-3 md:space-y-0 justify-between mx-4 py-4 border-t dark:border-gray-700">
-
-                <!-- form upload -->
-                 <form id="addorderform" enctype="multipart/form-data">
-    @csrf
-    <div class="grid gap-4 sm:grid-cols-2 sm:gap-6">
-        <div class="w-full">
-
-                    <label for="fishvariety" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Select a title</label>
-                    <select id="fishvariety"  name="fishvariety" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-                        <option value="">- Select fishvariety -</option>
-                        <option value="Mr.">Mr.</option>
-                        <option value="Ms.">Ms.</option>
-                        <option value="Mrs.">Mrs.</option>
-                    </select>
-                </div>
-              <div class="w-full">
-                  <label for="quantity" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Quantity</label>
-                  <input type="text" name="quantity" id="quantity" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" required="">
-              </div>
-              <div class="w-full">
-                  <label for="orders" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Orders</label>
-                  <input type="text" name="orders" id="orders" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" required="">
-              </div>
-              <div class="w-full">
-                  <label for="size" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Size</label>
-                  <input type="text" name="size" id="size" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" required="">
-              </div>
-
-
-
-
-
-       
-            </div>
-    
-            <hr class="h-px bg-gray-200 border-0 dark:bg-gray-600">
-    <button type="button" id="addOrderButton" class="inline-flex items-center px-5 py-2.5 mt-4 text-sm font-medium text-center text-white bg-blue-700 rounded-lg focus:ring-4 focus:ring-blue-200 dark:focus:ring-blue-900 hover:bg-blue-800">
-        Add Order
-    </button>
-          <button type="submit" id="submitButton" onclick="addorderform()" class="inline-flex items-center px-5 py-2.5 mt-4 sm:mt-6 text-sm font-medium text-center text-white bg-green-700 rounded-lg focus:ring-4 focus:ring-green-200 dark:focus:ring-green-900 hover:bg-green-800" disabled>
-              Submit
-          </button>
-            <button onclick="refreshform()" class="inline-flex items-center px-5 py-2.5 mt-4 ml-2 sm:mt-6 text-sm font-medium text-center text-white bg-red-700 rounded-lg focus:ring-4 focus:ring-red-200 dark:focus:ring-red-900 hover:bg-red-800">
-              Cancel
-          </button>
-      </form>
-                      <!-- form upload -->
-
-
-                <!-- excel upload -->
-                <form id="addorderexcel" enctype="multipart/form-data">
+            <div id="excelForm" class="hidden flex flex-col md:flex-row items-stretch md:items-center md:space-x-3 space-y-3 md:space-y-0 justify-between mx-4 py-4 border-t dark:border-gray-700">
+                <form id="orderForm" enctype="multipart/form-data">
                     @csrf
-                    <div class="grid gap-4 sm:grid-cols-2 sm:gap-6">
+                    <div class="grid gap-4 sm:grid-cols-4 sm:gap-6 w-full">
                         <div class="w-full">
                             <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white" for="excel_input">Upload file</label>
-                            <input class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" aria-describedby="excel_input_help" id="excel_input" name="excel_input" type="file" required>
-                            <p class="mt-1 text-sm text-gray-500 dark:text-gray-300" id="excel_input_help">XLS.F (MAX. 800x400px).</p>
+                            <input class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" aria-describedby="excel_input_help" id="excel_input" name="excel_input" type="file" onchange="validateFile()">
+                            <p class="mt-1 text-sm text-gray-500 dark:text-gray-300" id="excel_input_help">Supported formats: .xlsx, .xls. Max file size: 5MB.</p>
+                        </div>
+                        <div class="w-full">
+                            <button type="button" onclick="validateExcel()" id="validateButton" class="inline-flex items-center px-3 py-2 mt-4 sm:mt-6 text-sm font-medium text-center text-white bg-red-700 rounded-lg focus:ring-4 focus:ring-red-200 dark:focus:ring-red-900 hover:bg-red-800">
+                                Validate Excel
+                            </button>
                         </div>
                     </div>
 
+                    <table id="recordsTableExcel" class="min-w-full divide-y divide-gray-200 dark:divide-gray-600 mt-5">
+                            <thead>
+                            <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Fish Code</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Quantity</th>
+                                </tr>
+                            </thead>
+                            <tbody id="recordsBodyExcel">
+                                <!-- Dynamic rows go here -->
+                            </tbody>
+                        </table>
+
                     <hr class="h-px bg-gray-200 border-0 dark:bg-gray-600">
 
-                    <button type="button" onclick="addorderexcel()" id="submitButton" class="inline-flex items-center px-5 py-2.5 mt-4 sm:mt-6 text-sm font-medium text-center text-white bg-green-700 rounded-lg focus:ring-4 focus:ring-green-200 dark:focus:ring-green-900 hover:bg-green-800">
+                    <button type="button" onclick="submitOrderExcel('excel')" id="submitButtonExcel" class="inline-flex items-center px-5 py-2.5 mt-4 sm:mt-6 text-sm font-medium text-center text-white bg-green-700 rounded-lg focus:ring-4 focus:ring-green-200 dark:focus:ring-green-900 hover:bg-green-800" disabled="true">
                         Submit
                     </button>
-                    <button type="button" onclick="refreshexcel()" class="inline-flex items-center px-5 py-2.5 mt-4 ml-2 sm:mt-6 text-sm font-medium text-center text-white bg-red-700 rounded-lg focus:ring-4 focus:ring-red-200 dark:focus:ring-red-900 hover:bg-red-800">
+                    <button type="button" onclick="refresh()" class="inline-flex items-center px-5 py-2.5 mt-4 ml-2 sm:mt-6 text-sm font-medium text-center text-white bg-red-700 rounded-lg focus:ring-4 focus:ring-red-200 dark:focus:ring-red-900 hover:bg-red-800">
                         Cancel
                     </button>
+                    <a href="{{ route('downloadSampleOrderExcel') }}" class="no-underline inline-flex items-center px-5 py-2.5 mt-4 ml-2 sm:mt-6 text-sm font-medium text-center text-white bg-blue-700 rounded-lg focus:ring-4 focus:ring-blue-200 dark:focus:ring-blue-900 hover:bg-blue-800">
+                        Download Sample Excel
+                    </a>
                 </form>
-                <!-- excel upload -->
-
             </div>
+
+
+
+                <div id="formSubmission" class="hidden flex flex-col md:flex-row items-stretch md:items-center md:space-x-3 space-y-3 md:space-y-0 justify-between mx-4 py-4 border-t dark:border-gray-700">
+                    <form id="orderForm" enctype="multipart/form-data">
+                        @csrf
+                        <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                        <div class="grid gap-4 sm:grid-cols-6 sm:gap-6 w-full">
+                            <div class="w-full">
+                                <label for="fish_code" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Fish Code</label>
+                                <select name="fish_code" id="fish_code" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required>
+                                    <option value="" disabled selected>Select a Fish Code</option>
+                                    @foreach($fishweeklylist as $fish)
+                                        <option value="{{ $fish->fish_code }}">{{ $fish->fish_code }} - {{ $fish->common_name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+
+                            <div class="w-full">
+                                <label for="qty" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Quantity</label>
+                                <input type="text" name="qty" id="qty" class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" required>
+
+                            </div>
+
+                            <button type="button" onclick="addRecord()" class="inline-flex items-center px-5 py-2.5 mt-4 text-sm font-medium text-center text-white bg-blue-700 rounded-lg focus:ring-4 focus:ring-blue-200 dark:focus:ring-blue-900 hover:bg-blue-800">
+                                Add Record
+                            </button>
+
+                        </div>
+
+                        <table id="recordsTable" class="min-w-full divide-y divide-gray-200 dark:divide-gray-600 mt-5">
+                            <thead>
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Fish Code</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Quantity</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="recordsBody">
+                                <!-- Dynamic rows go here -->
+                            </tbody>
+                        </table>
+
+
+
+                        <hr class="h-px bg-gray-200 border-0 dark:bg-gray-600">
+
+                        <button type="button" onclick="submitOrder('form')" id="submitButton" class="inline-flex items-center px-5 py-2.5 mt-4 sm:mt-6 text-sm font-medium text-center text-white bg-green-700 rounded-lg focus:ring-4 focus:ring-green-200 dark:focus:ring-green-900 hover:bg-green-800">
+                            Submit
+                        </button>
+                        <button type="button" onclick="refresh()" class="inline-flex items-center px-5 py-2.5 mt-4 ml-2 sm:mt-6 text-sm font-medium text-center text-white bg-red-700 rounded-lg focus:ring-4 focus:ring-red-200 dark:focus:ring-red-900 hover:bg-red-800">
+                            Cancel
+                        </button>
+                    </form>
+                </div>
+            <!-- </div> -->
+            </div>
+
+
     </div>
 </section>
 <!-- End block -->
 
 <script>
+document.addEventListener('DOMContentLoaded', function() {
+    const uploadRadios = document.querySelectorAll('input[name="upload-radio"]');
 
-function addorderexcel() {
-    const form = document.getElementById('addorderexcel');
-    const formData = new FormData(form);
+    uploadRadios.forEach(radio => {
+        radio.addEventListener('change', function() {
+            toggleForms(this.value);
+        });
+    });
+});
+
+function validateFile() {
+        const fileInput = document.getElementById('excel_input');
+        const file = fileInput.files[0];
+        const validExtensions = ['xlsx', 'xls'];
+        const maxSize = 5 * 1024 * 1024; // 5MB in bytes
+
+        if (file) {
+            const fileExtension = file.name.split('.').pop().toLowerCase();
+            const fileSize = file.size;
+
+            if (!validExtensions.includes(fileExtension)) {
+                bootbox.alert({
+                    message: "Invalid file format. Please upload a .xlsx or .xls file.",
+                    size: 'small'
+                }).find('.modal-content').addClass("flex items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800");
+                fileInput.value = ''; // Clear the input
+                return;
+            }
+
+            if (fileSize > maxSize) {
+                bootbox.alert({
+                    message: "File size exceeds the 5MB limit. Please upload a smaller file.",
+                    size: 'small'
+                }).find('.modal-content').addClass("flex items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800");
+                fileInput.value = ''; // Clear the input
+                return;
+            }
+        }
+    }
+
+    function showBootboxAlert(message, color) {
+    bootbox.alert({
+        message: message,
+        size: 'small'
+    }).find('.modal-content').addClass(`flex items-center p-4 mb-4 text-sm text-${color}-800 border border-${color}-300 rounded-lg bg-${color}-50 dark:bg-gray-800 dark:text-${color}-400 dark:border-${color}-800`);
+}
+
+
+function displayTable(fishData, rows) {
+    console.log('Displaying table data:', fishData, rows); // Debugging line
+    const tbody = document.getElementById('recordsBodyExcel');
+    
+    if (!tbody) {
+        console.error('Could not find tbody with ID "recordsBodyExcel"');
+        return;
+    }
+    
+    tbody.innerHTML = ''; // Clear existing rows
+
+    rows.forEach(row => {
+        const fishDetails = fishData[row.fish_code] || { size: 'N/A', size_cm: 'N/A' };
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td class="px-6 py-4 whitespace-nowrap text-gray-900 dark:text-gray-50">${row.fish_code}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-gray-900 dark:text-gray-50">${row.quantity}</td>
+        `;
+        tbody.appendChild(tr);
+    });
+
+    console.log('Table populated successfully'); // Debugging line
+}
+
+
+function fetchFishData(validatedRows) {
+    const fishCodes = validatedRows.map(row => row.fish_code);
 
     $.ajax({
-        url: '{{ url("addorderexcel") }}', // Ensure this URL matches your route
+        url: '{{url('fetchfishweeklyexceldata')}}',
         type: 'POST',
-        data: formData,
-        processData: false,
-        contentType: false,
-        success: function(response) {
-            // Handle success response
-            console.log(response);
-            if (response.success) {
-                $('#toast-success').removeClass('hidden'); // Show success toast
+        dataType: 'json',
+        data: {
+            fish_codes: fishCodes,
+            _token: $('meta[name="csrf-token"]').attr('content')
+        },
+        success: function(fishData) {
+            console.log(fishData);
+            displayTable(fishData, validatedRows);
+            $('#submitButtonExcel').prop('disabled', false);
+        },
+        error: function(xhr, status, error) {
+            console.error('Error fetching fish data:', error);
+            showBootboxAlert('An error occurred while fetching fish data.', 'red');
+        }
+    });
+}
+
+
+
+
+    function validateExcel() {
+    const fileInput = document.getElementById('excel_input');
+    const file = fileInput.files[0];
+
+    if (!file) {
+        showBootboxAlert('Please select an Excel file.', 'red');
+        return;
+    }
+
+    if (!['application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'application/vnd.ms-excel'].includes(file.type)) {
+        showBootboxAlert('Invalid file type. Please upload an .xlsx or .xls file.', 'red');
+        return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+        showBootboxAlert('File size exceeds 5MB.', 'red');
+        return;
+    }
+
+    const reader = new FileReader();
+
+    reader.onload = function(event) {
+        try {
+            const data = new Uint8Array(event.target.result);
+            const workbook = XLSX.read(data, { type: 'array' });
+            const sheetName = workbook.SheetNames[0];
+            const worksheet = workbook.Sheets[sheetName];
+            const json = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+
+            if (json.length === 0) {
+                showBootboxAlert('Excel file is empty.', 'red');
+                return;
+            }
+
+            const headers = json[0];
+            const requiredHeaders = ['fish_code', 'quantity',];
+
+            if (!requiredHeaders.every(header => headers.includes(header))) {
+                showBootboxAlert('Invalid column headers.', 'red');
+                return;
+            }
+
+            const rows = json.slice(1);
+            if (rows.length === 0) {
+                showBootboxAlert('There must be at least one data row.', 'red');
+                return;
+            }
+
+            const validatedRows = [];
+            for (const row of rows) {
+                if (row.length !== headers.length) {
+                    showBootboxAlert('Invalid number of columns in a row.', 'red');
+                    return;
+                }
+
+                const [fish_code, quantity] = row;
+
+                if (!fish_code || !quantity ) {
+                    showBootboxAlert('Required fields are missing in a row.', 'red');
+                    return;
+                }
+
+
+                if (isNaN(quantity) || parseInt(quantity) <= 0) {
+                    showBootboxAlert('Invalid quantity.', 'red');
+                    return;
+                }
+
+                // Push validated row
+                validatedRows.push({ fish_code, quantity});
+            }
+
+            // Fetch size and size_cm for each fish_code using jQuery AJAX
+            fetchFishData(validatedRows);
+
+        } catch (error) {
+            console.error('Error reading Excel file:', error);
+            showBootboxAlert('An error occurred while processing the Excel file.', 'red');
+        }
+    };
+
+    reader.readAsArrayBuffer(file);
+}
+
+
+
+
+function toggleForms(uploadMethod) {
+    const excelForm = document.getElementById('excelForm');
+    const formSubmission = document.getElementById('formSubmission');
+
+    if (uploadMethod === 'excelupload') {
+        excelForm.classList.remove('hidden');
+        formSubmission.classList.add('hidden');
+    } else if (uploadMethod === 'formsub') {
+        excelForm.classList.add('hidden');
+        formSubmission.classList.remove('hidden');
+    }
+}
+
+let records = [];
+
+function addRecord() {
+    const fishCode = document.getElementById('fish_code').value;
+    const quantity = document.getElementById('qty').value;
+
+
+    // Check if all fields are filled
+    if (fishCode && quantity ) {
+
+            // Check if a record with the same fish code already exists
+            const recordExists = records.some(record => record.fishCode === fishCode);
+
+            if (recordExists) {
+                bootbox.alert({
+                    message: "A record with this fish code already exists. Please use a different fish code.",
+                    size: 'small'
+                }).find('.modal-content').addClass("flex items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800");
             } else {
-                $('#toast-danger').removeClass('hidden'); // Show error toast
+                const record = { fishCode, quantity};
+                records.push(record);
+
+                updateTable();
+                clearForm();
+            }
+
+    } else {
+        // Display Bootbox alert if any required field is empty
+        bootbox.alert({
+            message: "Please fill in all required fields before adding the record.",
+            size: 'small'
+        }).find('.modal-content').addClass("flex items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800");
+    }
+}
+
+
+
+
+function updateTable() {
+    const tableBody = document.getElementById('recordsBody');
+    tableBody.innerHTML = '';
+
+    records.forEach((record, index) => {
+        tableBody.innerHTML += `
+            <tr>
+                <td class="px-6 py-4 whitespace-nowrap text-gray-900 dark:text-gray-50">${record.fishCode}</td>
+                <td class="px-6 py-4 whitespace-nowrap text-gray-900 dark:text-gray-50">${record.quantity}</td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                    <button onclick="editRecord(${index})" type="button" class="px-3 py-2 text-xs font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Edit</button>
+                    <button onclick="deleteRecord(${index})" type="button" class="px-3 py-2 text-xs font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Delete</button>
+                </td>
+            </tr>
+        `;
+    });
+}
+
+function clearForm() {
+    alert('Form will be cleared now');
+
+    // Manually clear each form element by their ID
+    document.getElementById('fish_code').selectedIndex = 0; // Reset select to first option
+    document.getElementById('qty').value = '';
+
+    // Optionally, if you have additional fields or dynamic content, you can reset them here
+}
+
+
+
+
+function editRecord(index) {
+    const record = records[index];
+    document.getElementById('fish_code').value = record.fishCode;
+    document.getElementById('qty').value = record.quantity;
+
+    records.splice(index, 1);
+    updateTable();
+}
+
+function deleteRecord(index) {
+    records.splice(index, 1);
+    updateTable();
+}
+
+
+function submitOrder(method) {
+
+    if (records.length === 0) {
+        bootbox.alert({
+            message: "No records to submit. Please add at least one record before submitting.",
+            size: 'small'
+        }).find('.modal-content').addClass("flex items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800");
+        return;
+    }
+
+    //csrf token
+    const csrfToken = document.querySelector('input[name="_token"]').value;
+
+    // Extract the selected week
+    const selectedWeek = document.querySelector('input[name="week-radio"]:checked').value;
+
+    // Extract table data
+    const tableRows = document.querySelectorAll('#recordsTable tbody tr');
+    const tableData = [];
+
+    tableRows.forEach(row => {
+        const cells = row.querySelectorAll('td');
+        const rowData = {
+            fish_code: cells[0].textContent.trim(),
+            quantity: cells[4].textContent.trim(),
+        };
+        tableData.push(rowData);
+    });
+
+    // Prepare the payload
+    const payload = {
+        table_data: tableData
+    };
+
+    let ajaxUrl;
+
+    if (method === 'excel') {
+        ajaxUrl = '{{ url("orderuploadexcel") }}';
+    } else if (method === 'form') {
+        ajaxUrl = '{{ url("orderuploadform") }}';
+    }
+
+    $.ajax({
+        url: ajaxUrl,
+        type: 'POST',
+        contentType: 'application/json',
+        headers: {
+            'X-CSRF-TOKEN': csrfToken // Include CSRF token in the headers
+        },
+        data: JSON.stringify(payload),
+        success: function(response) {
+            if(response.status == "success"){
+                bootbox.alert({
+                    message: response.message,
+                    backdrop: true,
+                    callback: function () {
+                        records = [];
+                        updateTable();
+                        clearForm();
+                    }
+                }).find('.modal-content').addClass("flex items-center p-4 mb-4 text-sm text-green-800 border border-green-300 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400 dark:border-green-800");
+
+            } else if(response.status == "error"){
+                bootbox.alert({
+                    message: response.message,
+                    backdrop: true,
+                    callback: function () {}
+                }).find('.modal-content').addClass("flex items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800");
             }
         },
         error: function(jqXHR, textStatus, errorThrown) {
@@ -160,27 +512,57 @@ function addorderexcel() {
     });
 }
 
-function refreshexcel() {
-    $('#addorderexcel')[0].reset();
-}
+function submitOrderExcel(method) {
+    // Check if file is selected
+    const fileInput = document.getElementById('excel_input');
+    if (!fileInput.files.length) {
+        bootbox.alert({
+            message: "Please upload an Excel file before submitting.",
+            size: 'small'
+        }).find('.modal-content').addClass("flex items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800");
+        return;
+    }
 
-function addorderform() {
-    const form = document.getElementById('addorderform');
-    const formData = new FormData(form);
+    // Get CSRF token
+    const csrfToken = document.querySelector('input[name="_token"]').value;
+
+    // Get selected week
+    const selectedWeek = document.querySelector('input[name="week-radio"]:checked').value;
+
+    // Create FormData object to send file and other data
+    const formData = new FormData();
+    formData.append('excel_input', fileInput.files[0]);
+    formData.append('fish_week', selectedWeek);
+
+    // Set the URL based on the method
+    let ajaxUrl;
+    if (method === 'excel') {
+        ajaxUrl = '{{ url("fishweeklyuploadexcel") }}';
+    }
 
     $.ajax({
-        url: '{{ url("addorderform") }}', // Ensure this URL matches your route
+        url: ajaxUrl,
         type: 'POST',
         data: formData,
         processData: false,
         contentType: false,
+        headers: {
+            'X-CSRF-TOKEN': csrfToken
+        },
         success: function(response) {
-            // Handle success response
-            console.log(response);
-            if (response.success) {
-                $('#toast-success').removeClass('hidden'); // Show success toast
-            } else {
-                $('#toast-danger').removeClass('hidden'); // Show error toast
+            if (response.status === "success") {
+                bootbox.alert({
+                    message: response.message,
+                    backdrop: true,
+                    callback: function () {
+                        refresh(); // Assuming refresh clears the form or updates the UI
+                    }
+                }).find('.modal-content').addClass("flex items-center p-4 mb-4 text-sm text-green-800 border border-green-300 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400 dark:border-green-800");
+            } else if (response.status === "error") {
+                bootbox.alert({
+                    message: response.message,
+                    backdrop: true
+                }).find('.modal-content').addClass("flex items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800");
             }
         },
         error: function(jqXHR, textStatus, errorThrown) {
@@ -189,9 +571,36 @@ function addorderform() {
     });
 }
 
-function refreshform() {
-    $('#refreshform')[0].reset();
+document.getElementById('fish_code').addEventListener('change', function() {
+    const fishCode = this.value;
+
+    // Make AJAX request to get the size data based on the selected fish code
+    $.ajax({
+        url: '{{url('getfishsizedata')}}',
+        type: 'GET',
+        data: { fish_code: fishCode },
+        success: function(response) {
+            if (response.status === 'success') {
+                $('#size').val(response.data.size || '').trigger('change');
+                $('#size_cm').val(response.data.size_cm || '').trigger('change');
+            } else {
+                // Handle the error (optional)
+                console.error('Failed to retrieve size data:', response.message);
+            }
+        },
+        error: function() {
+            console.error('An error occurred while fetching the size data.');
+        }
+    });
+});
+
+
+function refresh() {
+    $('#orderForm')[0].reset();
+    $('#excelForm').addClass('hidden');
+    $('#formSubmission').addClass('hidden');
 }
+
 </script>
 
 

@@ -46,6 +46,9 @@
                             <th scope="col" class="p-4">Code</th>
                             <th scope="col" class="p-4">Common Name</th>
                             <th scope="col" class="p-4">Scientific Name</th>
+                            <th scope="col" class="p-4">Size</th>
+                            <th scope="col" class="p-4">Size in cm</th>
+                            <th scope="col" class="p-4">Qty per bag</th>
                             <th scope="col" class="p-4">Species</th>
                             <th scope="col" class="p-4">Family</th>
                             <th scope="col" class="p-4">Habitat</th>
@@ -97,6 +100,10 @@
                         <input type="text" name="scientificname" id="scientificname" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" required />
                     </div>
                     <div>
+                        <label for="qtyperbag" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Qty Per Bag</label>
+                        <input type="text" name="qtyperbag" id="qtyperbag" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" required />
+                    </div>
+                    <div>
                         <select id="species" name="species" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
                             <option selected value="">Select a species</option>
                             @if($fishspecieslist)
@@ -105,6 +112,20 @@
                                 @endforeach
                             @endif
                         </select>
+                    </div>
+                    <div>
+                        <select id="size" name="size" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                            <option selected value="">Select a size</option>
+                            @if($fishsizelist)
+                                @foreach($fishsizelist as $value)
+                                <option value="{{$value->id}}">{{ $value->name }}</option>
+                                @endforeach
+                            @endif
+                        </select>
+                    </div>
+                    <div>
+                        <label for="size_cm" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Size in cm</label>
+                        <input type="text" name="size_cm" id="size_cm" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" required />
                     </div>
                     <div class="flex items-center p-4 md:p-5 border-t border-gray-200 rounded-b dark:border-gray-600">
                         <button type="button" onclick="addnewfishvariety()" data-modal-hide="create-modal" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Submit</button>
@@ -154,12 +175,24 @@ Toggle modal
                         <input type="text" name="scientificname-edit" id="scientificname-edit" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" required />
                     </div>
                     <div>
+                        <label for="qtyperbag-edit" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Qty Per Bag</label>
+                        <input type="text" name="qtyperbag-edit" id="qtyperbag-edit" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" required />
+                    </div>
+                    <div>
                         <select id="species-edit" name="species-edit" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
 
                         </select>
                     </div>
+                    <div>
+                        <select id="size-edit" name="size-edit" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
 
-                    <button type="submit" class="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Submit</button>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="size_cm-edit" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Size in cm</label>
+                        <input type="text" name="size_cm-edit" id="size_cm-edit" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" required />
+                    </div>
+                    <button type="button" onclick="editfishvariety()" class="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Submit</button>
                 </form>
             </div>
         </div>
@@ -223,6 +256,9 @@ function searchdata() {
           { "data": "fish_code" },
           { "data": "common_name" },
           { "data": "scientific_name" },
+          { "data": "size" },
+          { "data": "size_cm" },
+          { "data": "qtyperbag" },
                     {
               sortable: false,
               "render": function(data, type, full, meta) {
@@ -388,10 +424,14 @@ function editmodal(id) {
     url: "{{url('/getvariety')}}" + "/" + id,
     type: 'GET',
     success: function (response) {
-        document.getElementById('commonname-edit').value = response.data.name;
+        document.getElementById('commonname-edit').value = response.data.common_name;
         document.getElementById('scientificname-edit').value = response.data.scientific_name;
+        document.getElementById('size_cm-edit').value = response.data.size_cm;
+        document.getElementById('qtyperbag-edit').value = response.data.qtyperbag;
         const speciesSelect = document.getElementById('species-edit');
+        const sizeSelect = document.getElementById('size-edit');
         speciesSelect.innerHTML = '';
+        sizeSelect.innerHTML = '';
 
         // Populate habitat-edit select options
         response.specieslist.forEach(species => {
@@ -405,8 +445,21 @@ function editmodal(id) {
             speciesSelect.appendChild(option);
         });
 
-        // Set the selected habitat
+        // Populate habitat-edit select options
+        response.sizelist.forEach(size => {
+            const option = document.createElement('option');
+
+            option.value = size.id;
+            option.text = size.name;
+            if(response.data.size == size.id) {
+                option.selected = true;
+            }
+            sizeSelect.appendChild(option);
+        });
+
+        // Set the selected habitat and size
         speciesSelect.value = response.data.species_id;
+        sizeSelect.value = response.data.size;
     }
   });
     const editmodal = document.getElementById('edit-modal');

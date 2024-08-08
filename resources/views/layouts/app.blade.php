@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Seylon Aquatics</title>
     @vite('resources/css/app.css')
     <!-- Styles -->
@@ -84,8 +85,10 @@
     <script src="{{ asset('plugins/jszip.min.js') }}"></script>
     <script src="{{ asset('plugins/buttons.html5.min.js') }}"></script>
     <script src="{{ asset('plugins/buttons.print.min.js') }}"></script>
-    <script src="{{ asset('plugins/html2pdf.js') }}"></script>
+    <script src="{{ asset('plugins/html2pdf.min.js') }}"></script>
     <script src="{{ asset('plugins/jspdf-plugin.js') }}"></script>
+    <script src="{{ asset('plugins/spin.js') }}"></script>
+    <script src="{{ asset('plugins/xlsx.full.min.js') }}"></script>
     <script src="{{ asset ('js/dark-mode.js') }}"></script>
     @vite('resources/js/app.js')
     <script>

@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\SampleExcelExporOrder;
 use App\Models\Order;
 use App\Models\OrderDet;
 use App\Models\TestOrder;
@@ -159,6 +160,13 @@ public function getorderdetail($id) {
               ->get();
 
     return response()->json($data);
+}
+
+public function downloadSampleOrderExcel()
+{
+    $filename = 'order_upload_template.xlsx';
+
+    return Excel::download(new SampleExcelExporOrder, $filename);
 }
 
 

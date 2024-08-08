@@ -14,9 +14,14 @@ class Size extends Model
     public $timestamps = true;
     protected $fillable = ['name', 'description'];
 
-    public function fishs()
+    public function fish()
     {
         return $this->hasMany(Fish::class, 'size');
+    }
+
+    public function variety()
+    {
+        return $this->hasMany(FishVariety::class, 'size');
     }
 
     public function getCreatedAtAttribute($value)

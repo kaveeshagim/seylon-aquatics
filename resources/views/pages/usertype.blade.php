@@ -292,6 +292,26 @@ function searchdata() {
         "columnDefs": [
           { className: "text-center", "targets": [0, 1] }
         ],
+        "dom": 'Bfrtip',
+        "buttons": [
+            {
+                extend: 'excelHtml5',
+                title: 'Fish Weekly List - Week',
+                text: 'Export to Excel'
+            },
+            {
+                extend: 'pdfHtml5',
+                title: 'Fish Weekly List - Week',
+                text: 'Export to PDF',
+                orientation: 'landscape',
+                pageSize: 'A4'
+            },
+            {
+                extend: 'print',
+                title: 'Fish Weekly List - Week',
+                text: 'Print'
+            }
+        ],
         "pageLength": 25,
         "searching": true,
 

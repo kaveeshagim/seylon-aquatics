@@ -8,11 +8,12 @@
   <div class="py-8 px-4 mx-auto lg:py-16">
     <form id="customerForm" enctype="multipart/form-data">
     @csrf
-    <div class="p-4 mb-4 bg-gray-50 border border-gray-200 rounded-lg shadow-sm 2xl:col-span-2 dark:border-gray-700 sm:p-6 dark:bg-gray-800">
+    <!-- <div class="p-4 mb-4 bg-gray-50 border border-gray-200 rounded-lg shadow-sm 2xl:col-span-2 dark:border-gray-700 sm:p-6 dark:bg-gray-800"> -->
+    <div class="p-4 mb-4 bg-gray-50 dark:bg-gray-800 relative shadow-md sm:rounded-lg overflow-hidden">
     <h3 class="mb-4 text-xl font-semibold dark:text-white">Add customer</h3>
     <hr class="h-px my-8 bg-gray-200 border-0 dark:bg-gray-600">
     <div class="grid gap-4 sm:grid-cols-2 sm:gap-6">
-        <div class="w-full">
+                <div class="w-full">
 
                     <label for="title" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Select a title</label>
                     <select id="title"  name="title" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
@@ -63,6 +64,19 @@
                         @endforeach
                     </select>
              </div>
+             <div class="w-full">
+                  <label for="activestatus" class="block mb-3 px-2 text-sm font-medium text-gray-900 dark:text-white">Active Status</label>
+                        <div class="flex">
+                            <div class="flex items-center">
+                                <input id="default-radio-1" type="radio" value="1" name="inline-radio-group" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                <label for="default-radio-1" class="w-full ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Active</label>
+                            </div>
+                            <div class="flex items-center ps-4">
+                                <input checked id="default-radio-2" type="radio" value="0" name="inline-radio-group" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                <label for="default-radio-2" class="w-full ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Inactive</label>
+                            </div>
+                        </div>
+                </div>
 
 
 
@@ -101,6 +115,10 @@ function submitForm(){
             }
         });
 
+        if (!$('input[name="inline-radio-group"]:checked').val()) {
+            isValid = false;
+        }
+
         if (!isValid) {
             bootbox.alert({
                 message: 'Please fill in all required fields.',
@@ -111,6 +129,7 @@ function submitForm(){
 
         // If all required fields are filled, proceed with AJAX submission
         const formData = new FormData(document.getElementById('customerForm'));
+        formData.append('inline-radio-group', $('input[name="inline-radio-group"]:checked').val());
 
         $.ajax({
             url: '{{url('addcustomers')}}',

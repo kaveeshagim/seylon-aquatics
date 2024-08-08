@@ -67,6 +67,19 @@
                         @endforeach
                     </select>
              </div>
+             <div class="w-full">
+                <label for="activestatus" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Active Status</label>
+                <div class="flex">
+                    <div class="flex items-center me-4">
+                        <input id="active" type="radio" value="1" name="inline-radio-group" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" <?php if ($data->active_status == 1) echo 'checked'; ?> >
+                        <label for="active" name="activestatus" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Active</label>
+                    </div>
+                    <div class="flex items-center me-4">
+                        <input id="inactive" type="radio" value="0" name="inline-radio-group" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" <?php if ($data->active_status == 0) echo 'checked'; ?>> 
+                        <label for="inactive" name="activestatus" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Inactive</label>
+                    </div>
+                </div>
+            </div>
 
 
 
@@ -105,6 +118,12 @@ function submitForm(){
             }
         });
 
+        // Check if a radio button is selected
+        if (!$('input[name="inline-radio-group"]:checked').val()) {
+            isValid = false;
+        }
+
+
         if (!isValid) {
             bootbox.alert({
                 message: 'Please fill in all required fields.',
@@ -115,6 +134,7 @@ function submitForm(){
 
         // If all required fields are filled, proceed with AJAX submission
         const formData = new FormData(document.getElementById('customerForm'));
+        formData.append('inline-radio-group', $('input[name="inline-radio-group"]:checked').val());
 
         $.ajax({
             url: '{{url('editcustomer')}}',

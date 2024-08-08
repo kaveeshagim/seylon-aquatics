@@ -19,6 +19,12 @@ import io from 'socket.io-client';
 import html2pdf from 'html2pdf.js';
 window.html2pdf = html2pdf;
 
+import { Spinner } from 'spin.js';
+
+window.createSpinner = function(target) {
+    return new Spinner().spin(target);
+};
+
 // DataTables
 import DataTable from "datatables.net-dt";
 import "datatables.net-responsive-dt";
@@ -61,6 +67,15 @@ import "datatables.net-staterestore-bs5/css/stateRestore.bootstrap5.min.css";
 // Additional required libraries
 import jszip from "jszip";
 import pdfmake from "pdfmake";
+
+pdfmake.fonts = {
+    Roboto: {
+        normal: '/fonts/Roboto-Regular.ttf',
+        bold: '/path/to/Roboto-Medium.ttf',
+        italics: '/path/to/Roboto-Italic.ttf',
+        bolditalics: '/path/to/Roboto-MediumItalic.ttf'
+    }
+};
 
 // Styles
 import "normalize.css/normalize.css";

@@ -7,7 +7,8 @@
   <div class="py-8 px-4 mx-auto lg:py-16">
       <form id="userForm" enctype="multipart/form-data">
         @csrf
-        <div class="p-4 mb-4 bg-gray-50 border border-gray-200 rounded-lg shadow-sm 2xl:col-span-2 dark:border-gray-700 sm:p-6 dark:bg-gray-800">
+        <!-- <div class="p-4 mb-4 bg-gray-50 border border-gray-200 rounded-lg shadow-sm 2xl:col-span-2 dark:border-gray-700 sm:p-6 dark:bg-gray-800"> -->
+        <div class="p-4 mb-4 bg-gray-50 dark:bg-gray-800 relative shadow-md sm:rounded-lg overflow-hidden">
         <h3 class="mb-4 text-xl font-semibold dark:text-white">Add user</h3>
         <hr class="h-px my-8 bg-gray-200 border-0 dark:bg-gray-600">
           <div class="grid gap-4 sm:grid-cols-2 sm:gap-6">
@@ -15,7 +16,7 @@
 
 
                     <label for="usertype" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Select an option</label>
-                    <select id="usertype" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                    <select id="usertype" name="usertype" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
                         <option selected>Select a user type</option>
                         @foreach($usertypelist as $value)
                         <option value="{{ $value->id }}">{{ $value->title }}</option>
@@ -60,9 +61,16 @@
                   <input type="tel" name="secondary_contact" id="secondary_contact" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" required="">
               </div>
               <div class="w-full">
+                  <label for="username" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Username</label>
+                  <input type="text" name="username" id="username" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" required="">
+              </div>
+              <div class="w-full">
                   <label for="password" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Password</label>
                   <input type="password" name="password" id="password" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" required="">
-             </div>
+                  <span id="errorMessage" class="font-semibold text-red-500"></span>
+
+
+                </div>
 
 
             <div class="w-full">
@@ -71,12 +79,6 @@
                 <input name="avatar" onchange="displaySelectedImage(event)" class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" aria-describedby="file_input_help" id="avatar" type="file">
                 <p class="mt-1 text-sm text-gray-500 dark:text-gray-300" id="file_input_help">SVG, PNG, JPG or GIF (MAX. 800x400px).</p>
 
-                <!-- <label for="avatar" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Avatar</label> -->
-                <!-- <input type="file" id="avatar" name="avatar" accept="image/*" class="hidden" onchange="displaySelectedImage(event)"> -->
-                <!-- <button type="button" onclick="document.getElementById('avatar').click()" class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white rounded-lg bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
-                    <svg class="w-4 h-4 mr-2 -ml-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M5.5 13a3.5 3.5 0 01-.369-6.98 4 4 0 117.753-1.977A4.5 4.5 0 1113.5 13H11V9.413l1.293 1.293a1 1 0 001.414-1.414l-3-3a1 1 0 00-1.414 0l-3 3a1 1 0 001.414 1.414L9 9.414V13H5.5z"></path><path d="M9 13h2v5a1 1 0 11-2 0v-5z"></path></svg>
-                    Upload picture
-                </button> -->
                 <button onclick="cancelSelectedImage()" type="button" class="inline-flex items-center px-3 py-2 ml-2 text-sm font-medium text-center text-white rounded-lg bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800">
                     Cancel
                 </button>
@@ -85,7 +87,7 @@
             </div>
 
             <div class="w-full">
-                <div class="flex p-4 mb-2 mt-4 text-sm text-blue-800 rounded-lg bg-blue-50 dark:bg-gray-800 dark:text-blue-400" role="alert">
+            <div class="flex p-4 mb-2 mt-4 text-sm text-blue-800 rounded-lg bg-blue-50 dark:bg-gray-800 dark:text-blue-400" role="alert">
                     <svg class="flex-shrink-0 inline w-4 h-4 me-3 mt-[2px]" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
                         <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
                     </svg>
@@ -94,7 +96,7 @@
                         <span class="font-medium">Ensure that these requirements are met:</span>
                         <ul class="mt-1.5 list-disc list-inside">
                             <li id="minLength"><i class="fas fa-times 
-                            text-red-500"></i> Minimum 8 characters</li>
+                                text-red-500"></i> Minimum 8 characters</li>
                             <li id="uppercase"><i class="fas fa-times 
                                 text-red-500"></i> At least one uppercase letter</li>
                             <li id="lowercase"><i class="fas fa-times
@@ -104,19 +106,20 @@
                         </ul>
                     </div>
                 </div>
-                <span id="errorMessage" class="font-semibold text-red-500"></span>
+                
             </div>
+
           </div>
 
             <hr class="h-px my-8 bg-gray-200 border-0 dark:bg-gray-600">
 
-          <button type="submit" id="submitButton" class="inline-flex items-center px-5 py-2.5 mt-4 sm:mt-6 text-sm font-medium text-center text-white bg-green-700 rounded-lg focus:ring-4 focus:ring-green-200 dark:focus:ring-green-900 hover:bg-green-800" disabled>
+          <button type="button" id="submitButton" onclick="submitForm()" class="inline-flex items-center px-5 py-2.5 mt-4 sm:mt-6 text-sm font-medium text-center text-white bg-green-700 rounded-lg focus:ring-4 focus:ring-green-200 dark:focus:ring-green-900 hover:bg-green-800">
               Submit
           </button>
-            <button onclick="refresh()" class="inline-flex items-center px-5 py-2.5 mt-4 ml-2 sm:mt-6 text-sm font-medium text-center text-white bg-red-700 rounded-lg focus:ring-4 focus:ring-red-200 dark:focus:ring-red-900 hover:bg-red-800">
+            <button onclick="refresh()" type="button" class="inline-flex items-center px-5 py-2.5 mt-4 ml-2 sm:mt-6 text-sm font-medium text-center text-white bg-red-700 rounded-lg focus:ring-4 focus:ring-red-200 dark:focus:ring-red-900 hover:bg-red-800">
               Cancel
           </button>
-          <button onclick="userspage()" class="inline-flex items-center px-5 py-2.5 mt-4 ml-2 sm:mt-6 text-sm font-medium text-center text-white bg-primary-700 rounded-lg focus:ring-4 focus:ring-primary-200 dark:focus:ring-primary-900 hover:bg-primary-800">
+          <button onclick="userspage()" type="button" class="inline-flex items-center px-5 py-2.5 mt-4 ml-2 sm:mt-6 text-sm font-medium text-center text-white bg-primary-700 rounded-lg focus:ring-4 focus:ring-primary-200 dark:focus:ring-primary-900 hover:bg-primary-800">
               Back to users
           </button>
       </form>
@@ -130,11 +133,45 @@
 
 <script>
 
-$(document).ready(function() {
-    $('#userForm').submit(function(event) {
-        event.preventDefault();
 
-        const formData = new FormData();
+    function submitForm() {
+
+        // Check if the required fields are filled
+        let requiredFields = ['#usertype', '#first_name', '#username', '#company', '#email', '#primary_contact', '#password'];
+        let allFieldsFilled = true;
+
+        requiredFields.forEach(function(selector) {
+            if ($(selector).val() === '') {
+                allFieldsFilled = false;
+            }
+        });
+
+        // Check if a radio button is selected
+        if (!$('input[name="inline-radio-group"]:checked').val()) {
+            allFieldsFilled = false;
+        }
+
+        if (!allFieldsFilled) {
+            bootbox.alert({
+                message: "Please fill in all required fields and select an active status.",
+                backdrop: true,
+            }).find('.modal-content').addClass("flex items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800");
+            return;
+        }
+
+        // Validate password requirements
+        const password = $('#password').val();
+        const strongPasswordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+        if (!strongPasswordRegex.test(password)) {
+            bootbox.alert({
+                message: "Password does not meet the requirements.",
+                backdrop: true,
+            }).find('.modal-content').addClass("flex items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800");
+            return;
+        }
+
+
+        const formData = new FormData(document.getElementById('userForm'));
         const fileInput = document.getElementById('avatar');
 
         // Append the selected file to the FormData object
@@ -146,8 +183,8 @@ $(document).ready(function() {
         formData.append('_token', $('input[name="_token"]').val());
         formData.append('usertype', $('select[name="usertype"]').val());
         formData.append('username', $('input[name="username"]').val());
-        formData.append('firstname', $('input[name="firstname"]').val());
-        formData.append('lastname', $('input[name="lastname"]').val());
+        formData.append('firstname', $('input[name="first_name"]').val());
+        formData.append('lastname', $('input[name="last_name"]').val());
         formData.append('company', $('input[name="company"]').val());
         formData.append('email', $('input[name="email"]').val());
         formData.append('primary_contact', $('input[name="primary_contact"]').val());
@@ -169,6 +206,7 @@ $(document).ready(function() {
                         message: response.message,
                         backdrop: true,
                         callback: function () {
+                            refresh();
                         }
                     }).find('.modal-content').addClass("flex items-center p-4 mb-4 text-sm text-green-800 border border-green-300 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400 dark:border-green-800");
 
@@ -181,48 +219,72 @@ $(document).ready(function() {
                 }
             },
             error: function(jqXHR, textStatus, errorThrown) {
-                alert('Form submission failed:', textStatus, errorThrown);
+    // Parse the JSON response to get the error messages
+    var response = jqXHR.responseJSON;
+
+    // Default error message
+    var errorMessage = 'Form submission failed.';
+
+    // Check if there are validation errors
+    if (response && response.errors) {
+        // Collect all error messages
+        var errorMessages = [];
+        var errors = response.errors;
+        for (var field in errors) {
+            if (errors.hasOwnProperty(field)) {
+                errorMessages.push(errors[field][0]); // Add each error message to the array
             }
+        }
+
+        // Join all error messages into a single string
+        errorMessage = errorMessages.join('<br>'); // Using <br> to create new lines between messages
+    }
+
+    // Show the error message(s) in a bootbox alert
+    bootbox.alert({
+        message: errorMessage,
+        backdrop: true,
+        callback: function () {}
+    }).find('.modal-content').addClass("flex items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800");
+}
+
         });
-    });
-});
+    }
+
     
 function userspage() {
     location.href = '{{url('users')}}';
 }
 
 
-</script>
 
-<script>
     function refresh(){
 
         $('#userForm')[0].reset();
     }
-</script>
 
-<script>
-$('#password').on('input', function () {
-    const password = $(this).val();
-    console.log(password);
-    const strongPasswordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 
-    // Check if all password conditions are met
-    const isStrongPassword = password.length >= 8 && /[A-Z]/.test(password) && /[a-z]/.test(password) && /[@$!%*?&]/.test(password);
 
-    // Update the submit button state
-    $('#submitButton').prop('disabled', !isStrongPassword);
+    $('#password').on('input', function () {
+        const password = $(this).val();
+        const strongPasswordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 
-    // Update the password strength message
-    const errorMessage = $('#errorMessage');
-    $('#minLength').html(password.length >= 8 ? '<i class="fas fa-check text-green-500"></i> Minimum 8 characters' : '<i class="fas fa-times text-red-500"></i> Minimum 8 characters');
-    $('#uppercase').html(/[A-Z]/.test(password) ? '<i class="fas fa-check text-green-500"></i> At least one uppercase letter' : '<i class="fas fa-times text-red-500"></i> At least one uppercase letter');
-    $('#lowercase').html(/[a-z]/.test(password) ? '<i class="fas fa-check text-green-500"></i> At least one lowercase letter' : '<i class="fas fa-times text-red-500"></i> At least one lowercase letter');
-    $('#symbol').html(/[@$!%*?&]/.test(password) ? '<i class="fas fa-check text-green-500"></i> At least one symbol (@$!%*?&)' : '<i class="fas fa-times text-red-500"></i> At least one symbol (@$!%*?&)');
+        // Check if all password conditions are met
+        const isStrongPassword = strongPasswordRegex.test(password);
 
-    // Update the error message based on password strength
-    errorMessage.text(isStrongPassword ? 'Strong Password' : 'Weak Password').toggleClass('text-red-500', !isStrongPassword).toggleClass('text-green-500', isStrongPassword);
-});
+        // Update the submit button state
+        $('#submitButton').prop('disabled', !isStrongPassword);
+
+        // Update the password strength message
+        const errorMessage = $('#errorMessage');
+        $('#minLength').html(password.length >= 8 ? '<i class="fas fa-check text-green-500"></i> Minimum 8 characters' : '<i class="fas fa-times text-red-500"></i> Minimum 8 characters');
+        $('#uppercase').html(/[A-Z]/.test(password) ? '<i class="fas fa-check text-green-500"></i> At least one uppercase letter' : '<i class="fas fa-times text-red-500"></i> At least one uppercase letter');
+        $('#lowercase').html(/[a-z]/.test(password) ? '<i class="fas fa-check text-green-500"></i> At least one lowercase letter' : '<i class="fas fa-times text-red-500"></i> At least one lowercase letter');
+        $('#symbol').html(/[@$!%*?&]/.test(password) ? '<i class="fas fa-check text-green-500"></i> At least one symbol (@$!%*?&)' : '<i class="fas fa-times text-red-500"></i> At least one symbol (@$!%*?&)');
+
+        // Update the error message based on password strength
+        errorMessage.text(isStrongPassword ? 'Strong Password' : 'Weak Password').toggleClass('text-red-500', !isStrongPassword).toggleClass('text-green-500', isStrongPassword);
+    });
 
 	</script>
 <script>

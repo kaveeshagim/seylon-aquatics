@@ -59,6 +59,24 @@ class PageController extends Controller
         return view('pages.users');
     }
 
+    public function executives()
+    {
+
+        $updateLastActivityTime = Util::updateLastActivityTime();
+
+        if($updateLastActivityTime == 'false') {
+            return redirect('/expired');
+        }elseif($updateLastActivityTime == 'invalid') {
+            return redirect('/');
+        }
+
+        $username = session()->get('username');
+        $ipaddress = Util::get_client_ip();
+        Util::user_auth_log($ipaddress,"user opened executives page",$username, "View executives Page");
+
+        return view('pages.executives');
+    }
+
     public function adduserpage(){
 
         $updateLastActivityTime = Util::updateLastActivityTime();
@@ -506,12 +524,17 @@ class PageController extends Controller
             return redirect('/');
         }
 
+        $fishweeklylist = DB::table('tbl_fishweekly')
+        ->select('tbl_fishweekly.fish_code','tbl_fishweekly.size', 'tbl_fishweekly.size_cm', 'tbl_fish_variety.common_name')
+        ->join('tbl_fish_variety', 'tbl_fish_variety.fish_code', '=', 'tbl_fishweekly.fish_code')
+        ->get();
+
 
         $username = session()->get('username');
         $ipaddress = Util::get_client_ip();
         Util::user_auth_log($ipaddress,"user opened add order page ",$username, "View Add Order Page");
 
-        return view('pages.addorder');
+        return view('pages.addorder')->with('fishweeklylist', $fishweeklylist);
     }
 
     public function show($username)
@@ -602,7 +625,10 @@ class PageController extends Controller
             return redirect('/');
         }
     
-        $fishvarietylist = DB::table('tbl_fish_variety')->select('fish_code', 'common_name')->get();
+        $fishvarietylist = DB::table('tbl_fish_variety')
+        ->select('tbl_fish_variety.fish_code', 'tbl_fish_variety.common_name', 'tbl_fish_variety.size_cm as size_cm','tbl_size.name as size')
+        ->join('tbl_size', 'tbl_size.id', '=', 'tbl_fish_variety.size')
+        ->get();
 
     
         $username = session()->get('username');
@@ -723,12 +749,13 @@ class PageController extends Controller
         }
 
         $fishspecieslist = FishSpecies::select('id', 'name')->get();
+        $fishsizelist = Size::select('id', 'name')->get();
 
         $username = session()->get('username');
         $ipaddress = Util::get_client_ip();
         Util::user_auth_log($ipaddress,"user opened fish variety interface ",$username, "View Fish Variety Page");
 
-        return view('pages.fishvariety')->with('fishspecieslist', $fishspecieslist);
+        return view('pages.fishvariety')->with('fishspecieslist', $fishspecieslist)->with('fishsizelist', $fishsizelist);
 
     }
 

@@ -99,6 +99,10 @@ Route::namespace('App\Http\Controllers')->group(function () {
         Route::get('/editusertypepage/{id}', 'PageController@editusertypepage')->name('editusertypepage');
         Route::post('/editusertype', 'UserTypeController@editusertype')->name('editusertype');
 
+        //Executive routes
+        Route::get('/executives', 'PageController@executives')->name('executives');
+        Route::get('/getexecutives', 'UsersController@getexecutives')->name('getexecutives');
+
         // Customers routes
         Route::get('/customers', 'PageController@customers')->name('customers');
         Route::get('/subcustomers', 'PageController@subcustomers')->name('subcustomers');
@@ -134,6 +138,9 @@ Route::namespace('App\Http\Controllers')->group(function () {
         Route::get('/customerorders', 'PageController@customerorders')->name('customerorders');
         Route::get('/getorderhistory', 'OrderController@getorderhistory')->name('getorderhistory');
         Route::get('/getorderdetail/{id}', 'OrderController@getorderdetail')->name('getorderdetail');
+        Route::get('/downloadSampleOrderExcel', 'OrderController@downloadSampleOrderExcel')->name('downloadSampleOrderExcel');
+        Route::post('/orderuploadexcel', 'OrderController@orderuploadexcel')->name('orderuploadexcel');
+        Route::post('/orderuploadform', 'OrderController@orderuploadform')->name('orderuploadform');
         
         // Invoice routes
         Route::get('/invoices', 'PageController@invoices')->name('invoices');
@@ -211,13 +218,16 @@ Route::namespace('App\Http\Controllers')->group(function () {
         // fish weekly
         Route::get('/fish_weekly', 'PageController@fish_weekly')->name('fish_weekly');
         Route::get('/getfishweekly', 'FishController@getfishweekly')->name('getfishweekly');
+        Route::get('/getfishweeklyhistory', 'FishController@getfishweeklyhistory')->name('getfishweeklyhistory');
         Route::get('/getweekly/{id}', 'FishController@getweekly')->name('getweekly');
         Route::get('/addfishweeklypage', 'PageController@addfishweeklypage')->name('addfishweeklypage');
         Route::post('/fishweeklyuploadexcel', 'FishController@fishweeklyuploadexcel')->name('fishweeklyuploadexcel');
         Route::post('/fishweeklyuploadform', 'FishController@fishweeklyuploadform')->name('fishweeklyuploadform');
+        Route::post('/fetchfishweeklyexceldata', 'FishController@fetchfishweeklyexceldata')->name('fetchfishweeklyexceldata');
         Route::post('/editfishweekly', 'FishController@editfishweekly')->name('editfishweekly');
         Route::get('/deletefishweekly', 'FishController@deletefishweekly')->name('deletefishweekly');
         Route::get('/downloadsampleexcel', 'FishController@downloadsampleexcel')->name('downloadsampleexcel');
+        Route::get('/getfishsizedata', 'FishController@getfishsizedata')->name('getfishsizedata');
 
         // Privilege routes
         Route::get('/categorysection', 'PageController@categorysection')->name('categorysection');

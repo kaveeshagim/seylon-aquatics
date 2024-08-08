@@ -7,6 +7,13 @@ use Illuminate\Support\Facades\DB;
 use App\Models\UserType;
 use App\Models\User;
 use App\Models\UserAuthLog;
+use App\Models\FishHabitat;
+use App\Models\FishVariety;
+use App\Models\FishFamily;
+use App\Models\FishSpecies;
+use App\Models\FishWeekly;
+use App\Models\Size;
+
 
 class Util
 {
@@ -99,39 +106,51 @@ class Util
         }
     }
 
-     public static function getNextVarietyCode($lastCode) {
-        $alphabet = range('A', 'Z');
-        $length = strlen($lastCode);
-        $nextCode = '';
-
-        $carry = 1; // We start with a carry of 1 to increment
-
-        for ($i = $length - 1; $i >= 0; $i--) {
-            $currentChar = $lastCode[$i];
-            $currentIndex = array_search($currentChar, $alphabet);
-
-            if ($currentIndex === false) {
-                throw new Exception('Invalid character in variety code');
-            }
-
-            $newIndex = $currentIndex + $carry;
-
-            if ($newIndex >= count($alphabet)) {
-                $nextCode = $alphabet[0] . $nextCode; // Reset to 'A'
-                $carry = 1; // Carry over to the next significant digit
-            } else {
-                $nextCode = $alphabet[$newIndex] . $nextCode;
-                $carry = 0; // No more carry over needed
-            }
+    public static function generateFishCode($speciesId, $sizeId = null, $sizeCm = null) {
+        // Fetch the species and related data
+        $species = FishSpecies::find($speciesId);
+    
+        // Retrieve the related fish family and habitat
+        $fishFamily = $species->family;
+        $fishHabitat = $fishFamily->habitat->name;
+    
+        $habitatInitial = strtoupper(substr($fishHabitat, 0, 1)); // Get first letter and make it uppercase
+        $speciesInitials = strtoupper(substr($species->name, 0, 2));
+    
+        // Retrieve the size name if a size ID is provided
+        $sizePart = null;
+        if ($sizeId) {
+            $size = Size::find($sizeId);
+            $sizePart = strtoupper($size->name); // Use size name
+        } else {
+            $sizePart = strtoupper($sizeCm);
         }
-
-        // If carry is still 1, it means we have gone past 'ZZ', and need to add a new significant digit
-        if ($carry == 1) {
-            $nextCode = 'A' . $nextCode;
+    
+        // Prepare the query to get the last value for this species and size combination
+        $query = FishVariety::where('species_id', $speciesId);
+    
+        if ($sizeId) {
+            $query->where('size', $sizeId); // Use size_id instead of size
+        } else {
+            $query->where('size_cm', strtoupper($sizeCm));
         }
-
-        return $nextCode;
+    
+        $lastFishVariety = $query->orderBy('id', 'desc')->first();
+    
+        $lastValue = 1;
+        if ($lastFishVariety) {
+            $lastCode = $lastFishVariety->fish_code;
+            $lastValue = intval(substr($lastCode, strrpos($lastCode, '-') + 1)) + 1;
+        }
+    
+        // Generate fish code
+        $fishCode = $habitatInitial . $sizePart . '-' . $speciesInitials . $speciesId . '-' . $lastValue;
+    
+        return $fishCode;
     }
+    
+    
+    
 
     public static function updateLastActivityTime() {
 

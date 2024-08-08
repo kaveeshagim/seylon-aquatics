@@ -78,7 +78,7 @@ class User extends Authenticatable
 
     public function notification()
     {
-        return $this->hasMany(FishVariety::class, 'user_id');
+        return $this->hasMany(Notification::class, 'user_id');
     }
 
     public function passwordreq()

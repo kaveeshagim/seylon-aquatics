@@ -8,7 +8,8 @@
 
     <form id="userprivilegeForm">
     @csrf     
-    <div class="p-4 mb-4 bg-gray-50 border border-gray-200 rounded-lg shadow-sm 2xl:col-span-2 dark:border-gray-700 sm:p-6 dark:bg-gray-800">
+    <!-- <div class="p-4 mb-4 bg-gray-50 border border-gray-200 rounded-lg shadow-sm 2xl:col-span-2 dark:border-gray-700 sm:p-6 dark:bg-gray-800"> -->
+    <div class="p-4 mb-4 bg-gray-50 dark:bg-gray-800 relative shadow-md sm:rounded-lg overflow-hidden">
         <h3 class="mb-4 text-xl font-semibold dark:text-white">Add user privilege</h3>
         <hr class="h-px my-8 bg-gray-200 border-0 dark:bg-gray-600">
         <div class="grid gap-4 sm:grid-cols-3 sm:gap-6">

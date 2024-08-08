@@ -47,7 +47,7 @@
 
 <!-- Add the script to handle PDF download -->
 
-    <script type="module">
+    <script>
 
         document.getElementById('download-pdf').addEventListener('click', function () {
             const element = document.getElementById('order-details');

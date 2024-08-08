@@ -30,9 +30,11 @@ class LoginController extends Controller
             $user_password_hashed = $user->password;
             $user_id = $user->id;
             $user_token = $user->token;
-            $user_usertype = $user->user_type;
+            $user_usertype = $user->tbl_usertype_id;
             $active_status = $user->active_status;
             $avatar = $user->avatar;
+
+            $usertypetitle = DB::table('tbl_usertype')->select('title')->where('id', $user_usertype)->first();
 
             if($active_status == 0) {
 
@@ -56,6 +58,7 @@ class LoginController extends Controller
                         session()->put('user_token',$token);
                         session()->put('username',$username);
                         session()->put('user_type',$user_usertype);
+                        session()->put('user_type_title',$usertypetitle->title);
                         session()->put('avatar',$avatar);
         
                         $ipaddress = Util::get_client_ip();
@@ -76,6 +79,7 @@ class LoginController extends Controller
                         session()->put('user_token',$token);
                         session()->put('username',$username);
                         session()->put('user_type',$user_usertype);
+                        session()->put('user_type_title',$usertypetitle->title);
                         session()->put('avatar',$avatar);
         
                         $ipaddress = Util::get_client_ip();
