@@ -19,8 +19,12 @@ class Order extends Model
     public $timestamps = true;
     protected $fillable = [
         'cus_id',
+        'order_no',
         'executive_id',
         'status',
+        'tot_orders',
+        'tot_bags',
+        'tot_boxes',
         'advanced_payment',
         'shipping_address',
     ];

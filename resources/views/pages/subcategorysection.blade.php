@@ -7,7 +7,8 @@
   <div class="py-8 px-4 mx-auto lg:py-16">
 
     <form id="subcategoryForm">
-    @csrf        
+    @csrf     
+    <input type="hidden" name="_token" value="{{ csrf_token() }}">    
     <!-- <div class="p-4 mb-4 bg-gray-50 border border-gray-200 rounded-lg shadow-sm 2xl:col-span-2 dark:border-gray-700 sm:p-6 dark:bg-gray-800"> -->
     <div class="p-4 mb-4 bg-gray-50 dark:bg-gray-800 relative shadow-md sm:rounded-lg overflow-hidden">
         <h3 class="mb-4 text-xl font-semibold dark:text-white">Add sub category</h3>
@@ -43,18 +44,41 @@
 
 <script>
 
-$(document).ready(function() {
-    function submitForm() {
+function validateRequiredFields(fields) {
+    for (let field of fields) {
+        if (!document.getElementById(field).value.trim()) {
+            return false; // Return false if any field is empty
+        }
+    }
+    return true; // Return true if all fields are filled
+}
 
-    const formData = new FormData(document.getElementById('subcategoryForm'));
 
+function submitForm() {
+
+    const requiredFields = ['category', 'subcategory'];
+
+
+    if (!validateRequiredFields(requiredFields)) {
+        // Display bootbox alert if any required field is empty
+        bootbox.alert({
+            message: "All fields are required. Please fill out all the fields.",
+            backdrop: true,
+            callback: function () {}
+        }).find('.modal-content').addClass("flex items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800");
+    } else {
+        
+        const form = document.getElementById('subcategoryForm');
+        const formData = new FormData(form);
+        
         $.ajax({
-            url: '{{url('addsubcategory')}}',
+            url: '{{ url('addsubcategory') }}',
             type: 'POST',
-            data: formData, 
+            data: formData,
+            processData: false,
+            contentType: false,
             success: function(response) {
-
-                if(response.status == "success") {
+                if (response.status == "success") {
                     bootbox.alert({
                         message: response.message,
                         backdrop: true,
@@ -62,14 +86,11 @@ $(document).ready(function() {
                             refresh();
                         }
                     }).find('.modal-content').addClass("flex items-center p-4 mb-4 text-sm text-green-800 border border-green-300 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400 dark:border-green-800");
-
-                }else if(response.status == "error"){
+                } else if (response.status == "error") {
                     bootbox.alert({
                         message: response.message,
                         backdrop: true,
-                        callback: function () {
-                         
-                        }
+                        callback: function () {}
                     }).find('.modal-content').addClass("flex items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800");
                 }
             },
@@ -78,7 +99,7 @@ $(document).ready(function() {
             }
         });
     }
-});
+}
 
     
 </script>

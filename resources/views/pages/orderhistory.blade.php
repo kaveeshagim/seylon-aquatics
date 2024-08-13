@@ -44,6 +44,7 @@
                         <tr>
                             <th scope="col" class="p-4">Date</th>
                             <th scope="col" class="p-4">Order No</th>
+                            <!-- <th scope="col" class="p-4">Customer</th> -->
                             <th scope="col" class="p-4">Status</th>
                             <th scope="col" class="p-4">View</th>
                         </tr>
@@ -86,7 +87,8 @@ function searchdata() {
         "data": data,
         "columns": [
         { "data": "created_at" },
-          { "data": "order_id" },
+          { "data": "order_no" },
+          // { "data": "customer.name" },
             {
               sortable: false,
               "render": function(data, type, full, meta) {
@@ -97,17 +99,12 @@ function searchdata() {
           {
             sortable: false,
             "render": function(data, type, full, meta) {
-            //   return '<td class="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white"><button onclick="deletemodal(\'' + full.id + '\')" type="button" class="text-red-700 hover:text-white border border-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-3 py-2 text-center dark:border-red-500 dark:text-red-500 dark:hover:text-white dark:hover:bg-red-600 dark:focus:ring-red-900">'+
-            //                                     '<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 " viewbox="0 0 20 20" fill="currentColor" aria-hidden="true">'+
-            //                                         '<path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />'+
-            //                                     '</svg>'+
-            //                                 '</button></td>';
-             return    '<td><button type="button" onclick="deletemodal(\'' + full.id + '\')" data-modal-target="delete-modal" data-modal-toggle="delete-modal" class="text-xs flex items-center text-red-700 hover:text-white border border-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-3 py-2 text-center dark:border-red-500 dark:text-red-500 dark:hover:text-white dark:hover:bg-red-600 dark:focus:ring-red-900">'+
-                                        '<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2 -ml-0.5" viewbox="0 0 20 20" fill="currentColor" aria-hidden="true">'+
-                                            '<path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />'+
-                                        '</svg>'+
-                                        'Delete'+
-                                    '</button>';
+              return '<td><button type="button" onclick="vieworder(\'' + full.id + '\')" class="text-xs py-2 px-3 flex items-center text-sm font-medium text-center text-white bg-green-700 rounded-lg hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">'+
+                                  '<svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">'+
+                    '<path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M9 8h10M9 12h10M9 16h10M4.99 8H5m-.02 4h.01m0 4H5" clip-rule="evenodd"/>'+
+                    '</svg>'+
+                    'Show Users'+
+                '</button>';
             }
           }
         ],
@@ -168,6 +165,10 @@ function searchdata() {
 
 function addneworderpage() {
     location.href= "{{ url('addorderpage') }}";
+}
+
+function vieworder(id) {
+    location.href= "{{ url('vieworderpage') }}" + "/" + id;
 }
 
 </script>

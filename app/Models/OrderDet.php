@@ -20,6 +20,7 @@ class OrderDet extends Model
 
     protected $fillable = [
         'order_id',
+        'order_no',
         'fish_code',
         'size',
         'per_bag',

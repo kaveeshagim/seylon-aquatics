@@ -39,7 +39,7 @@
 
             <div class="w-full">
                 <label for="routename" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Route Name</label>
-                <input type="text" id="routename" name="routename" class="bg-gray-500 border border-gray-300 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"  required/>
+                <input type="text" id="routename" name="routename" class="bg-gray-500 border border-gray-300 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" readonly required/>
             </div>
             </div>
         
@@ -55,19 +55,40 @@
         </section>
 
 
-<script>
+        <script>
+            function validateRequiredFields(fields) {
+                for (let field of fields) {
+                    if (!document.getElementById(field).value.trim()) {
+                        return false; // Return false if any field is empty
+                    }
+                }
+                return true; // Return true if all fields are filled
+            }
 
-$(document).ready(function() {
-    function submitForm() {
 
-        const formData = new FormData(document.getElementById('privilegeForm'));
+function submitForm() {
+    const requiredFields = ['category', 'subcategory', 'privilegesection', 'routename'];
+
+    if (!validateRequiredFields(requiredFields)) {
+        // Display bootbox alert if any required field is empty
+        bootbox.alert({
+            message: "All fields are required. Please fill out all the fields.",
+            backdrop: true,
+            callback: function () {}
+        }).find('.modal-content').addClass("flex items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800");
+    } else {
+        // Proceed with AJAX submission if all fields are filled
+        const form = document.getElementById('privilegeForm');
+        const formData = new FormData(form);
 
         $.ajax({
             url: '{{url('addprivilegesection')}}',
             type: 'POST',
-            data: formData, 
+            data: formData,
+            processData: false, // Prevent jQuery from automatically transforming the data into a query string
+            contentType: false, // Set content type to false so that jQuery doesn't override it
             success: function(response) {
-                if(response.status == "success") {
+                if (response.status === "success") {
                     bootbox.alert({
                         message: response.message,
                         backdrop: true,
@@ -75,14 +96,11 @@ $(document).ready(function() {
                             refresh();
                         }
                     }).find('.modal-content').addClass("flex items-center p-4 mb-4 text-sm text-green-800 border border-green-300 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400 dark:border-green-800");
-
-                }else if(response.status == "error"){
+                } else if (response.status === "error") {
                     bootbox.alert({
                         message: response.message,
                         backdrop: true,
-                        callback: function () {
-
-                        }
+                        callback: function () {}
                     }).find('.modal-content').addClass("flex items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800");
                 }
             },
@@ -91,10 +109,9 @@ $(document).ready(function() {
             }
         });
     }
-});
-
-    
+}
 </script>
+
 
 
 <script>
@@ -102,7 +119,7 @@ $(document).ready(function() {
 
         var category = document.getElementById('subcategory').value;
 
-        if(category !== 'All'){
+        if(category !== ''){
             var sec_name = document.getElementById('privilegesection').value;
             var sub_cat_id = document.getElementById('subcategory').value;
 
@@ -116,7 +133,7 @@ $(document).ready(function() {
                 callback: function () {
                     document.getElementById('privilegesection').value = '';
                 }
-            });
+            }).find('.modal-content').addClass("flex items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800");
         }
 
     }
@@ -125,6 +142,8 @@ $(document).ready(function() {
 <script>
     function load_sub_category() {
 
+        document.getElementById("privilegesection").value = '';
+        document.getElementById("routename").value = '';
         var cat_id = document.getElementById("category").value;
 
         $.ajax({
@@ -136,7 +155,7 @@ $(document).ready(function() {
                 var model = $('#subcategory');
                 model.empty();
 
-                var datalist = "<option value='All'> -- Select -- </option>";
+                var datalist = "<option value=''> -- Select -- </option>";
                 $.each(response.data, function (index, element) {
                     datalist += "<option value='" + element.id + "'>" + element.name + "</option>";
                 });
@@ -151,11 +170,16 @@ $(document).ready(function() {
 </script>
 
 <script>
-    function refresh(){
-
+    function refresh() {
+        // Reset the form fields
         $('#privilegeForm')[0].reset();
+        
+        // Clear the subcategory select options
+        var subcategorySelect = document.getElementById('subcategory');
+        subcategorySelect.innerHTML = "<option value=''>- Select subcategory -</option>";
     }
 </script>
+
 
 
 

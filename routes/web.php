@@ -55,9 +55,7 @@ Route::get('/shipmentreport', function () {
     return view('/shipmentreport');
 });
 Route::get('/broadcast', [BroadcastController::class, 'broadcastMessage']);
-Route::namespace('App\Livewire')->group(function () {
-    Route::get('/livewiredashboard', Dashboard::class)->name('dashboard');
-});
+
 Route::get('/download-pdf', [App\Http\Controllers\PDFController::class, 'downloadPDF']);
 
 
@@ -136,15 +134,23 @@ Route::namespace('App\Http\Controllers')->group(function () {
         Route::get('/getorders', 'OrderController@getorders')->name('getorders');
         Route::get('/orderhistory', 'PageController@orderhistory')->name('orderhistory');
         Route::get('/customerorders', 'PageController@customerorders')->name('customerorders');
+        Route::get('/getcustomerorders', 'OrderController@getcustomerorders')->name('getcustomerorders');
         Route::get('/getorderhistory', 'OrderController@getorderhistory')->name('getorderhistory');
         Route::get('/getorderdetail/{id}', 'OrderController@getorderdetail')->name('getorderdetail');
         Route::get('/downloadSampleOrderExcel', 'OrderController@downloadSampleOrderExcel')->name('downloadSampleOrderExcel');
         Route::post('/orderuploadexcel', 'OrderController@orderuploadexcel')->name('orderuploadexcel');
         Route::post('/orderuploadform', 'OrderController@orderuploadform')->name('orderuploadform');
-        
+        Route::post('/fetchfishweeklydata', 'OrderController@fetchfishweeklydata')->name('fetchfishweeklydata');
+        Route::post('/orderuploadexcel', 'OrderController@orderuploadexcel')->name('orderuploadexcel');
+        Route::post('/orderuploadform', 'OrderController@orderuploadform')->name('orderuploadform');
+        Route::get('/vieworderdetpage/{id}', 'PageController@vieworderdetpage')->name('vieworderdetpage');
+        Route::get('/getcusorderdetail/{id}', 'OrderController@getcusorderdetail')->name('getcusorderdetail');
+        Route::get('/orderconfirm/{id}', 'PageController@orderconfirm')->name('orderconfirm');
+
         // Invoice routes
         Route::get('/invoices', 'PageController@invoices')->name('invoices');
         Route::get('/getinvoices', 'InvoiceController@getinvoices')->name('getinvoices');
+        Route::get('/viewinvoicedetpage/{id}', 'PageController@viewinvoicedetpage')->name('viewinvoicedetpage');
 
 
         // Password manager routes
@@ -250,6 +256,9 @@ Route::namespace('App\Http\Controllers')->group(function () {
 
         // Excel upload
         Route::post('/upload-excel', 'ExcelImportController@upload')->name('upload.excel');
+
+        // Access Denied
+        Route::get('/accessdenied', 'PageController@accessdenied')->name('accessdenied');
 
 
 });

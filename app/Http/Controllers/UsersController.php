@@ -120,7 +120,7 @@ public function getexecutives() {
             'username' => 'required',
             'firstname' => 'required',
             'lastname' => 'nullable',
-            'password' => 'required',
+            // 'password' => 'required',
             'inline-radio-group' => 'required|boolean',
             'company' => 'nullable',
             'email' => 'nullable|email',
@@ -131,7 +131,7 @@ public function getexecutives() {
     
         $username = $validatedData['username'];
         $id = $request->input('userid');
-        $hashedPassword = Hash::make($validatedData['password']);
+        // $hashedPassword = Hash::make($validatedData['password']);
     
         // Check if there are other records with the same username
         $existingUser = User::where('username', $username)->where('id', '!=', $id)->first();
@@ -166,7 +166,7 @@ public function getexecutives() {
         $user->username = $validatedData['username'];
         $user->fname = $validatedData['firstname'];
         $user->lname = $validatedData['lastname'];
-        $user->password = $hashedPassword; // Encrypt the password before saving
+        // $user->password = $hashedPassword; 
         $user->active_status = $validatedData['inline-radio-group'];
         $user->company = $validatedData['company'];
         $user->email = $validatedData['email'];

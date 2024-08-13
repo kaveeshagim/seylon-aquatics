@@ -66,18 +66,18 @@
             <label for="username" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Username</label>
             <input type="text" id="username" name="username" class="bg-gray-500 border border-gray-300 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" value="<?php echo $data->username ?>"  required/>
         </div>
-        <div class="relative">
+        <!-- <div class="relative">
             <label for="password" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
                 Password <span id="errorMessage" class="font-semibold text-red-500"></span>
             </label>
             <input type="password" id="password" name="password" class="bg-gray-500 border border-gray-300 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 pr-10 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" value="<?php echo $data->password ?>" required />
             <button type="button" id="togglePassword" class="absolute inset-y-0 right-0 flex items-center pr-3">
-                <!-- Eye open icon -->
+
                 <svg id="eyeOpenIcon" class="w-6 h-6 text-gray-800 dark:text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                     <path stroke="currentColor" stroke-width="2" d="M21 12c0 1.2-4.03 6-9 6s-9-4.8-9-6c0-1.2 4.03-6 9-6s9 4.8 9 6Z"/>
                     <path stroke="currentColor" stroke-width="2" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/>
                 </svg>
-                <!-- Eye close icon (hidden by default) -->
+
                 <svg id="eyeCloseIcon" class="w-6 h-6 text-gray-800 dark:text-white hidden" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
                     <path d="m4 15.6 3.055-3.056A4.913 4.913 0 0 1 7 12.012a5.006 5.006 0 0 1 5-5c.178.009.356.027.532.054l1.744-1.744A8.973 8.973 0 0 0 12 5.012c-5.388 0-10 5.336-10 7A6.49 6.49 0 0 0 4 15.6Z"/>
                     <path d="m14.7 10.726 4.995-5.007A.998.998 0 0 0 18.99 4a1 1 0 0 0-.71.305l-4.995 5.007a2.98 2.98 0 0 0-.588-.21l-.035-.01a2.981 2.981 0 0 0-3.584 3.583c0 .012.008.022.01.033.05.204.12.402.211.59l-4.995 4.983a1 1 0 1 0 1.414 1.414l4.995-4.983c.189.091.386.162.59.211.011 0 .021.007.033.01a2.982 2.982 0 0 0 3.584-3.584c0-.012-.008-.023-.011-.035a3.05 3.05 0 0 0-.21-.588Z"/>
@@ -85,7 +85,7 @@
                 </svg>
             </button>
             <span id="errorMessage" class="font-semibold text-red-500"></span>
-        </div>
+        </div> -->
 
 
         <!-- <div class="w-full">
@@ -113,7 +113,7 @@
                 <img id="selectedImagePreview" src="{{ $data->avatar ? asset('storage/avatars' . $data->avatar) : 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" fill="none" viewBox="0 0 200 200"><rect width="100%" height="100%" fill="none"/><text x="50%" y="50%" alignment-baseline="middle" text-anchor="middle" fill="gray" font-size="20">No Image</text></svg>' }}" class="hidden mt-2" alt="Selected Image Preview" style="max-width: 200px; max-height: 200px;">
             </div>
 
-        <div class="w-full">
+        <!-- <div class="w-full">
             <div class="flex p-4 mb-2 mt-4 text-sm text-blue-800 rounded-lg bg-blue-50 dark:bg-gray-800 dark:text-blue-400" role="alert">
                 <svg class="flex-shrink-0 inline w-4 h-4 me-3 mt-[2px]" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
                     <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
@@ -133,7 +133,7 @@
                     </ul>
                 </div>
             </div>
-        </div>
+        </div> -->
 
         
     </div>
@@ -161,7 +161,7 @@
     function submitForm() {
 
         // Check if the required fields are filled
-        let requiredFields = ['#usertype', '#first_name', '#username', '#company', '#email', '#primary_contact', '#password'];
+        let requiredFields = ['#usertype', '#first_name', '#username', '#company', '#email', '#primary_contact'];
         let allFieldsFilled = true;
 
         requiredFields.forEach(function(selector) {
@@ -184,15 +184,15 @@
         }
 
         // Validate password requirements
-        const password = $('#password').val();
-        const strongPasswordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
-        if (!strongPasswordRegex.test(password)) {
-            bootbox.alert({
-                message: "Password does not meet the requirements.",
-                backdrop: true,
-            }).find('.modal-content').addClass("flex items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800");
-            return;
-        }
+        // const password = $('#password').val();
+        // const strongPasswordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+        // if (!strongPasswordRegex.test(password)) {
+        //     bootbox.alert({
+        //         message: "Password does not meet the requirements.",
+        //         backdrop: true,
+        //     }).find('.modal-content').addClass("flex items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800");
+        //     return;
+        // }
 
 
         const formData = new FormData(document.getElementById('usereditForm'));
@@ -214,7 +214,7 @@
         formData.append('email', $('input[name="email"]').val());
         formData.append('primary_contact', $('input[name="primary_contact"]').val());
         formData.append('secondary_contact', $('input[name="secondary_contact"]').val());
-        formData.append('password', $('input[name="password"]').val());
+        // formData.append('password', $('input[name="password"]').val());
         formData.append('inline-radio-group', $('input[name="inline-radio-group"]:checked').val());
 
         $.ajax({

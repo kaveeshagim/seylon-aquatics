@@ -69,7 +69,9 @@ class Util
     public static function Privilege($route_name){
 
         $user_id = session('userid');
+        $user_type = session('user_type');
         $user_token = session('user_token');
+
 
         if(!$user_id){
             return 'LOGOUT';
@@ -77,20 +79,18 @@ class Util
 
         if($user_token){
 
-            $get_token = DB::table('user_master')
+            $get_token = DB::table('tbl_users')
                 ->select('token')
                 ->where('token','=',$user_token)
                 ->first();
 
             if($get_token){
 
-                $privilege = DB::table('tbl_prev_mst')
+                $privilege = DB::table('tbl_privilege_mst')
                     ->select('permission')
-                    ->join('tbl_prev_sec_mst', 'tbl_prev_sec_mst.id', '=', 'tbl_prev_mst.sec_id')
-                    ->join('user_master', 'user_master.user_type_id', '=', 'tbl_prev_mst.user_type_id')
                     ->where('permission', '=', '1')
-                    ->where('tbl_prev_sec_mst.route_name', '=', $route_name)
-                    ->where('user_master.id', '=', $user_id)
+                    ->where('tbl_privilege_mst.route_name', '=', $route_name)
+                    ->where('tbl_privilege_mst.user_type', '=', $user_type)
                     ->first();
 
                 if($privilege){

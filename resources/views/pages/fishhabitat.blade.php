@@ -264,6 +264,21 @@ function searchdata() {
         const form = document.getElementById('create-form');
         const formData = new FormData(form);
 
+        let isEmpty = false;
+        formData.forEach((value, key) => {
+            if (!value.trim()) { // Check if any value is empty or just whitespace
+                isEmpty = true;
+            }
+        });
+
+        if (isEmpty) {
+            bootbox.alert({
+                message: 'Please fill out all required fields.',
+                backdrop: true
+            }).find('.modal-content').addClass("flex items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800");
+            return; // Stop the function if the form is not complete
+        }
+
         $.ajax({
             url: '{{url('addfishhabitat')}}',
             type: 'POST',

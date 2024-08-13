@@ -42,6 +42,7 @@
                 <table id="usertype-table" class="dataTable w-full text-sm text-left text-gray-500 dark:text-gray-400">
                     <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                         <tr>
+                            <th scope="col" class="p-4">User Type ID</th>
                             <th scope="col" class="p-4">User Type</th>
                             <th scope="col" class="p-4">Users Count</th>
                             <th scope="col" class="p-4">Users</th>
@@ -227,16 +228,16 @@ function searchdata() {
         "deferRender": true,
         "data": data,
         "columns": [
+          { "data": "id" },
           { "data": "title" },
           { "data": "userscount" },
           {
             sortable: false,
             "render": function(data, type, full, meta) {
-                                  return '<td><button type="button" onclick="showmodal(\'' + full.id + '\')" data-modal-target="show-modal" data-modal-toggle="show-modal" class="text-xs py-2 px-3 flex items-center text-sm font-medium text-center text-white bg-yellow-700 rounded-lg hover:bg-yellow-800 focus:ring-4 focus:outline-none focus:ring-yellow-300 dark:bg-yellow-600 dark:hover:bg-yellow-700 dark:focus:ring-yellow-800">'+
-                    '<svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">'+
-  '<path stroke="currentColor" stroke-width="2" d="M21 12c0 1.2-4.03 6-9 6s-9-4.8-9-6c0-1.2 4.03-6 9-6s9 4.8 9 6Z"/>'+
-  '<path stroke="currentColor" stroke-width="2" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/>'+
-'</svg>'+
+                                  return '<td><button type="button" onclick="showmodal(\'' + full.id + '\')" data-modal-target="show-modal" data-modal-toggle="show-modal" class="text-xs py-2 px-3 flex items-center text-sm font-medium text-center text-white bg-green-700 rounded-lg hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">'+
+                                  '<svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">'+
+                    '<path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M9 8h10M9 12h10M9 16h10M4.99 8H5m-.02 4h.01m0 4H5" clip-rule="evenodd"/>'+
+                    '</svg>'+
                     'Show Users'+
                 '</button>';
 
@@ -290,7 +291,7 @@ function searchdata() {
             });
         },
         "columnDefs": [
-          { className: "text-center", "targets": [0, 1] }
+          { className: "text-center", "targets": [0, 1, 2] }
         ],
         "dom": 'Bfrtip',
         "buttons": [

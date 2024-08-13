@@ -19,6 +19,11 @@ class PrivCategory extends Model
         return $this->hasMany(PrivSubcategory::class, 'cat_id');
     }
 
+    public function privileges()
+    {
+        return $this->hasMany(PrivilegeMst::class, 'cat_id');
+    }
+
      public function getCreatedAtAttribute($value)
     {
         return Carbon::parse($value)->format('Y-m-d H:i:s');

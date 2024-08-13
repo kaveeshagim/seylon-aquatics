@@ -56,6 +56,15 @@
                   <input type="tel" name="secondary_contact" id="secondary_contact" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
               </div>
               <div class="w-full">
+                    <label for="cususer" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Customer user account</label>
+                    <select id="cususer"  name="cususer" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                        <option value="">- Select user account -</option>
+                        @foreach($cususeraccounts as $value)
+                        <option value="{{ $value->id }}">{{ $value->username }}</option>
+                        @endforeach
+                    </select>
+             </div>
+              <div class="w-full">
                     <label for="executive" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Executive in-charge</label>
                     <select id="executive"  name="executive" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
                         <option value="">- Select executive in charge -</option>
@@ -107,7 +116,7 @@ function submitForm(){
 
         // Check if all required fields are filled
         let isValid = true;
-        let requiredFields = ['#title', '#first_name', '#last_name', '#company', '#email', '#country', '#address', '#primary_contact', '#executive'];
+        let requiredFields = ['#title', '#first_name', '#last_name', '#company', '#email', '#country', '#address', '#primary_contact', '#cususer', '#executive'];
         
         requiredFields.forEach(function(field) {
             if ($(field).val() === '') {

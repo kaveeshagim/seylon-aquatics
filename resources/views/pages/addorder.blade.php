@@ -63,19 +63,6 @@
                             </button>
                         </div>
                     </div>
-
-                    <table id="recordsTableExcel" class="min-w-full divide-y divide-gray-200 dark:divide-gray-600 mt-5">
-                            <thead>
-                            <tr>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Fish Code</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Quantity</th>
-                                </tr>
-                            </thead>
-                            <tbody id="recordsBodyExcel">
-                                <!-- Dynamic rows go here -->
-                            </tbody>
-                        </table>
-
                     <hr class="h-px bg-gray-200 border-0 dark:bg-gray-600">
 
                     <button type="button" onclick="submitOrderExcel('excel')" id="submitButtonExcel" class="inline-flex items-center px-5 py-2.5 mt-4 sm:mt-6 text-sm font-medium text-center text-white bg-green-700 rounded-lg focus:ring-4 focus:ring-green-200 dark:focus:ring-green-900 hover:bg-green-800" disabled="true">
@@ -201,46 +188,26 @@ function validateFile() {
 }
 
 
-function displayTable(fishData, rows) {
-    console.log('Displaying table data:', fishData, rows); // Debugging line
-    const tbody = document.getElementById('recordsBodyExcel');
-    
-    if (!tbody) {
-        console.error('Could not find tbody with ID "recordsBodyExcel"');
-        return;
-    }
-    
-    tbody.innerHTML = ''; // Clear existing rows
-
-    rows.forEach(row => {
-        const fishDetails = fishData[row.fish_code] || { size: 'N/A', size_cm: 'N/A' };
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-            <td class="px-6 py-4 whitespace-nowrap text-gray-900 dark:text-gray-50">${row.fish_code}</td>
-            <td class="px-6 py-4 whitespace-nowrap text-gray-900 dark:text-gray-50">${row.quantity}</td>
-        `;
-        tbody.appendChild(tr);
-    });
-
-    console.log('Table populated successfully'); // Debugging line
-}
 
 
 function fetchFishData(validatedRows) {
     const fishCodes = validatedRows.map(row => row.fish_code);
 
     $.ajax({
-        url: '{{url('fetchfishweeklyexceldata')}}',
+        url: '{{url('fetchfishweeklydata')}}',
         type: 'POST',
         dataType: 'json',
         data: {
             fish_codes: fishCodes,
             _token: $('meta[name="csrf-token"]').attr('content')
         },
-        success: function(fishData) {
-            console.log(fishData);
-            displayTable(fishData, validatedRows);
-            $('#submitButtonExcel').prop('disabled', false);
+        success: function(response) {
+            if (response.status == 'error') {
+                showBootboxAlert(response.message, 'red');
+            } else {
+                showBootboxAlert(response.message, 'green');
+                $('#submitButtonExcel').prop('disabled', false);
+            }
         },
         error: function(xhr, status, error) {
             console.error('Error fetching fish data:', error);
@@ -526,18 +493,27 @@ function submitOrderExcel(method) {
     // Get CSRF token
     const csrfToken = document.querySelector('input[name="_token"]').value;
 
-    // Get selected week
-    const selectedWeek = document.querySelector('input[name="week-radio"]:checked').value;
+    // Get shipping address from input field
+    const shippingAddress = document.querySelector('textarea[name="shippingaddress"]').value;
+
+        // Check if shipping address is empty
+        if (!shippingAddress) {
+        bootbox.alert({
+            message: "Please enter a shipping address before submitting.",
+            size: 'small'
+        }).find('.modal-content').addClass("flex items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800");
+        return;
+    }
 
     // Create FormData object to send file and other data
     const formData = new FormData();
     formData.append('excel_input', fileInput.files[0]);
-    formData.append('fish_week', selectedWeek);
+    formData.append('shippingaddress', shippingAddress);
 
     // Set the URL based on the method
     let ajaxUrl;
     if (method === 'excel') {
-        ajaxUrl = '{{ url("fishweeklyuploadexcel") }}';
+        ajaxUrl = '{{ url("orderuploadexcel") }}';
     }
 
     $.ajax({
@@ -555,7 +531,7 @@ function submitOrderExcel(method) {
                     message: response.message,
                     backdrop: true,
                     callback: function () {
-                        refresh(); // Assuming refresh clears the form or updates the UI
+                        location.href = "{{ url('vieworderdetpage') }}" + "/" + response.id; // Assuming refresh clears the form or updates the UI
                     }
                 }).find('.modal-content').addClass("flex items-center p-4 mb-4 text-sm text-green-800 border border-green-300 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400 dark:border-green-800");
             } else if (response.status === "error") {
@@ -566,10 +542,14 @@ function submitOrderExcel(method) {
             }
         },
         error: function(jqXHR, textStatus, errorThrown) {
-            alert('Form submission failed: ' + textStatus + ' ' + errorThrown);
+            bootbox.alert({
+                message: 'Form submission failed: ' + textStatus + ' ' + errorThrown,
+                backdrop: true
+            }).find('.modal-content').addClass("flex items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800");
         }
     });
 }
+
 
 document.getElementById('fish_code').addEventListener('change', function() {
     const fishCode = this.value;
@@ -596,9 +576,22 @@ document.getElementById('fish_code').addEventListener('change', function() {
 
 
 function refresh() {
+    // Reset the order form fields
     $('#orderForm')[0].reset();
+    
+    // Hide the Excel form and submission button
     $('#excelForm').addClass('hidden');
     $('#formSubmission').addClass('hidden');
+
+    // Clear the shipping address field
+    $('textarea[name="shippingaddress"]').val('');
+
+    // Clear the selection of the radio buttons for the upload method
+    $('input[name="upload-radio"]').prop('checked', false);
+}
+
+function vieworder(id) {
+    location.href= "{{ url('vieworderdetpage') }}" + "/" + id;
 }
 
 </script>

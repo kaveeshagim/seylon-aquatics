@@ -43,6 +43,7 @@ class CustomersController extends Controller
         // Validate the request data
         $validatedData = $request->validate([
             'title' => 'required|string|max:255',
+            'cususer' => 'required|integer',
             'first_name' => 'required|string|max:255',
             'last_name' => 'nullable|string|max:255',
             'company' => 'nullable|string|max:255',
@@ -59,12 +60,13 @@ class CustomersController extends Controller
             // Create a new customer record
             Customer::create([
                 'title' => $validatedData['title'],
+                'user_id' => $validatedData['cususer'],
                 'fname' => $validatedData['first_name'],
                 'lname' => $validatedData['last_name'] ?? null,
                 'company' => $validatedData['company'] ?? null,
                 'country' => $validatedData['country'],
                 'address' => $validatedData['address'],
-                'acive_status' => $validatedData['inline-radio-group'],
+                'active_status' => $validatedData['inline-radio-group'],
                 'email' => $validatedData['email'],
                 'primary_contact' => $validatedData['primary_contact'],
                 'secondary_contact' => $validatedData['secondary_contact'] ?? null,
@@ -102,6 +104,7 @@ class CustomersController extends Controller
             'primary_contact' => 'required|string|max:15',
             'secondary_contact' => 'nullable|string|max:15',
             'executive' => 'required|integer',
+            'cususer' => 'required|integer',
         ]);
     
         try {
@@ -121,6 +124,7 @@ class CustomersController extends Controller
                 'primary_contact' => $validatedData['primary_contact'],
                 'secondary_contact' => $validatedData['secondary_contact'] ?? null,
                 'executive' => $validatedData['executive'],
+                'user_id' => $validatedData['cususer'],
             ]);
     
             // Log the user's action

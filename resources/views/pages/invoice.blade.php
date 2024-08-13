@@ -8,21 +8,6 @@
 
     <div class="mx-auto max-w-screen-2xl px-4 lg:px-12">
 
-    <div id="toast-delete-success" class="hidden flex items-center w-full max-w-xs p-4 mb-4 text-gray-500 bg-gray-50 rounded-lg shadow dark:text-gray-400 dark:bg-gray-800" role="alert">
-        <div class="inline-flex items-center justify-center flex-shrink-0 w-8 h-8 text-green-500 bg-green-100 rounded-lg dark:bg-green-800 dark:text-green-200">
-            <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-                <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z"/>
-            </svg>
-            <span class="sr-only">Check icon</span>
-        </div>
-        <div class="ms-3 text-sm font-normal">Record deleted successfully.</div>
-        <button type="button" class="ms-auto -mx-1.5 -my-1.5 bg-gray-50 text-gray-400 hover:text-gray-900 rounded-lg focus:ring-2 focus:ring-gray-300 p-1.5 hover:bg-gray-100 inline-flex items-center justify-center h-8 w-8 dark:text-gray-500 dark:hover:text-white dark:bg-gray-800 dark:hover:bg-gray-700" data-dismiss-target="#toast-delete-success" aria-label="Close">
-            <span class="sr-only">Close</span>
-            <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
-                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
-            </svg>
-        </button>
-    </div>
 
 
         <div class="bg-gray-50 dark:bg-gray-800 relative shadow-md sm:rounded-lg overflow-hidden">
@@ -49,15 +34,16 @@
 
 
             <div class="overflow-x-auto">
-                <table id="users-table" class="dataTable w-full text-sm text-left text-gray-500 dark:text-gray-400">
+                <table id="invoice-table" class="dataTable w-full text-sm text-left text-gray-500 dark:text-gray-400">
                     <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                         <tr>
-                            <th scope="col" class="p-4">Name</th>
-                            <th scope="col" class="p-4">User Type</th>
-                            <th scope="col" class="p-4">Active status</th>
-                            <!-- <th scope="col" class="p-4">View</th> -->
-                            <th scope="col" class="p-4">Edit</th>
-                            <th scope="col" class="p-4">Delete</th>
+                            <th scope="col" class="p-4">Order No</th>
+                            <th scope="col" class="p-4">Customer</th>
+                            <th scope="col" class="p-4">Final Total</th>
+                            <th scope="col" class="p-4">Shipment Date</th>
+                            <th scope="col" class="p-4">Invoice Status</th>
+                            <th scope="col" class="p-4">Payment Status</th>
+                            <th scope="col" class="p-4">View</th>
                         </tr>
                     </thead>
 
@@ -101,7 +87,6 @@ Toggle modal
         </div>
     </div>
 </div>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/datepicker.min.js"></script>
 
 
 <script>
@@ -116,7 +101,7 @@ function searchdata() {
   $('#invoice-table').DataTable().destroy();
 
   $.ajax({
-    url: "getinvoices",
+    url: "{{url('getinvoices')}}",
     type: "GET",
     dataSrc: "data",
     success: function(data) {
@@ -129,54 +114,25 @@ function searchdata() {
         "deferRender": true,
         "data": data,
         "columns": [
-            { "data": "username" },
-          { "data": "usertype" },
-{
-              "data": "token",
-              "render": function (data, type, full, meta) {
-                  if (data !== null && data !== '') {
-                      return '<div class="flex items-center"><div class="h-2.5 w-2.5 rounded-full bg-green-500 me-2"></div> Online</div>';
-                  } else {
-                      return '<div class="flex items-center"><div class="h-2.5 w-2.5 rounded-full bg-red-500 me-2"></div> Offline</div>';
-                  }
-              }
-          },
+            { "data": "order_no" },
+          { "data": "cus_id" },
+          { "data": "final_total" },
+          { "data": "shipment_date" },
+          { "data": "invoice_status" },
+          { "data": "payment_status" },
 
           {
             sortable: false,
             "render": function(data, type, full, meta) {
-                //   return '<td class="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white"><button onclick="editusers(\'' + full.id + '\')" type="button" class="py-2 px-3 text-sm font-medium text-center text-white bg-primary-700 rounded-lg hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">'+
-                //                         '<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewbox="0 0 20 20" fill="currentColor" aria-hidden="true">'+
-                //                             '<path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z" />'+
-                //                             '<path fill-rule="evenodd" d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" clip-rule="evenodd" />'+
-                //                         '</svg>'+
-                //                     '</button></td>';
-                                       return '<td><button type="button" onclick="editusers(\'' + full.id + '\')" data-drawer-target="drawer-update-product" data-drawer-show="drawer-update-product" aria-controls="drawer-update-product" class="text-xs py-2 px-3 flex items-center text-sm font-medium text-center text-white bg-primary-700 rounded-lg hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">'+
-                    '<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2 -ml-0.5" viewbox="0 0 20 20" fill="currentColor" aria-hidden="true">'+
-                        '<path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z" />'+
-                        '<path fill-rule="evenodd" d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" clip-rule="evenodd" />'+
+              return '<td><button type="button" onclick="vieworder(\'' + full.id + '\')" class="text-xs py-2 px-3 flex items-center text-sm font-medium text-center text-white bg-green-700 rounded-lg hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">'+
+                                  '<svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">'+
+                    '<path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M9 8h10M9 12h10M9 16h10M4.99 8H5m-.02 4h.01m0 4H5" clip-rule="evenodd"/>'+
                     '</svg>'+
-                    'Edit'+
+                    'Show Users'+
                 '</button>';
             }
-
-          },
-          {
-            sortable: false,
-            "render": function(data, type, full, meta) {
-            //   return '<td class="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white"><button onclick="deletemodal(\'' + full.id + '\')" type="button" class="text-red-700 hover:text-white border border-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-3 py-2 text-center dark:border-red-500 dark:text-red-500 dark:hover:text-white dark:hover:bg-red-600 dark:focus:ring-red-900">'+
-            //                                     '<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 " viewbox="0 0 20 20" fill="currentColor" aria-hidden="true">'+
-            //                                         '<path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />'+
-            //                                     '</svg>'+
-            //                                 '</button></td>';
-             return    '<td><button type="button" onclick="deletemodal(\'' + full.id + '\')" data-modal-target="delete-modal" data-modal-toggle="delete-modal" class="text-xs flex items-center text-red-700 hover:text-white border border-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-3 py-2 text-center dark:border-red-500 dark:text-red-500 dark:hover:text-white dark:hover:bg-red-600 dark:focus:ring-red-900">'+
-                                        '<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2 -ml-0.5" viewbox="0 0 20 20" fill="currentColor" aria-hidden="true">'+
-                                            '<path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />'+
-                                        '</svg>'+
-                                        'Delete'+
-                                    '</button>';
-            }
           }
+
         ],
          "initComplete": function(settings, json) {
             $('.dt-info').addClass('text-sm font-normal text-gray-500 dark:text-gray-400 ml-3');

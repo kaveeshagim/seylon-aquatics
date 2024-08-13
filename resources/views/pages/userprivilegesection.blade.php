@@ -49,8 +49,8 @@
                 <table id="sec_table" class="w-full text-sm text-left text-gray-500 dark:text-gray-400" width="100%" cellspacing="0">
                 <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                         <tr>
-                            <th width="40%" class="text-center"><p>Section Name</p></th>
-                            <th width="10%" style="padding-left: 30px"><input id="select_all" name="select_all" type="checkbox" onclick="Test()"></th>
+                            <th scope="col" class="p-4">Section Name</th>
+                            <th scope="col" class="p-4"><input id="select_all" name="select_all" type="checkbox" onclick="Test()"></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -71,23 +71,17 @@
 
 <script>
 
-    function Test() {
+function Test() {
+    var items = document.getElementById('sec_table');
+    var total_rows = items.tBodies[0].rows.length;
+    var select_all = document.getElementById('select_all').checked;
 
-        var items = document.getElementById('sec_table');
-        var total_rows = items.tBodies[0].rows.length;
-
-        for (var i = 1; total_rows >= i; i++) {
-
-            var row = items.rows[i];
-            var select_all = items.rows[0].cells[1].childNodes[0].checked;
-
-            if(select_all === true){
-                row.cells[1].childNodes[0].checked = true;
-            }else{
-                row.cells[1].childNodes[0].checked = false;
-            }
-        }
+    for (var i = 0; i < total_rows; i++) {
+        var row = items.tBodies[0].rows[i];
+        row.cells[1].childNodes[0].checked = select_all;
     }
+}
+
 
     function load_cat_data() {
 
@@ -139,76 +133,51 @@
     }
 
     function load_sections() {
+    var cat_id = document.getElementById("category").value;
+    var sub_cat_id = document.getElementById("subcategory").value;
+    var user_type = document.getElementById('usertype').value;
 
-        var cat_id = document.getElementById("category").value;
-        var sub_cat_id = document.getElementById("subcategory").value;
-        var user_type = document.getElementById('usertype').value;
+    if (sub_cat_id !== 'All') {
+        $("#sec_table").DataTable().destroy();
 
-        if(subcategory !== 'All'){
+        $('#sec_table').DataTable({
+            "processing": true,
+            "ajax": {
+                url: '{{url('get_prev_section')}}',
+                type: 'GET',
+                data: {cat_id: cat_id, sub_cat_id: sub_cat_id, user_type: user_type},
+            },
+            "columns": [
+                { "data": "section_name" },
+                {
+                    sortable: false,
+                    "render": function(data, type, full, meta) {
+                        var id = "" + full.id;
+                        var cat_id = "" + full.cat_id;
+                        var sub_cat_id = "" + full.subcat_id;
 
-            $("#sec_table").dataTable().fnDestroy();
-
-            $('#sec_table').DataTable({
-                "processing": true,
-                "ajax": {
-                    url: '{{url('get_prev_section')}}',
-                    type: 'GET',
-                    data: {cat_id: cat_id, sub_cat_id: sub_cat_id, user_type: user_type},
+                        var checked = full.permission == 1 ? 'checked="checked"' : '';
+                        return '<input '+checked+' value="'+id+'" id="sec_id" name="sec_id" type="checkbox">' +
+                               '<input value="'+cat_id+'" id="category" name="category" type="hidden">' +
+                               '<input value="'+sub_cat_id+'" id="sub_category" name="sub_category" type="hidden">';
+                    },
                 },
-                "columns":
-                    [
-                        { "data": "sec_name" },
-                        {
-                            sortable: false,
-                            "render": function(data, type, full, meta)
-                            {
-                                var id = "" + full.id;
-                                var cat_id = "" + full.cat_id;
-                                var sub_cat_id = "" + full.subcat_id;
-
-                                if(full.permission){
-
-                                    var permission = full.permission;
-
-                                    if(permission == 1){
-
-                                        return '<input checked="checked" value="'+id+'" id="sec_id" name="sec_id" type="checkbox">' +
-                                            '<input value="'+cat_id+'" id="category" name="category" type="hidden">' +
-                                            '<input value="'+sub_cat_id+'" id="sub_category" name="sub_category" type="hidden">';
-
-                                    }else {
-
-                                        return '<input value="'+id+'" id="sec_id" name="sec_id" type="checkbox">' +
-                                            '<input value="'+cat_id+'" id="category" name="category" type="hidden">' +
-                                            '<input value="'+sub_cat_id+'" id="sub_category" name="sub_category" type="hidden">';
-                                    }
-
-                                }else {
-
-                                    return '<input value="'+id+'" id="sec_id" name="sec_id" type="checkbox">' +
-                                        '<input value="'+cat_id+'" id="category" name="category" type="hidden">' +
-                                        '<input value="'+sub_cat_id+'" id="sub_category" name="sub_category" type="hidden">';
-                                }
-                            },
-                        },
-                    ],
-                "columnDefs": [{
-                    className: "text-center",
-                    "targets": [1]
-                }],
-                "order": [[ 0, "desc" ]],
-                "paging": false,
-                "searching": false,
-            });
-
-        }else{
-
-            bootbox.alert({
-                message: "Please select sub category",
-                size: 'small',
-            }).find('.modal-content').addClass("flex items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800");
-        }
+            ],
+            "columnDefs": [{
+                className: "text-center",
+                "targets": [1]
+            }],
+            "searching": false,
+            "paging": false,
+        });
+    } else {
+        bootbox.alert({
+            message: "Please select sub category",
+            size: 'small',
+        }).find('.modal-content').addClass("flex items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800");
     }
+}
+
 
     function save_privilege() {
 

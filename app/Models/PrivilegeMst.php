@@ -11,12 +11,22 @@ class PrivilegeMst extends Model
 {
     use HasFactory;
     protected $table = 'tbl_privilege_mst';
-    protected $fillable = ['route_id', 'user_type', 'sec_id', 'cre_user', 'updated_user'];
+    protected $fillable = ['route_name', 'user_type', 'cat_id', 'subcat_id', 'sec_id', 'permission', 'cre_user', 'updated_user'];
     public $timestamps = true;
     
     public function privilegeSection()
     {
         return $this->belongsTo(PrivilegeSection::class, 'sec_id');
+    }
+
+    public function privilegeCategory()
+    {
+        return $this->belongsTo(PrivCategory::class, 'cat_id');
+    }
+
+    public function privilegeSubCategory()
+    {
+        return $this->belongsTo(PrivSubcategory::class, 'subcat_id');
     }
 
 

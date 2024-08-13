@@ -64,12 +64,32 @@ class PrivilegeController extends Controller
     
 
     public function addprivilegesection(Request $request) {
-        $subcategory = $request->input('subcategory');
-        $category = $request->input('category');
-        $sec_name    = $request->input('privilegesection');
-        $route_name  = $request->input('routename');
+        // Define validation rules
+        $rules = [
+            'category' => 'required|numeric',
+            'subcategory' => 'required|numeric',
+            'privilegesection' => 'required|string',
+            'routename' => 'required|string',
+        ];
+        
+        // Validate the request data
+        $validatedData = $request->validate($rules);
+        
+        $subcategory = $validatedData['subcategory'];
+        $category = $validatedData['category'];
+        $sec_name = $validatedData['privilegesection'];
+        $route_name = $validatedData['routename'];
         $username = session()->get('username');
-
+        
+        // Check if a record with the same route_name already exists
+        $existingRecord = PrivilegeSection::where('route_name', $route_name)->first();
+        
+        if ($existingRecord) {
+            // Return error response if the record already exists
+            return response()->json(['status' => 'error', 'message' => 'A privilege section with this route name already exists.']);
+        }
+    
+        // Create the privilege section
         PrivilegeSection::create([
             'cat_id' => $category,
             'subcat_id' => $subcategory,
@@ -77,15 +97,16 @@ class PrivilegeController extends Controller
             'section_name' => $sec_name,
             'cre_user' => $username,
         ]);
-
-        return response()->json(['status' => 'success', 'message' => 'Privilege added successfully!']);
-
-
+        
+        // Log the action (if needed)
         $ipaddress = Util::get_client_ip();
-        Util::user_auth_log($ipaddress,"privilege section added ",$username, "Privilege Section Added");
-
-
+        Util::user_auth_log($ipaddress, "privilege section added", $username, "Privilege Section Added");
+        
+        // Return success response
+        return response()->json(['status' => 'success', 'message' => 'Privilege added successfully!']);
     }
+    
+    
 
     public function get_sub_categories(Request $request){
 
@@ -110,111 +131,91 @@ class PrivilegeController extends Controller
 
     }
 
-    public function get_prev_section(){
-
+    public function get_prev_section() {
         $cat_id = $_GET['cat_id'];
         $sub_cat_id = $_GET['sub_cat_id'];
-        $user_type  = $_GET['user_type'];
-
-        $user_id    = session('userid');
-
-        if($sub_cat_id != 'All'){
-            $sub_cat_filter = "AND tbl_prev_sec_mst.sub_cat_id = $sub_cat_id";
-        }else{
-            $sub_cat_filter = "";
-        }
-        if($user_type != 'All'){
-            $user_filter = "AND tbl_prev_mst.user_type_id = $user_type";
-        }else{
-            $user_filter = "";
-        }
-
-        $ext_user = DB::table('tbl_prev_mst')
-                    ->where('user_type_id','=',$user_type)
-                    ->where('sub_cat_id','=',$sub_cat_id)
-                    ->get();
-
-        if(count($ext_user) > 0){
-
-            $data = DB::select("SELECT tbl_prev_sec_mst.*,
-                                    tbl_prev_sec_mst.sec_name,
-                                    tbl_prev_mst.permission,
-                                    concat('row_id_',tbl_prev_mst.sec_id) AS DT_RowId
-                                FROM tbl_prev_mst
-                                INNER JOIN tbl_prev_sec_mst ON tbl_prev_sec_mst.id = tbl_prev_mst.sec_id
-                                WHERE tbl_prev_mst.com_id = $com_id $sub_cat_filter $user_filter");
-
-            return compact('data', $data);
-
-        }else{
-
-            $data = DB::select("SELECT tbl_prev_sec_mst.*, 
-                                    tbl_prev_sec_mst.sec_name,
-                                    concat('row_id_',tbl_prev_sec_mst.id) AS DT_RowId
-                                FROM tbl_prev_sec_mst 
-                                WHERE tbl_prev_sec_mst.com_id = $com_id $sub_cat_filter");
-
-            return compact('data', $data);
-        }
+        $user_type = $_GET['user_type'];
+    
+        $sections = DB::table('tbl_privilege_section')
+                      ->leftJoin('tbl_privilege_mst', function($join) use ($user_type) {
+                          $join->on('tbl_privilege_section.id', '=', 'tbl_privilege_mst.sec_id')
+                               ->where('tbl_privilege_mst.user_type', '=', $user_type);
+                      })
+                      ->where('tbl_privilege_section.cat_id', $cat_id)
+                      ->where('tbl_privilege_section.subcat_id', $sub_cat_id)
+                      ->select('tbl_privilege_section.*', 'tbl_privilege_mst.permission')
+                      ->get();
+    
+        return response()->json(['data' => $sections]);
     }
+    
 
-        public function save_user_prev(){
-
-        $selected_sec   = $_GET['selected'];
-        $deselected_sec = $_GET['deselected'];
-        $cat_id         = $_GET['cat_id'];
-        $sub_cat_id     = $_GET['sub_cat_id'];
-        $user_type      = $_GET['user_type'];
-
-        $user_id     = session('userid');
-        $cre_date    = Carbon::now();
-        $get_com_id  = DB::table('user_master')->where('id',$user_id)->first();
-        $com_id      = $get_com_id->com_id;
-
-        DB::table('tbl_prev_mst')
-            ->where('cat_id', $cat_id)
-            ->where('sub_cat_id', $sub_cat_id)
-            ->where('user_type_id', $user_type)
-            ->delete();
-
-        if($selected_sec !== 'null') {
-
-            foreach ($selected_sec as $section_id) {
-
-                DB::table('tbl_prev_mst')
-                    ->insert([
-                        'user_type_id' => $user_type,
+    public function save_user_prev(Request $request)
+    {
+        $selected = $request->input('selected');
+        $deselected = $request->input('deselected');
+        $cat_id = $request->input('cat_id');
+        $sub_cat_id = $request->input('sub_cat_id');
+        $user_type = $request->input('user_type');
+    
+        // Process the selected privileges
+        if ($selected !== 'null') {
+            foreach ($selected as $sec_id) {
+                // Find the route_name from tbl_privilege_section
+                $section = DB::table('tbl_privilege_section')
+                    ->select('route_name')
+                    ->where('id', $sec_id)
+                    ->first();
+    
+                // Check if the privilege already exists
+                $privilege = DB::table('tbl_privilege_mst')
+                    ->where('user_type', $user_type)
+                    ->where('cat_id', $cat_id)
+                    ->where('subcat_id', $sub_cat_id)
+                    ->where('sec_id', $sec_id)
+                    ->first();
+    
+                if ($privilege) {
+                    // Update the privilege if it already exists
+                    DB::table('tbl_privilege_mst')
+                        ->where('id', $privilege->id)
+                        ->update([
+                            'permission' => 1,
+                            'route_name' => $section->route_name ?? null,
+                        ]);
+                } else {
+                    // Insert a new privilege record
+                    DB::table('tbl_privilege_mst')->insert([
+                        'user_type' => $user_type,
                         'cat_id' => $cat_id,
-                        'sub_cat_id' => $sub_cat_id,
-                        'route_id' => $section_id,
-                        'sec_id' => $section_id,
-                        'cre_user' => $user_id,
-                        'cre_datetime' => $cre_date,
-                        'com_id' => $com_id,
+                        'subcat_id' => $sub_cat_id,
+                        'sec_id' => $sec_id,
+                        'route_name' => $section->route_name ?? null,
+                        'cre_user' => session()->get('userid'),
+                        'permission' => 1,
+                    ]);
+                }
+            }
+        }
+    
+        // Process the deselected privileges
+        if ($deselected !== 'null') {
+            foreach ($deselected as $sec_id) {
+                // Update the privilege to remove permission
+                DB::table('tbl_privilege_mst')
+                    ->where('user_type', $user_type)
+                    ->where('cat_id', $cat_id)
+                    ->where('subcat_id', $sub_cat_id)
+                    ->where('sec_id', $sec_id)
+                    ->update([
+                        'permission' => 0,
+                        'updated_user' => session()->get('userid'),
                     ]);
             }
         }
-
-        if($deselected_sec !== 'null') {
-
-            foreach ($deselected_sec as $section_id) {
-
-                DB::table('tbl_prev_mst')
-                    ->insert([
-                        'user_type_id' => $user_type,
-                        'cat_id' => $cat_id,
-                        'sub_cat_id' => $sub_cat_id,
-                        'route_id' => $section_id,
-                        'sec_id' => $section_id,
-                        'cre_user' => $user_id,
-                        'cre_datetime' => $cre_date,
-                        'com_id' => $com_id,
-                        'permission' => '0'
-                    ]);
-            }
-        }
-
-        return $com_id;
+    
+        return response()->json(['success' => true, 'message' => 'User Privilege Added Successfully']);
     }
+    
 
 }

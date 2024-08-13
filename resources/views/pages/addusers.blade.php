@@ -27,11 +27,11 @@
                   <label for="activestatus" class="block mb-3 px-2 text-sm font-medium text-gray-900 dark:text-white">Active Status</label>
                         <div class="flex">
                             <div class="flex items-center">
-                                <input id="default-radio-1" type="radio" value="1" name="inline-radio-group" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                <input checked  id="default-radio-1" type="radio" value="1" name="inline-radio-group" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
                                 <label for="default-radio-1" class="w-full ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Active</label>
                             </div>
                             <div class="flex items-center ps-4">
-                                <input checked id="default-radio-2" type="radio" value="0" name="inline-radio-group" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                <input id="default-radio-2" type="radio" value="0" name="inline-radio-group" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
                                 <label for="default-radio-2" class="w-full ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Inactive</label>
                             </div>
                         </div>
@@ -258,10 +258,22 @@ function userspage() {
 
 
 
-    function refresh(){
+function refresh() {
+    $('#userForm')[0].reset(); // Reset the form
+    cancelSelectedImage(); // Assuming this is your custom function to reset any selected image
 
-        $('#userForm')[0].reset();
-    }
+    // Reset the password strength indicators to their default state
+    $('#minLength').html('<i class="fas fa-times text-red-500"></i> Minimum 8 characters');
+    $('#uppercase').html('<i class="fas fa-times text-red-500"></i> At least one uppercase letter');
+    $('#lowercase').html('<i class="fas fa-times text-red-500"></i> At least one lowercase letter');
+    $('#symbol').html('<i class="fas fa-times text-red-500"></i> At least one symbol (@$!%*?&)');
+    const errorMessage = $('#errorMessage');
+    // Reset the error message display to default
+    errorMessage.removeClass('text-red-500 text-green-500').text('');
+    
+    // Disable the submit button if it should be disabled by default
+    $('#submitButton').prop('disabled', true);
+}
 
 
 
