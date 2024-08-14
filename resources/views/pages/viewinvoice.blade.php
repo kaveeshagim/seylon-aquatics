@@ -1,8 +1,11 @@
 @extends('layouts.app')
 
 @section('content')
-<section class="bg-gray-50 py-8 antialiased dark:bg-gray-900 md:py-16">
-    <div class="mx-auto max-w-2xl px-4 2xl:px-0" id="invoice-details">
+<section class="bg-gray-50 py-8 antialiased dark:bg-gray-900 md:py-16" id="invoice-details">
+    <div class="mx-auto max-w-2xl px-4 2xl:px-0">
+    <div class="mb-6 text-center">
+                <img src="{{ asset('images/logo.png') }}" alt="Company Logo" class="mx-auto">                
+            </div>
         <h2 class="text-xl font-semibold text-gray-900 dark:text-white sm:text-2xl mb-2">Invoice Details</h2>
 
         <div  class="space-y-4 sm:space-y-2 rounded-lg border border-gray-100 bg-gray-50 p-6 dark:border-gray-700 dark:bg-gray-800 mb-6 md:mb-8">
@@ -11,7 +14,15 @@
                 <dd class="font-medium text-gray-900 dark:text-white sm:text-end">{{$invoiceMaster->created_at}}</dd>
             </dl>
             <dl class="sm:flex items-center justify-between gap-4">
-                <dt class="font-normal mb-1 sm:mb-0 text-gray-500 dark:text-gray-400">Order ID</dt>
+                <dt class="font-normal mb-1 sm:mb-0 text-gray-500 dark:text-gray-400">Invoice Status</dt>
+                <dd class="font-medium text-gray-900 dark:text-white sm:text-end">{{$invoiceMaster->order_id}}</dd>
+            </dl>
+            <dl class="sm:flex items-center justify-between gap-4">
+                <dt class="font-normal mb-1 sm:mb-0 text-gray-500 dark:text-gray-400">Order Number</dt>
+                <dd class="font-medium text-gray-900 dark:text-white sm:text-end">{{$invoiceMaster->order_id}}</dd>
+            </dl>
+            <dl class="sm:flex items-center justify-between gap-4">
+                <dt class="font-normal mb-1 sm:mb-0 text-gray-500 dark:text-gray-400">Order Status</dt>
                 <dd class="font-medium text-gray-900 dark:text-white sm:text-end">{{$invoiceMaster->order_id}}</dd>
             </dl>
             <dl class="sm:flex items-center justify-between gap-4">
@@ -22,6 +33,10 @@
                 <dt class="font-normal mb-1 sm:mb-0 text-gray-500 dark:text-gray-400">Final Total (after discounts)</dt>
                 <dd class="font-medium text-gray-900 dark:text-white sm:text-end">{{ number_format($invoiceMaster->final_total, 2) }}</dd>
             </dl>
+            <p class="mb-4 text-xs font-medium text-gray-600 dark:text-gray-400">
+    <span class="font-semibold text-gray-900 dark:text-gray-300">Note:</span> 
+    Your invoice will be confirmed by the executive in charge after the payment is completed.
+</p>
         </div>
 
         <h3 class="text-lg font-semibold text-gray-900 dark:text-white sm:text-xl mb-2">Itemized Details</h3>

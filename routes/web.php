@@ -129,8 +129,6 @@ Route::namespace('App\Http\Controllers')->group(function () {
         Route::get('/orderupload', 'PageController@orderupload')->name('orderupload');
         Route::get('/orders', 'PageController@orders')->name('orders');
         Route::get('/addorderpage', 'PageController@addorderpage')->name('addorderpage');
-        Route::post('/addorderexcel', 'OrderController@addorderexcel')->name('addorderexcel');
-        Route::post('/addorderform', 'OrderController@addorderform')->name('addorderform');
         Route::get('/getorders', 'OrderController@getorders')->name('getorders');
         Route::get('/orderhistory', 'PageController@orderhistory')->name('orderhistory');
         Route::get('/customerorders', 'PageController@customerorders')->name('customerorders');
@@ -141,11 +139,11 @@ Route::namespace('App\Http\Controllers')->group(function () {
         Route::post('/orderuploadexcel', 'OrderController@orderuploadexcel')->name('orderuploadexcel');
         Route::post('/orderuploadform', 'OrderController@orderuploadform')->name('orderuploadform');
         Route::post('/fetchfishweeklydata', 'OrderController@fetchfishweeklydata')->name('fetchfishweeklydata');
-        Route::post('/orderuploadexcel', 'OrderController@orderuploadexcel')->name('orderuploadexcel');
         Route::post('/orderuploadform', 'OrderController@orderuploadform')->name('orderuploadform');
         Route::get('/vieworderdetpage/{id}', 'PageController@vieworderdetpage')->name('vieworderdetpage');
         Route::get('/getcusorderdetail/{id}', 'OrderController@getcusorderdetail')->name('getcusorderdetail');
         Route::get('/orderconfirm/{id}', 'PageController@orderconfirm')->name('orderconfirm');
+        Route::get('/cancelorder', 'OrderController@cancelorder')->name('orderconfirm');
 
         // Invoice routes
         Route::get('/invoices', 'PageController@invoices')->name('invoices');
@@ -252,6 +250,8 @@ Route::namespace('App\Http\Controllers')->group(function () {
         
         //notification routes
         Route::get('/notifications', 'PageController@notifications')->name('notifications');
+        Route::get('/getnotificationcount', 'NotificationController@getnotificationcount')->name('getnotificationcount');
+        Route::get('/removenotif', 'NotificationController@removenotif')->name('removenotif');
 
 
         // Excel upload

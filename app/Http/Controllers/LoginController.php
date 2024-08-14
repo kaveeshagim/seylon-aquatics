@@ -64,7 +64,7 @@ class LoginController extends Controller
                         $ipaddress = Util::get_client_ip();
                         Util::user_auth_log($ipaddress,"user logged in successfully",$username,"User Logged In");
     
-                        return response()->json(['status' => 'success', 'message' => 'Login successfull!']);
+                        return response()->json(['status' => 'success', 'message' => 'Login successfull!', 'usertype'=>$user_usertype]);
 
     
                     }else{
@@ -85,7 +85,7 @@ class LoginController extends Controller
                         $ipaddress = Util::get_client_ip();
                         Util::user_auth_log($ipaddress,"user logged in successfully",$username,"User Logged In");
     
-                        return response()->json(['status' => 'success', 'message' => 'Login successfull!']);
+                        return response()->json(['status' => 'success', 'message' => 'Login successfull!', 'usertype'=>$user_usertype]);
 
     
                     }

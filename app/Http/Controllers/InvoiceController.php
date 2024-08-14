@@ -58,6 +58,11 @@ class InvoiceController extends Controller
         // Retrieve the order items
         $orderItems = DB::table('tbl_order_det')->where('order_id', $orderId)->get();
     
+        // Debug: Check the retrieved items
+        if ($orderItems->isEmpty()) {
+            return response()->json(['status' => 'error', 'message' => 'No items found for this order.']);
+        }
+    
         $grossTotal = 0;
         $finalTotal = 0;
         $invoiceDetails = [];
@@ -68,10 +73,14 @@ class InvoiceController extends Controller
     
             // Retrieve pricing details from tbl_fishweekly
             $fishDetails = DB::table('tbl_fishweekly')->where('fish_code', $fishCode)->first();
+            if (!$fishDetails) {
+                return response()->json(['status' => 'error', 'message' => "Fish details not found for fish code: $fishCode"]);
+            }
+    
             $grossPrice = $fishDetails->gross_price;
             $discount = 0;
     
-            if ($fishDetails->special_offer == 'yes') {
+            if ($fishDetails->special_offer === 'yes') {
                 $discount = $fishDetails->discount;
             }
     
@@ -113,5 +122,6 @@ class InvoiceController extends Controller
     
         return response()->json(['status' => 'success', 'message' => 'Invoice generated successfully.']);
     }
+    
     
 }

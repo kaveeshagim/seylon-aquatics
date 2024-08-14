@@ -28,11 +28,11 @@
                         </svg>
                         Search
                     </button>
-                    <button type="button" onclick="orderconfirm({{$orderid}})" class="flex items-center justify-center text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-primary-600 dark:hover:bg-primary-700 focus:outline-none dark:focus:ring-primary-800">
-                        <svg aria-hidden="true" class="h-3.5 w-3.5 mr-1.5 -ml-1" fill="currentColor" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                            <path fill-rule="evenodd" clip-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" />
-                        </svg>
+                    <button type="button" onclick="orderconfirm({{$orderid}})" class="flex items-center justify-center text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-green-600 dark:hover:bg-green-700 focus:outline-none dark:focus:ring-green-800">
                         Confirm Order
+                    </button>
+                    <button type="button" onclick="ordercancel({{$orderid}})" data-modal-target="cancel-modal" data-modal-toggle="cancel-modal" class="flex items-center justify-center text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-red-600 dark:hover:bg-red-700 focus:outline-none dark:focus:ring-red-800">
+                        Cancel Order
                     </button>
                 </div>
             </div>
@@ -136,6 +136,37 @@ Toggle modal
                     Yes
                 </button>
                 <button data-modal-hide="delete-modal" type="button" class="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 focus:outline-none bg-gray-50 rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<button data-modal-target="cancel-modal" data-modal-toggle="cancel-modal" class="hidden text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">
+Toggle modal
+</button>
+
+
+<!-- cancel Modal -->
+<div id="cancel-modal" tabindex="-1" class="hidden fixed inset-0 z-50 flex items-center justify-center overflow-y-auto overflow-x-hidden">
+    <div class="relative p-4 w-full max-w-md max-h-full">
+        <div class="relative bg-gray-50 rounded-lg shadow dark:bg-gray-700">
+            <button type="button" class="absolute top-3 end-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="cancel-modal">
+                <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                </svg>
+                <span class="sr-only">Close modal</span>
+            </button>
+            <div class="p-4 md:p-5 text-center">
+                <svg class="mx-auto mb-4 text-gray-400 w-12 h-12 dark:text-gray-200" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 11V6m0 8h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
+                </svg>
+                <input hidden="true" id="cancelid" name="cancelid"/>
+                <h3 class="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">Are you sure you want to cancel this order?</h3>
+                <button onclick="cancelorder()" data-modal-hide="cancel-modal" type="button" class="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center">
+                    Yes
+                </button>
+                <button data-modal-hide="cancel-modal" type="button" class="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 focus:outline-none bg-gray-50 rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">Cancel</button>
             </div>
         </div>
     </div>
@@ -334,7 +365,72 @@ function refresh(){
 
 function orderconfirm(id) {
     location.href = "{{url('orderconfirm')}}" + "/" + id;
+
+    $.ajax({
+    url: "{{url('orderconfirm')}}" + "/" + id;
+    type: 'GET',
+    data: { id: id },
+    success: function (response) {
+        if(response.status == "success") {
+            bootbox.alert({
+                message: response.message,
+                backdrop: true,
+                callback: function () {
+                    // location.href = 
+                }
+            }).find('.modal-content').addClass("flex items-center p-4 mb-4 text-sm text-green-800 border border-green-300 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400 dark:border-green-800");
+
+        }else if(response.status == "error"){
+            bootbox.alert({
+                message: response.message,
+                backdrop: true,
+                callback: function () {
+                    searchdata();
+                }
+            }).find('.modal-content').addClass("flex items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800");
+        }
+    }
+  });
+
+
 }
+
+function ordercancel(id) {
+    document.getElementById('cancelid').value = id;
+    const cancelModal = document.getElementById('cancel-modal');
+    cancelModal.classList.remove('hidden');
+    cancelModal.classList.add('block');
+}
+
+function cancelorder() {
+  const id = document.getElementById('cancelid').value;
+  $.ajax({
+    url: '{{url('cancelorder')}}',
+    type: 'GET',
+    data: { id: id },
+    success: function (response) {
+        if(response.status == "success") {
+            bootbox.alert({
+                message: response.message,
+                backdrop: true,
+                callback: function () {
+                    searchdata();
+                }
+            }).find('.modal-content').addClass("flex items-center p-4 mb-4 text-sm text-green-800 border border-green-300 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400 dark:border-green-800");
+
+        }else if(response.status == "error"){
+            bootbox.alert({
+                message: response.message,
+                backdrop: true,
+                callback: function () {
+                    searchdata();
+                }
+            }).find('.modal-content').addClass("flex items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800");
+        }
+    }
+  });
+}
+
 
 </script>
 @endsection

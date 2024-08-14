@@ -40,14 +40,57 @@ class OrderController extends Controller
         return response()->json($data);
     }
 
-    public function getorderhistory() 
+    public function getorderhistory(Request $request)
     {
-        // Eager load the related customer data
-        $orders = Order::with('customer:id,fname')->get();
+
+
+        // Retrieve the user ID from the session
+        $userId = session()->get('user_id');
+    
+        // Fetch user type from the database
+        $userType = DB::table('tbl_users')
+            ->where('id', $userId)
+            ->value('tbl_usertype_id');
+    
+        // Check if the user is a customer (user type ID = 3)
+        if ($userType == 3) {
+            // Get the customer ID associated with the user
+            $customerId = DB::table('tbl_customers')
+                ->where('user_id', $userId)
+                ->value('id');
+    
+            // Fetch orders only for the specific customer
+            $orders = DB::table('tbl_order_mst')
+                ->where('cus_id', $customerId)
+                ->get();
+        } else {
+            // Fetch all orders if the user is not a customer
+            $orders = DB::table('tbl_order_mst')->get();
+        }
+    
+        // Format the data for DataTables
+        $formattedOrders = $orders->map(function ($order) {
+            return [
+                'created_at' => $order->created_at,
+                'order_no' => $order->order_no,
+                'customer' => $order->customer_name,
+                'executive' => $order->executive_id, // Adjust if you need a different format
+                'shipping_address' => $order->shipping_address,
+                'total_orders' => $order->tot_orders,
+                'total_bags' => $order->tot_bags,
+                'total_boxes' => $order->tot_boxes,
+                'delivery_date' => $order->delivery_date,
+                'discount_applied' => $order->discount_applied,
+                'order_total' => number_format($order->order_total, 2),
+                'status' => $order->status,
+                'id' => $order->id,
+            ];
+        });
     
         // Return the data as JSON
-        return response()->json($orders);
+        return response()->json(['data' => $formattedOrders]);
     }
+    
 
     public function getcustomerorders() 
     {
@@ -88,81 +131,7 @@ class OrderController extends Controller
     }
     
     
-    
 
-    public function addorderexcel(Request $request) {
-        // Validate the incoming request
-        $request->validate([
-            'excel_input' => 'required|file|mimes:xlsx,xls,csv',
-        ]);
-    
-        // Get the uploaded file
-        $file = $request->file('excel_input');
-    
-        try {
-            // Load the file into an array
-            $rows = Excel::toArray([], $file);
-    
-            // Remove the first row (header row)
-            array_shift($rows[0]);
-    
-            // Get user ID from session
-            $cus_id = session()->get('userid');
-    
-            // Insert a new record into tbl_order_mst
-            $order_id = DB::table('tbl_order_mst')->insertGetId([
-                'cus_id' => $cus_id,
-                'status' => 'pending',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]);
-    
-            // Insert data into the database
-            foreach ($rows[0] as $row) {
-                DB::table('tbl_order_det')->insert([
-                    'order_id' => $order_id,
-                    'fish_code' => $row[0] ?? null,
-                    'year' => null,
-                    'month' => null,
-                    'week' => null,
-                    'gross_price' => $row[1] ?? null,
-                    'quantity' => $row[2] ?? null,
-                    'special_offer' => $row[3] ?? null,
-                    'discount' => $row[4] ?? null,
-                    'stock_status' => 'in stock',
-                ]);
-            }
-    
-            // Return a JSON response for AJAX success
-            return response()->json(['success' => true]);
-    
-        } catch (\Exception $e) {
-            // Handle the exception and return a JSON response for AJAX error
-            return response()->json(['success' => false, 'message' => 'An error occurred while processing the file: ' . $e->getMessage()]);
-        }
-    }
-    
-
-    public function orderupload(Request $request){
-        $file = $request->file('excel_file');
-
-        $rows = Excel::toArray([], $file);
-
-        // Remove the first row (header row)
-        array_shift($rows[0]);
-
-        foreach ($rows[0] as $row) {
-            // Assuming your Excel columns are in the order: id, name, month
-            DB::table('tbl_order_det')->insert([
-                'fish_code' => $row[0],
-                'size' => $row[1],
-                'per_bag' => $row[2],
-                'orders' => $row[3],
-            ]);
-        }
-
-        return redirect()->back()->with('success', 'Excel file uploaded successfully.');
-    }
     
     public function count()
     {
@@ -266,6 +235,20 @@ public function orderuploadexcel(Request $request)
         return response()->json(['status' => 'error', 'message' => 'Executive not found for the customer.']);
     }
 
+    // Retrieve customer details
+$customer = DB::table('tbl_customers')->where('user_id', $customerId)->first();
+if (!$customer) {
+    return response()->json(['status' => 'error', 'message' => 'Customer not found.']);
+}
+
+// Concatenate customer name
+$customerName = trim(sprintf(
+    "%s %s %s",
+    $customer->title ?? '',
+    $customer->fname ?? '',
+    $customer->lname ?? ''
+));
+
     // Insert the record into tbl_order_mst
     $orderMst = Order::create([
         'cus_id' => $customerId,
@@ -275,6 +258,8 @@ public function orderuploadexcel(Request $request)
         'tot_bags' => 0,   // Placeholder, will update later
         'tot_boxes' => 0,  // Placeholder, will update later
         'shipping_address' => $request->input('shippingaddress'), // Provided shipping address
+        'customer_name' => $customerName,
+        'status' => 'pending',
     ]);
 
     // Fetch the current date
@@ -348,6 +333,135 @@ public function orderuploadexcel(Request $request)
 }
 
 
+public function orderuploadform(Request $request)
+{
+    // Validate the incoming request
+    $request->validate([
+        'table_data' => 'required|array',
+        'table_data.*.fish_code' => 'required|string',
+        'table_data.*.quantity' => 'required|numeric|min:1',
+        'shipping_address' => 'required|string',
+    ]);
 
+    // Retrieve customer ID from session
+    $customerId = session()->get('userid');
+
+    // Find the executive ID associated with this customer
+    $executiveId = DB::table('tbl_customers')->where('user_id', $customerId)->value('executive_id');
+    if (!$executiveId) {
+        return response()->json(['status' => 'error', 'message' => 'Executive not found for the customer.']);
+    }
+
+        // Retrieve customer details
+$customer = DB::table('tbl_customers')->where('user_id', $customerId)->first();
+if (!$customer) {
+    return response()->json(['status' => 'error', 'message' => 'Customer not found.']);
+}
+
+// Concatenate customer name
+$customerName = trim(sprintf(
+    "%s %s %s",
+    $customer->title ?? '',
+    $customer->fname ?? '',
+    $customer->lname ?? ''
+));
+
+    // Insert the record into tbl_order_mst
+    $orderMst = Order::create([
+        'cus_id' => $customerId,
+        'executive_id' => $executiveId,
+        'advanced_payment' => 'no',
+        'tot_orders' => 0, // Placeholder, will update later
+        'tot_bags' => 0,   // Placeholder, will update later
+        'tot_boxes' => 0,  // Placeholder, will update later
+        'shipping_address' => $request->input('shipping_address'), // Provided shipping address
+        'customer_name' => $customerName,
+        'status' => 'pending',
+    ]);
+
+    // Fetch the current date
+    $currentDate = now();
+    $day = $currentDate->format('d');
+    $month = $currentDate->format('m');
+
+    // Generate the order number using the order ID
+    $orderId = $orderMst->id;
+    $orderNo = sprintf("#O%s%s%04d", $day, $month, $orderId);
+
+    // Update the order with the generated order number
+    $orderMst->update(['order_no' => $orderNo]);
+
+    // Initialize counters for total orders, bags, and boxes
+    $totalOrders = 0;
+    $totalBags = 0;
+
+    // Extract table data from the request
+    $tableData = $request->input('table_data');
+
+    foreach ($tableData as $data) {
+        $fishCode = $data['fish_code'];
+        $quantity = $data['quantity'];
+
+        // Check if fish code exists in tbl_fishweekly
+        $fishWeekly = DB::table('tbl_fishweekly')->where('fish_code', $fishCode)->first();
+        if (!$fishWeekly) {
+            return response()->json(['status' => 'error', 'message' => 'Fish code ' . $fishCode . ' not found in weekly list.']);
+        }
+
+        // Get qtyperbag from tbl_fish_variety
+        $fishVariety = DB::table('tbl_fish_variety')->where('fish_code', $fishCode)->first();
+        if (!$fishVariety) {
+            return response()->json(['status' => 'error', 'message' => 'Fish code ' . $fishCode . ' not found in fish variety list.']);
+        }
+
+        // Calculate the number of bags
+        $qtyPerBag = $fishVariety->qtyperbag;
+        $numberOfBags = (int)ceil($quantity / $qtyPerBag);
+
+        // Insert into tbl_order_det
+        OrderDet::create([
+            'order_id' => $orderMst->id, // Link to the order_mst entry
+            'order_no' => $orderNo, // Use the newly generated order number
+            'fish_code' => $fishCode,
+            'orders' => $quantity,
+            'quantity' => $quantity,
+            'bags' => $numberOfBags,
+            'approval_status' => 'pending',
+        ]);
+
+        // Update total orders and total bags
+        $totalOrders += 1;
+        $totalBags += $numberOfBags;
+    }
+
+    // Calculate the total number of boxes
+    $totalBoxes = (int)ceil($totalBags / 4); // 1 box holds 4 bags
+
+    // Update the total counts in the tbl_order_mst
+    $orderMst->update([
+        'tot_orders' => $totalOrders,
+        'tot_bags' => $totalBags,
+        'tot_boxes' => $totalBoxes,
+    ]);
+
+    // Return success response
+    return response()->json(['status' => 'success', 'id' => $orderMst->id, 'message' => 'Order submitted successfully.']);
+}
+
+
+
+public function cancelorder(Request $request) {
+
+    $id = $request->input('id');
+
+    DB::table('tbl_order_mst')->where('id', $id)->update(['status' => 'cancelled']);
+
+    $username = session()->get('username');
+    $ipaddress = Util::get_client_ip();
+    Util::user_auth_log($ipaddress,"order cancelled ",$username, "Order Cancelled");
+
+    return response()->json(['status' => 'success', 'message' => 'Order cancelled successfully!']);
+
+}
 
 }

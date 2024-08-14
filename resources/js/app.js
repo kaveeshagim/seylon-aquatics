@@ -25,6 +25,10 @@ window.createSpinner = function(target) {
     return new Spinner().spin(target);
 };
 
+import 'select2/dist/css/select2.css';
+import select2 from 'select2';
+select2();
+
 // DataTables
 import DataTable from "datatables.net-dt";
 import "datatables.net-responsive-dt";
@@ -85,6 +89,8 @@ import "@fortawesome/fontawesome-free/css/all.min.css";
 window.DataTable = DataTable;
 window.io = io;
 window.html2pdf = html2pdf;
+
+
 
 
 // Echo.channel("event-channel").listen("YourEventName", (e) => {

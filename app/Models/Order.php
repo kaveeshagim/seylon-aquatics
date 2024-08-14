@@ -19,6 +19,7 @@ class Order extends Model
     public $timestamps = true;
     protected $fillable = [
         'cus_id',
+        'customer_name',
         'order_no',
         'executive_id',
         'status',
@@ -27,6 +28,10 @@ class Order extends Model
         'tot_boxes',
         'advanced_payment',
         'shipping_address',
+        'remarks',
+        'delivery_date',
+        'order_total',
+        'discount_applied'
     ];
 
     public function executive()

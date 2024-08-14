@@ -25,6 +25,7 @@ class OrderDet extends Model
         'size',
         'per_bag',
         'orders',
+        'quantity',
         'bags',
         'boxes',
         'approval_status',

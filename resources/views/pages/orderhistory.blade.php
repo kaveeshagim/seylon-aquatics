@@ -44,7 +44,15 @@
                         <tr>
                             <th scope="col" class="p-4">Date</th>
                             <th scope="col" class="p-4">Order No</th>
-                            <!-- <th scope="col" class="p-4">Customer</th> -->
+                            <th scope="col" class="p-4">Customer</th>
+                            <th scope="col" class="p-4">Executive in charge</th>
+                            <th scope="col" class="p-4">Shipping Address</th>
+                            <th scope="col" class="p-4">Total orders</th>
+                            <th scope="col" class="p-4">Total bags</th>
+                            <th scope="col" class="p-4">Total boxes</th>
+                            <th scope="col" class="p-4">Shipment Date</th>
+                            <th scope="col" class="p-4">Tot Discount applied</th>
+                            <th scope="col" class="p-4">Order Total</th>
                             <th scope="col" class="p-4">Status</th>
                             <th scope="col" class="p-4">View</th>
                         </tr>
@@ -76,23 +84,47 @@ function searchdata() {
     url: "getorderhistory",
     type: "GET",
     dataSrc: "data",
-    success: function(data) {
-      console.log("Data:", data);
+    success: function(response) {
+      console.log("Data:", response);
 
 
         // Initialize the DataTable with the retrieved data
       $('#orderhistory-table').DataTable({
         "processing": true,
         "deferRender": true,
-        "data": data,
+        "data": response.data,
         "columns": [
-        { "data": "created_at" },
+          { "data": "created_at" },
           { "data": "order_no" },
-          // { "data": "customer.name" },
-            {
+          { "data": "customer" },
+          { "data": "executive" },
+          { "data": "shipping_address" },
+          { "data": "total_orders" },
+          { "data": "total_bags" },
+          { "data": "total_boxes" },
+          { "data": "delivery_date" },
+          { "data": "discount_applied" },
+          { "data": "order_total" },
+
+          {
               sortable: false,
               "render": function(data, type, full, meta) {
-                  return '<span class="bg-red-100 text-red-800 text-xs font-medium px-2 py-0.5 rounded dark:bg-red-900 dark:text-red-300">' + full.status + '</span>';
+                if(full.status == 'pending') {
+                  return '<span class="bg-blue-100 text-blue-800 text-xs font-medium px-2 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300">' + full.status + '</span>';
+
+                }else if(full.status == 'confirmed') {
+                  return '<span class="bg-green-100 text-green-800 text-xs font-medium px-2 py-0.5 rounded dark:bg-green-900 dark:text-green-300">' + full.status + '</span>';
+
+                }else if(full.status == 'in-transit') {
+                  return '<span class="bg-yellow-100 text-yellow-800 text-xs font-medium px-2 py-0.5 rounded dark:bg-yellow-900 dark:text-yellow-300">' + full.status + '</span>';
+
+                }else if(full.status == 'cancelled') {
+                  return '<span class="bg-gray-100 text-gray-800 text-xs font-medium px-2 py-0.5 rounded dark:bg-gray-900 dark:text-gray-300">' + full.status + '</span>';
+
+                }else if(full.status == 'completed') {
+                  return '<span class="bg-green-100 text-green-800 text-xs font-medium px-2 py-0.5 rounded dark:bg-green-900 dark:text-green-300">' + full.status + '</span>';
+
+                }
               }
           },
 
@@ -103,7 +135,7 @@ function searchdata() {
                                   '<svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">'+
                     '<path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M9 8h10M9 12h10M9 16h10M4.99 8H5m-.02 4h.01m0 4H5" clip-rule="evenodd"/>'+
                     '</svg>'+
-                    'Show Users'+
+                    'View'+
                 '</button>';
             }
           }
@@ -131,7 +163,7 @@ function searchdata() {
             });
         },
         "columnDefs": [
-          { className: "text-center", "targets": [0, 1] }
+          { className: "text-center", "targets": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 ] }
         ],
         // "dom": 'Bfrtip',
         // "buttons": [
@@ -168,7 +200,7 @@ function addneworderpage() {
 }
 
 function vieworder(id) {
-    location.href= "{{ url('vieworderpage') }}" + "/" + id;
+    location.href= "{{ url('vieworderdetpage') }}" + "/" + id;
 }
 
 </script>

@@ -223,7 +223,11 @@
           data: { username: username, password: password, _token: "{{ csrf_token() }}" },
           success: function(response) {
             if(response.status == 'success'){
-              location.href = "{{ route('dashboard') }}";
+              if(response.usertype == '5' ) {
+                location.href = "{{ route('home') }}";
+              }else{
+                location.href = "{{ route('dashboard') }}";
+              }
               
             }else if(response.status == 'error'){
               bootbox.alert({

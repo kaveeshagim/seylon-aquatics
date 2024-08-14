@@ -99,5 +99,29 @@
             location.href = "{{ url('notifications') }}";
         }
     </script>
+    <script>
+    // Function to update the notification count
+    function updateNotificationCount() {
+        $.ajax({
+            url: '{{ route('getnotificationcount') }}', // Adjust route as needed
+            type: 'GET',
+            dataType: 'json',
+            success: function(data) {
+                // Update the badge with the unseen notifications count
+                const badge = document.getElementById('notification-badge');
+                badge.textContent = data.unseenCount || 0;
+            },
+            error: function(xhr, status, error) {
+                console.error('Error fetching notification count:', error);
+            }
+        });
+    }
+
+    // Call the function to set the initial notification count
+    $(document).ready(function() {
+        updateNotificationCount();
+    });
+</script>
+
 </body>
 </html>

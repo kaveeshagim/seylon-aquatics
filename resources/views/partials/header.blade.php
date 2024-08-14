@@ -172,9 +172,11 @@
 
             <div class="hidden justify-between items-center w-full lg:flex lg:w-auto lg:order-1" id="mobile-menu-2">
                 <ul class="flex flex-col mt-4 font-medium lg:flex-row lg:space-x-8 lg:mt-0">
-                    <li>
+                @if(Session::get('user_type') == 1 || Session::get('user_type') == 3 || Session::get('user_type') == 8)
+                <li>
                         <a href="{{ route('dashboard') }}" class="block no-underline  pr-4 pl-3 text-gray-700 rounded bg-primary-700 lg:bg-transparent lg:text-primary-700 lg:p-0 dark:text-white" aria-current="page">Dashboards</a>
                     </li>
+                    @endif
                     <li>
                         <button id="dropdownNavbarLinkFish" data-dropdown-toggle="dropdownFish" class="flex items-center justify-between w-full text-gray-700 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 md:w-auto dark:text-gray-400 dark:hover:text-white dark:focus:text-white dark:border-gray-700 dark:hover:bg-gray-700 md:dark:hover:bg-transparent">Fish Manage <svg class="w-2.5 h-2.5 ms-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
                             <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
@@ -242,6 +244,7 @@
                             </ul>
                         </div>
                     </li>
+                    @if(Session::get('user_type') == 1)
                     <li>
                         <button id="dropdownNavbarLinkAdmin" data-dropdown-toggle="dropdownAdmin" class="flex items-center justify-between w-full text-gray-700 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 md:w-auto dark:text-gray-400 dark:hover:text-white dark:focus:text-white dark:border-gray-700 dark:hover:bg-gray-700 md:dark:hover:bg-transparent">Administration <svg class="w-2.5 h-2.5 ms-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
                             <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
@@ -284,6 +287,7 @@
                             </div>
                         </div>
                     </li>
+                    @endif
                 </ul>
             </div>
 
@@ -305,19 +309,24 @@
                 </button>
                 <!-- Dark mode switcher end -->
                 <!-- Notifications -->
-                <button type="button" data-dropdown-toggle="notification-dropdown"
-                    class="p-2 mr-1 text-gray-500 rounded-lg hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-700 ">
-                    <span class="sr-only">View notifications</span>
-                    <!-- Bell icon -->
-                    <svg aria-hidden="true" class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"
-                        xmlns="http://www.w3.org/2000/svg">
-                        <path
-                            d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6zM10 18a3 3 0 01-3-3h6a3 3 0 01-3 3z">
-                        </path>
-                    </svg>
-                </button>
+                <button type="button" data-dropdown-toggle="notification-dropdown" onclick="notifications()"
+        class="relative p-2 mr-1 text-gray-500 rounded-lg hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-700">
+    <span class="sr-only">View notifications</span>
+    <!-- Bell icon -->
+    <svg aria-hidden="true" class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+        <path d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6zM10 18a3 3 0 01-3-3h6a3 3 0 01-3 3z"></path>
+    </svg>
+    <span class="sr-only">Notifications</span>
+    <!-- Badge -->
+    <div id="notification-badge" class="absolute top-0 right-0 flex items-center justify-center w-6 h-6 text-xs font-bold text-white bg-red-500 border-2 border-white rounded-full -translate-x-1/2 -translate-y-1/2 dark:border-gray-900">
+        0
+    </div>
+</button>
+
+                
+
                 <!-- Dropdown menu -->
-                <div class="hidden overflow-hidden z-50 my-4 max-w-sm text-base list-none bg-gray-50 rounded divide-y divide-gray-100 shadow-lg dark:divide-gray-600 dark:bg-gray-700 rounded-xl"
+                <!-- <div class="hidden overflow-hidden z-50 my-4 max-w-sm text-base list-none bg-gray-50 rounded divide-y divide-gray-100 shadow-lg dark:divide-gray-600 dark:bg-gray-700 rounded-xl"
                     id="notification-dropdown">
                     <div
                         class="block py-2 px-4 text-base font-medium text-center text-gray-700 bg-gray-50 dark:bg-gray-600 dark:text-gray-300">
@@ -479,7 +488,7 @@
                             View all
                         </div>
                     </a>
-                </div>
+                </div> -->
 
                 <button type="button"
                     class="flex mx-3 text-sm rounded-full md:mr-0 focus:ring-4"

@@ -30,20 +30,25 @@
                 </div>
 
                 <h3 class="mb-4 text-sm font-medium text-gray-900 dark:text-white">Choose upload method</h3>
-                <ul class="items-center w-full text-sm font-medium text-gray-900 bg-gray-50 border border-gray-200 rounded-lg sm:flex dark:bg-gray-700 dark:border-gray-600 dark:text-white">
-                    <li class="w-full border-b border-gray-200 sm:border-b-0 sm:border-r dark:border-gray-600">
-                        <div class="flex items-center ps-3">
-                            <input id="excelupload" type="radio" value="excelupload" name="upload-radio" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500">
-                            <label for="excelupload" class="w-full py-3 ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Excel Upload</label>
-                        </div>
-                    </li>
-                    <li class="w-full dark:border-gray-600">
-                        <div class="flex items-center ps-3">
-                            <input id="formsub" type="radio" value="formsub" name="upload-radio" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500">
-                            <label for="formsub" class="w-full py-3 ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Form Submission</label>
-                        </div>
-                    </li>
-                </ul>
+<p class="mb-4 text-xs font-medium text-gray-600 dark:text-gray-400">
+    <span class="font-semibold text-gray-900 dark:text-gray-300">Note:</span> 
+    The 'Excel upload' method is better suited for bulk data, while the 'Form submission' is more convenient for smaller entries.
+</p>
+<ul class="items-center w-full text-sm font-medium text-gray-900 bg-gray-50 border border-gray-200 rounded-lg sm:flex dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+    <li class="w-full border-b border-gray-200 sm:border-b-0 sm:border-r dark:border-gray-600">
+        <div class="flex items-center ps-3">
+            <input id="excelupload" type="radio" value="excelupload" name="upload-radio" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500">
+            <label for="excelupload" class="w-full py-3 ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Excel Upload</label>
+        </div>
+    </li>
+    <li class="w-full dark:border-gray-600">
+        <div class="flex items-center ps-3">
+            <input id="formsub" type="radio" value="formsub" name="upload-radio" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500">
+            <label for="formsub" class="w-full py-3 ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Form Submission</label>
+        </div>
+    </li>
+</ul>
+
 
             </div>
             <!-- <div class="flex flex-col md:flex-row items-stretch md:items-center md:space-x-3 space-y-3 md:space-y-0 justify-between mx-4 py-4 border-t dark:border-gray-700"> -->
@@ -84,15 +89,39 @@
                         @csrf
                         <input type="hidden" name="_token" value="{{ csrf_token() }}">
                         <div class="grid gap-4 sm:grid-cols-6 sm:gap-6 w-full">
-                            <div class="w-full">
-                                <label for="fish_code" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Fish Code</label>
-                                <select name="fish_code" id="fish_code" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required>
+
+
+                        <div class="w-full">
+                            <label for="custom-dropdown" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Fish Code</label>
+                            <div class="relative">
+                                <!-- Custom Dropdown Container -->
+                                <div id="custom-dropdown-container" class="relative">
+                                    <!-- Search Input -->
+                                    <input type="text" id="search-fish-code" class="block w-full p-2.5 mb-2 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white" placeholder="Search Fish Code...">
+
+                                    <!-- Custom Dropdown -->
+                                    <div id="custom-dropdown" class="absolute w-full mt-1 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                                        <ul id="custom-dropdown-options" class="max-h-60 overflow-auto p-1">
+                                            <!-- Options will be dynamically inserted here -->
+                                            @foreach($fishweeklylist as $fish)
+                                                <li data-value="{{ $fish->fish_code }}" class="cursor-pointer px-4 py-2 hover:bg-gray-200 dark:hover:bg-gray-600 dark:hover:text-white">{{ $fish->fish_code }} - {{ $fish->common_name }}</li>
+                                            @endforeach
+                                        </ul>
+                                    </div>
+                                </div>
+
+                                <!-- Hidden Real Select for Form Submission -->
+                                <select name="fish_code" id="fish_code" class="hidden">
                                     <option value="" disabled selected>Select a Fish Code</option>
                                     @foreach($fishweeklylist as $fish)
                                         <option value="{{ $fish->fish_code }}">{{ $fish->fish_code }} - {{ $fish->common_name }}</option>
                                     @endforeach
                                 </select>
                             </div>
+                        </div>
+
+
+
 
                             <div class="w-full">
                                 <label for="qty" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Quantity</label>
@@ -123,7 +152,7 @@
 
                         <hr class="h-px bg-gray-200 border-0 dark:bg-gray-600">
 
-                        <button type="button" onclick="submitOrder('form')" id="submitButton" class="inline-flex items-center px-5 py-2.5 mt-4 sm:mt-6 text-sm font-medium text-center text-white bg-green-700 rounded-lg focus:ring-4 focus:ring-green-200 dark:focus:ring-green-900 hover:bg-green-800">
+                        <button type="button" onclick="submitOrderForm('form')" id="submitButton" class="inline-flex items-center px-5 py-2.5 mt-4 sm:mt-6 text-sm font-medium text-center text-white bg-green-700 rounded-lg focus:ring-4 focus:ring-green-200 dark:focus:ring-green-900 hover:bg-green-800">
                             Submit
                         </button>
                         <button type="button" onclick="refresh()" class="inline-flex items-center px-5 py-2.5 mt-4 ml-2 sm:mt-6 text-sm font-medium text-center text-white bg-red-700 rounded-lg focus:ring-4 focus:ring-red-200 dark:focus:ring-red-900 hover:bg-red-800">
@@ -138,7 +167,26 @@
     </div>
 </section>
 <!-- End block -->
+<style>
+#custom-dropdown-container {
+    position: relative;
+}
 
+#custom-dropdown {
+    display: none; /* Hidden by default, shown on focus */
+    z-index: 1000;
+}
+
+#custom-dropdown-options li {
+    cursor: pointer;
+}
+
+/* #custom-dropdown-options li:hover {
+    background-color: #e5e7eb; 
+} */
+
+
+    </style>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const uploadRadios = document.querySelectorAll('input[name="upload-radio"]');
@@ -148,7 +196,57 @@ document.addEventListener('DOMContentLoaded', function() {
             toggleForms(this.value);
         });
     });
+
+
 });
+
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('search-fish-code');
+    const dropdown = document.getElementById('custom-dropdown');
+    const optionsContainer = document.getElementById('custom-dropdown-options');
+    const selectElement = document.getElementById('fish_code');
+
+    // Toggle dropdown visibility
+    searchInput.addEventListener('focus', function() {
+        dropdown.style.display = 'block';
+    });
+
+    searchInput.addEventListener('blur', function() {
+        // Delay hiding to allow click on options
+        setTimeout(() => {
+            dropdown.style.display = 'none';
+        }, 200);
+    });
+
+    // Filter options based on search input
+    searchInput.addEventListener('input', function() {
+        const filter = searchInput.value.toLowerCase();
+        const options = optionsContainer.querySelectorAll('li');
+
+        options.forEach(option => {
+            const text = option.textContent.toLowerCase();
+            if (text.includes(filter)) {
+                option.style.display = 'block';
+            } else {
+                option.style.display = 'none';
+            }
+        });
+    });
+
+    // Select option and update real select
+    optionsContainer.addEventListener('click', function(event) {
+        if (event.target.tagName === 'LI') {
+            const selectedValue = event.target.getAttribute('data-value');
+            searchInput.value = event.target.textContent;
+            selectElement.value = selectedValue;
+            dropdown.style.display = 'none'; // Hide dropdown after selection
+        }
+    });
+});
+
+
+
+
 
 function validateFile() {
         const fileInput = document.getElementById('excel_input');
@@ -376,13 +474,26 @@ function updateTable() {
 }
 
 function clearForm() {
-    alert('Form will be cleared now');
 
-    // Manually clear each form element by their ID
+    // Reset the custom dropdown search input
+    const searchInput = document.getElementById('search-fish-code');
+    searchInput.value = ''; // Clear search input
+
+    // Reset the custom dropdown
+    const dropdown = document.getElementById('custom-dropdown');
+    const optionsContainer = document.getElementById('custom-dropdown-options');
+
+    // Clear the displayed options
+    const options = optionsContainer.querySelectorAll('li');
+    options.forEach(option => {
+        option.style.display = 'block'; // Show all options again
+    });
+
+    // Reset the hidden real select element
     document.getElementById('fish_code').selectedIndex = 0; // Reset select to first option
-    document.getElementById('qty').value = '';
 
-    // Optionally, if you have additional fields or dynamic content, you can reset them here
+    // Clear other form fields if needed
+    document.getElementById('qty').value = '';
 }
 
 
@@ -390,6 +501,7 @@ function clearForm() {
 
 function editRecord(index) {
     const record = records[index];
+    document.getElementById('search-fish-code').value = record.fishCode;
     document.getElementById('fish_code').value = record.fishCode;
     document.getElementById('qty').value = record.quantity;
 
@@ -403,80 +515,91 @@ function deleteRecord(index) {
 }
 
 
-function submitOrder(method) {
+function submitOrderForm(method) {
 
-    if (records.length === 0) {
-        bootbox.alert({
-            message: "No records to submit. Please add at least one record before submitting.",
-            size: 'small'
-        }).find('.modal-content').addClass("flex items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800");
-        return;
-    }
+if (records.length === 0) {
+    bootbox.alert({
+        message: "No records to submit. Please add at least one record before submitting.",
+        size: 'small'
+    }).find('.modal-content').addClass("flex items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800");
+    return;
+}
 
-    //csrf token
-    const csrfToken = document.querySelector('input[name="_token"]').value;
+// CSRF token
+const csrfToken = document.querySelector('input[name="_token"]').value;
 
-    // Extract the selected week
-    const selectedWeek = document.querySelector('input[name="week-radio"]:checked').value;
+// Get shipping address from input field
+const shippingAddress = document.querySelector('textarea[name="shippingaddress"]').value;
 
-    // Extract table data
-    const tableRows = document.querySelectorAll('#recordsTable tbody tr');
-    const tableData = [];
+// Check if shipping address is empty
+if (!shippingAddress) {
+    bootbox.alert({
+        message: "Please enter a shipping address before submitting.",
+        size: 'small'
+    }).find('.modal-content').addClass("flex items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800");
+    return;
+}
 
-    tableRows.forEach(row => {
-        const cells = row.querySelectorAll('td');
-        const rowData = {
-            fish_code: cells[0].textContent.trim(),
-            quantity: cells[4].textContent.trim(),
-        };
-        tableData.push(rowData);
-    });
+// Extract table data
+const tableRows = document.querySelectorAll('#recordsTable tbody tr');
+const tableData = [];
 
-    // Prepare the payload
-    const payload = {
-        table_data: tableData
+tableRows.forEach(row => {
+    const cells = row.querySelectorAll('td');
+    const rowData = {
+        fish_code: cells[0].textContent.trim(),
+        quantity: cells[1].textContent.trim(),
     };
+    tableData.push(rowData);
+});
 
-    let ajaxUrl;
+// Prepare the payload with shipping address
+const payload = {
+    table_data: tableData,
+    shipping_address: shippingAddress // Include shipping address in payload
+};
 
-    if (method === 'excel') {
-        ajaxUrl = '{{ url("orderuploadexcel") }}';
-    } else if (method === 'form') {
-        ajaxUrl = '{{ url("orderuploadform") }}';
-    }
+let ajaxUrl;
 
-    $.ajax({
-        url: ajaxUrl,
-        type: 'POST',
-        contentType: 'application/json',
-        headers: {
-            'X-CSRF-TOKEN': csrfToken // Include CSRF token in the headers
-        },
-        data: JSON.stringify(payload),
-        success: function(response) {
-            if(response.status == "success"){
-                bootbox.alert({
-                    message: response.message,
-                    backdrop: true,
-                    callback: function () {
-                        records = [];
-                        updateTable();
-                        clearForm();
-                    }
-                }).find('.modal-content').addClass("flex items-center p-4 mb-4 text-sm text-green-800 border border-green-300 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400 dark:border-green-800");
+if (method === 'excel') {
+    ajaxUrl = '{{ url("orderuploadexcel") }}';
+} else if (method === 'form') {
+    ajaxUrl = '{{ url("orderuploadform") }}';
+}
 
-            } else if(response.status == "error"){
-                bootbox.alert({
-                    message: response.message,
-                    backdrop: true,
-                    callback: function () {}
-                }).find('.modal-content').addClass("flex items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800");
-            }
-        },
-        error: function(jqXHR, textStatus, errorThrown) {
-            alert('Form submission failed: ' + textStatus + ' ' + errorThrown);
+$.ajax({
+    url: ajaxUrl,
+    type: 'POST',
+    contentType: 'application/json',
+    headers: {
+        'X-CSRF-TOKEN': csrfToken // Include CSRF token in the headers
+    },
+    data: JSON.stringify(payload),
+    success: function(response) {
+        if(response.status == "success"){
+            bootbox.alert({
+                message: response.message,
+                backdrop: true,
+                callback: function () {
+                    records = [];
+                    updateTable();
+                    clearForm();
+                    location.href = "{{ url('vieworderdetpage') }}" + "/" + response.id;
+                }
+            }).find('.modal-content').addClass("flex items-center p-4 mb-4 text-sm text-green-800 border border-green-300 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400 dark:border-green-800");
+
+        } else if(response.status == "error"){
+            bootbox.alert({
+                message: response.message,
+                backdrop: true,
+                callback: function () {}
+            }).find('.modal-content').addClass("flex items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800");
         }
-    });
+    },
+    error: function(jqXHR, textStatus, errorThrown) {
+        alert('Form submission failed: ' + textStatus + ' ' + errorThrown);
+    }
+});
 }
 
 function submitOrderExcel(method) {

@@ -601,10 +601,10 @@ class PageController extends Controller
             return redirect('/');
         }
 
-        if(Util::Privilege("View Data_18") == 'LOGOUT'){
+        if(Util::Privilege("View Data_21") == 'LOGOUT'){
             return redirect('/');
         }
-        if(Util::Privilege("View Data_18") == 'DENIED'){
+        if(Util::Privilege("View Data_21") == 'DENIED'){
             return view('pages.accessdenied');
         }
 
@@ -627,6 +627,14 @@ class PageController extends Controller
             return redirect('/');
         }
 
+        if(Util::Privilege("View Data_22") == 'LOGOUT'){
+            return redirect('/');
+        }
+        if(Util::Privilege("View Data_22") == 'DENIED'){
+            return view('pages.accessdenied');
+        }
+
+
 
         $username = session()->get('username');
         $ipaddress = Util::get_client_ip();
@@ -646,10 +654,10 @@ class PageController extends Controller
             return redirect('/');
         }
 
-        if(Util::Privilege("Add Data_18") == 'LOGOUT'){
+        if(Util::Privilege("Add Data_21") == 'LOGOUT'){
             return redirect('/');
         }
-        if(Util::Privilege("Add Data_18") == 'DENIED'){
+        if(Util::Privilege("Add Data_21") == 'DENIED'){
             return view('pages.accessdenied');
         }
 
@@ -1131,19 +1139,21 @@ class PageController extends Controller
             return redirect('/');
         }
 
-        if(Util::Privilege("View Data_19") == 'LOGOUT'){
+        if(Util::Privilege("View Data_23") == 'LOGOUT'){
             return redirect('/');
         }
-        if(Util::Privilege("View Data_19") == 'DENIED'){
+        if(Util::Privilege("View Data_23") == 'DENIED'){
             return view('pages.accessdenied');
         }
+
+        $notifications = DB::table('tbl_notifications')->select("*")->where('user_id', session()->get('userid'))->where('seen_status',0)->get();
 
 
         $username = session()->get('username');
         $ipaddress = Util::get_client_ip();
         Util::user_auth_log($ipaddress,"user opened user notifications interface ",$username, "View Notifications Page");
 
-        return view('pages.notifications');
+        return view('pages.notifications')->with('notifications', $notifications);
 
     }
 
@@ -1246,8 +1256,15 @@ class PageController extends Controller
 
     public function orderconfirm($id) 
     {
+
+        $orderconfirmstatus  = DB::table('tbl_order_mst')->select('status')->where('id', $id)->first();
+
+        if($orderconfirmstatus == 'confirmed' || $orderconfirmstatus == 'shipping' || $orderconfirmstatus == 'completed') {
+            return response()->json(['status' => 'error', 'message' => 'This order is alread confirmed']);
+        }else {
+
         // Step 1: Confirm the order status in tbl_order_mst
-        DB::table('tbl_order_mst')->where('id', $id)->update(['status' => 'pending']);
+        DB::table('tbl_order_mst')->where('id', $id)->update(['status' => 'confirmed']);
     
         // Step 2: Retrieve the order details
         $orderdetail = DB::table('tbl_order_mst as om')
@@ -1283,7 +1300,12 @@ class PageController extends Controller
         app('App\Http\Controllers\InvoiceController')->generateinvoice($id);
     
         // Step 6: Return the view with the order details
-        return view('pages.orderconfirmation')->with('orderdetail', $orderdetail);
+        // return view('pages.orderconfirmation')->with('orderdetail', $orderdetail);
+        return response()->json(['status' => 'success', 'message' => 'Order confirmed successfully!', 'orderdetail' => $orderdetail]);
+
+
+        }
+
     }
 
 
