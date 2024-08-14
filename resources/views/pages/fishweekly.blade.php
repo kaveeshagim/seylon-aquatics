@@ -61,6 +61,7 @@
                             <th scope="col" class="p-4">Gross Price</th>
                             <th scope="col" class="p-4">Special Offer</th>
                             <th scope="col" class="p-4">Discount</th>
+                            <th scope="col" class="p-4">Image</th>
                             <th scope="col" class="p-4">Edit</th>
                             <th scope="col" class="p-4">Delete</th>
                         </tr>
@@ -145,6 +146,12 @@ function searchdata() {
           { "data": "gross_price" },
           { "data": "special_offer" },
           { "data": "discount" },
+          { 
+            "data": "image",
+            "render": function(data) {
+              return `<img src="${data}" alt="Fish Image" class="w-16 h-16 object-cover">`;
+            }
+          },
           {
             sortable: false,
             "render": function(data, type, full, meta) {

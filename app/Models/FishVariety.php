@@ -24,6 +24,7 @@ class FishVariety extends Model
         'common_name', 
         'scientific_name', 
         'size_cm', 
+        'image',
         'size',
     ];
 

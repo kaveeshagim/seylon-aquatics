@@ -1287,6 +1287,88 @@ class PageController extends Controller
     }
 
 
-    
+    public function salesreport() {
+
+        
+        $updateLastActivityTime = Util::updateLastActivityTime();
+
+        if($updateLastActivityTime == 'false') {
+            return redirect('/expired');
+        }elseif($updateLastActivityTime == 'invalid') {
+            return redirect('/');
+        }
+
+        if(Util::Privilege("View Data_9") == 'LOGOUT'){
+            return redirect('/');
+        }
+        if(Util::Privilege("View Data_9") == 'DENIED'){
+            return view('pages.accessdenied');
+        }
+
+
+        $username = session()->get('username');
+        $ipaddress = Util::get_client_ip();
+        Util::user_auth_log($ipaddress,"user opened sales report page",$username, "View Sales Report Page");
+
+        return view('pages.salesreport');
+
+
+    }
+
+    public function shippingreport() {
+
+        
+        $updateLastActivityTime = Util::updateLastActivityTime();
+
+        if($updateLastActivityTime == 'false') {
+            return redirect('/expired');
+        }elseif($updateLastActivityTime == 'invalid') {
+            return redirect('/');
+        }
+        if(Util::Privilege("View Data_20") == 'LOGOUT'){
+            return redirect('/');
+        }
+        if(Util::Privilege("View Data_20") == 'DENIED'){
+            return view('pages.accessdenied');
+        }
+
+
+        $username = session()->get('username');
+        $ipaddress = Util::get_client_ip();
+        Util::user_auth_log($ipaddress,"user opened shipping report page",$username, "View Shipping Report Page");
+
+        return view('pages.shipmentreport');
+
+
+    }
+
+
+    public function customerorderreport() {
+
+        
+        $updateLastActivityTime = Util::updateLastActivityTime();
+
+        if($updateLastActivityTime == 'false') {
+            return redirect('/expired');
+        }elseif($updateLastActivityTime == 'invalid') {
+            return redirect('/');
+        }
+
+        if(Util::Privilege("View Data_8") == 'LOGOUT'){
+            return redirect('/');
+        }
+        if(Util::Privilege("View Data_8") == 'DENIED'){
+            return view('pages.accessdenied');
+        }
+
+
+        $username = session()->get('username');
+        $ipaddress = Util::get_client_ip();
+        Util::user_auth_log($ipaddress,"user opened customer order report page",$username, "View Customer Order Report Page");
+
+        return view('pages.customerorderreport');
+
+
+    }
     
 }

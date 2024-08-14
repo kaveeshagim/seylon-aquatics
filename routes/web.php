@@ -260,5 +260,13 @@ Route::namespace('App\Http\Controllers')->group(function () {
         // Access Denied
         Route::get('/accessdenied', 'PageController@accessdenied')->name('accessdenied');
 
+        //Reports
+        Route::get('/customerorderreport', 'PageController@customerorderreport')->name('customerorderreport');
+        Route::get('/shippingreport', 'PageController@shippingreport')->name('shippingreport');
+        Route::get('/salesreport', 'PageController@salesreport')->name('salesreport');
+        Route::get('/getshipmentreport', 'ReportController@getshipmentreport')->name('getshipmentreport');
+        Route::get('/getsalesreport', 'ReportController@getsalesreport')->name('getsalesreport');
+        Route::get('/getcustomerorderreport', 'ReportController@getcustomerorderreport')->name('getcustomerorderreport');
+
 
 });

@@ -178,17 +178,21 @@ class OrderController extends Controller
 
 public function updateStatus()
 {
-    // Fetch updated order counts from the database
-    $pendingOrders = 20; // Get pending orders count
-    $inProgressOrders = 10; // Get in-progress orders count
-    $shippedOrders = 10; // Get shipped orders count
-    $completedOrders = 10; // Get completed orders count
+
+    $pendingOrders = DB::table('tbl_order_mst')->select('id')->where('status','pending')->count();
+    $totalOrders = DB::table('tbl_order_mst')->select('id')->count();
+    $pendinginvoices = DB::table('tbl_invoice_mst')->select('id')->where('invoice_status','pending')->count();
+    $shippedOrders = DB::table('tbl_shipment')->select('id')->where('status','completed')->count();
+    $inTransitOrders = DB::table('tbl_shipment')->select('id')->where('status','in-transit')->count();
+    $completedOrders = DB::table('tbl_order_mst')->select('id')->where('status','completed')->count();
 
     // Send data to Node.js server
     Http::post('http://localhost:6050/updateOrders', [
         'pendingOrders' => $pendingOrders,
-        'inProgressOrders' => $inProgressOrders,
+        'totalOrders' => $totalOrders,
+        'pendingInvoices' => $pendinginvoices,
         'shippedOrders' => $shippedOrders,
+        'inTransitOrders' => $inTransitOrders,
         'completedOrders' => $completedOrders,
     ]);
 

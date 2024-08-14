@@ -112,7 +112,7 @@
                      <a href="{{ url('customerorderreport')}}" class="no-underline flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Customer Order Report</a>
                   </li>
                   <li>
-                     <a href="{{ url('salesreport') }}" class=" no-underline flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Shipping Report</a>
+                     <a href="{{ url('shippingreport') }}" class=" no-underline flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Shipping Report</a>
                   </li>
                   <li>
                      <a href="{{ url('salesreport') }}" class="no-underline flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Sales Report</a>
@@ -234,7 +234,7 @@
                                 <a href="{{ url('customerorderreport')}}" class="block px-4 py-2 no-underline text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Customer Order Report</a>
                             </li>
                             <li>
-                                <a href="{{ url('salesreport') }}" class="block px-4 py-2 no-underline text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Shipping Report</a>
+                                <a href="{{ url('shippingreport') }}" class="block px-4 py-2 no-underline text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Shipping Report</a>
                             </li>
                             <li>
                                 <a href="{{ url('salesreport') }}" class="block px-4 py-2 no-underline text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Sales Report</a>

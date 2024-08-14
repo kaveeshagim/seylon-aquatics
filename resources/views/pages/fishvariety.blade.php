@@ -127,6 +127,18 @@
                         <label for="size_cm" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Size in cm</label>
                         <input type="text" name="size_cm" id="size_cm" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" required />
                     </div>
+                    <div>
+                
+                <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white" for="file_input">Avatar</label>
+                <input name="avatar" onchange="displaySelectedImage(event)" class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" aria-describedby="file_input_help" id="avatar" type="file">
+                <p class="mt-1 text-sm text-gray-500 dark:text-gray-300" id="file_input_help">SVG, PNG, JPG or GIF (MAX. 800x400px).</p>
+
+                <button onclick="cancelSelectedImage()" type="button" class="inline-flex items-center px-3 py-2 ml-2 text-sm font-medium text-center text-white rounded-lg bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800">
+                    Cancel
+                </button>
+                <p id="selectedImageText" class="hidden mt-1 text-sm text-gray-500">Selected image: <span id="selectedImageName"></span></p>
+                <img id="selectedImagePreview" class="hidden mt-2" src="" alt="Selected Image Preview" style="max-width: 200px; max-height: 200px;">
+            </div>
                     <div class="flex items-center p-4 md:p-5 border-t border-gray-200 rounded-b dark:border-gray-600">
                         <button type="button" onclick="addnewfishvariety()" data-modal-hide="create-modal" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Submit</button>
                         <button type="button" onclick="refresh()"  class="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 focus:outline-none bg-gray-50 rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">Cancel</button>
@@ -192,6 +204,18 @@ Toggle modal
                         <label for="size_cm-edit" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Size in cm</label>
                         <input type="text" name="size_cm-edit" id="size_cm-edit" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" required />
                     </div>
+                    <div>
+                
+                <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white" for="file_input">Avatar</label>
+                <input name="avatar-edit" onchange="displaySelectedImage(event)" class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" aria-describedby="file_input_help" id="avatar" type="file">
+                <p class="mt-1 text-sm text-gray-500 dark:text-gray-300" id="file_input_help">SVG, PNG, JPG or GIF (MAX. 800x400px).</p>
+
+                <button onclick="cancelSelectedImage()" type="button" class="inline-flex items-center px-3 py-2 ml-2 text-sm font-medium text-center text-white rounded-lg bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800">
+                    Cancel
+                </button>
+                <p id="selectedImageText" class="hidden mt-1 text-sm text-gray-500">Selected image: <span id="selectedImageName"></span></p>
+                <img id="selectedImagePreview" class="hidden mt-2" src="" alt="Selected Image Preview" style="max-width: 200px; max-height: 200px;">
+            </div>
                     <button type="button" onclick="editfishvariety()" class="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Submit</button>
                 </form>
             </div>
@@ -327,7 +351,7 @@ function searchdata() {
             });
         },
         "columnDefs": [
-          { className: "text-center", "targets": [0, 1, 2] }
+          { className: "text-center", "targets": [0, 1, 2, 3, 4, 5, 6, 7, 8] }
         ],
         "pageLength": 25,
         // "order": [[0, "desc"]],
@@ -420,53 +444,59 @@ function deletefishvariety() {
 function editmodal(id) {
     document.getElementById('editid').value = id;
 
-   $.ajax({
-    url: "{{url('/getvariety')}}" + "/" + id,
-    type: 'GET',
-    success: function (response) {
-        document.getElementById('commonname-edit').value = response.data.common_name;
-        document.getElementById('scientificname-edit').value = response.data.scientific_name;
-        document.getElementById('size_cm-edit').value = response.data.size_cm;
-        document.getElementById('qtyperbag-edit').value = response.data.qtyperbag;
-        const speciesSelect = document.getElementById('species-edit');
-        const sizeSelect = document.getElementById('size-edit');
-        speciesSelect.innerHTML = '';
-        sizeSelect.innerHTML = '';
+    $.ajax({
+        url: "{{url('/getvariety')}}" + "/" + id,
+        type: 'GET',
+        success: function (response) {
+            document.getElementById('commonname-edit').value = response.data.common_name;
+            document.getElementById('scientificname-edit').value = response.data.scientific_name;
+            document.getElementById('size_cm-edit').value = response.data.size_cm;
+            document.getElementById('qtyperbag-edit').value = response.data.qtyperbag;
+            const speciesSelect = document.getElementById('species-edit');
+            const sizeSelect = document.getElementById('size-edit');
+            speciesSelect.innerHTML = '';
+            sizeSelect.innerHTML = '';
 
-        // Populate habitat-edit select options
-        response.specieslist.forEach(species => {
-            const option = document.createElement('option');
+            // Populate habitat-edit select options
+            response.specieslist.forEach(species => {
+                const option = document.createElement('option');
+                option.value = species.id;
+                option.text = species.name;
+                if(response.data.species_id == species.id) {
+                    option.selected = true;
+                }
+                speciesSelect.appendChild(option);
+            });
 
-            option.value = species.id;
-            option.text = species.name;
-            if(response.data.species == species.id) {
-                option.selected = true;
+            // Populate size-edit select options
+            response.sizelist.forEach(size => {
+                const option = document.createElement('option');
+                option.value = size.id;
+                option.text = size.name;
+                if(response.data.size == size.id) {
+                    option.selected = true;
+                }
+                sizeSelect.appendChild(option);
+            });
+
+            // Set the selected species and size
+            speciesSelect.value = response.data.species_id;
+            sizeSelect.value = response.data.size;
+
+            // Display the existing image if available
+            if (response.data.image) {
+                const selectedImagePreview = document.getElementById('selectedImagePreview');
+                selectedImagePreview.src = response.data.image;
+                selectedImagePreview.classList.remove('hidden');
+            } else {
+                cancelSelectedImage();
             }
-            speciesSelect.appendChild(option);
-        });
-
-        // Populate habitat-edit select options
-        response.sizelist.forEach(size => {
-            const option = document.createElement('option');
-
-            option.value = size.id;
-            option.text = size.name;
-            if(response.data.size == size.id) {
-                option.selected = true;
-            }
-            sizeSelect.appendChild(option);
-        });
-
-        // Set the selected habitat and size
-        speciesSelect.value = response.data.species_id;
-        sizeSelect.value = response.data.size;
-    }
-  });
+        }
+    });
     const editmodal = document.getElementById('edit-modal');
     editmodal.classList.remove('hidden');
     editmodal.classList.add('block');
 }
-
 
 function editfishvariety() {
 
@@ -506,5 +536,27 @@ function refresh(){
     $('#create-form')[0].reset();
 }
 
+</script>
+<script>
+    function displaySelectedImage(event) {
+        const input = event.target;
+        const imageName = input.files[0].name;
+        document.getElementById('selectedImageName').textContent = imageName;
+        document.getElementById('selectedImageText').classList.remove('hidden');
+
+        const reader = new FileReader();
+        reader.onload = function () {
+            const preview = document.getElementById('selectedImagePreview');
+            preview.src = reader.result;
+            preview.classList.remove('hidden');
+        };
+        reader.readAsDataURL(input.files[0]);
+    }
+
+    function cancelSelectedImage() {
+        document.getElementById('avatar').value = '';
+        document.getElementById('selectedImageText').classList.add('hidden');
+        document.getElementById('selectedImagePreview').classList.add('hidden');
+    }
 </script>
 @endsection

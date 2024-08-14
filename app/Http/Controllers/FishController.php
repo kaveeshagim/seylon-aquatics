@@ -286,6 +286,7 @@ public function deletefishspecies(Request $request) {
             'discount' => $fish->discount,
             'created_at' => $fish->created_at,
             'id' => $fish->id,
+            'image' => $fish->variety ? $fish->variety->image : null,
         ];
     });
 
@@ -311,6 +312,7 @@ public function deletefishspecies(Request $request) {
                 'discount' => $fish->discount,
                 'created_at' => $fish->created_at,
                 'id' => $fish->id,
+                'image' => $fish->variety ? $fish->variety->image : null,
             ];
     });
 
@@ -504,12 +506,23 @@ public function deletefishspecies(Request $request) {
 
 
     public function addfishvariety(Request $request) {
-        $commonName = strtoupper($request->input('commonname'));
-        $scientificName = strtolower($request->input('scientificname'));
-        $speciesId = $request->input('species');
-        $qtyperbag = $request->input('qtyperbag');
-        $size = strtoupper($request->input('size'));
-        $sizeCm = strtoupper($request->input('size_cm'));
+        // Validate input fields
+        $validatedData = $request->validate([
+            'commonname' => 'required|string|max:255',
+            'scientificname' => 'required|string|max:255',
+            'species' => 'required|integer',
+            'qtyperbag' => 'required|integer',
+            'size' => 'required|string|max:255',
+            'size_cm' => 'required|string|max:255',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048' // optional image validation
+        ]);
+    
+        $commonName = strtoupper($validatedData['commonname']);
+        $scientificName = strtolower($validatedData['scientificname']);
+        $speciesId = $validatedData['species'];
+        $qtyperbag = $validatedData['qtyperbag'];
+        $size = strtoupper($validatedData['size']);
+        $sizeCm = strtoupper($validatedData['size_cm']);
     
         // Check if fish variety already exists
         $existingname = FishVariety::where('common_name', $commonName)
@@ -524,7 +537,15 @@ public function deletefishspecies(Request $request) {
         } else {
             // Generate fish code using Util function
             $fishCode = Util::generateFishCode($speciesId, $size, $sizeCm);
-
+    
+            // Handle image upload
+            $imagePath = null;
+            if ($request->hasFile('avatar')) {
+                $image = $request->file('avatar');
+                $imageName = Str::slug($commonName) . '_' . time() . '.' . $image->getClientOriginalExtension();
+                $imagePath = $image->storeAs('public/fishimages', $imageName);
+                $imagePath = Storage::url($imagePath); // Get the public URL of the image
+            }
     
             // Create new FishVariety record
             FishVariety::create([
@@ -535,6 +556,7 @@ public function deletefishspecies(Request $request) {
                 'size_cm' => $sizeCm,
                 'qtyperbag' => $qtyperbag,
                 'fish_code' => $fishCode,
+                'image' => $imagePath, // Save the image path
             ]);
     
             // Log the user's action
@@ -547,6 +569,7 @@ public function deletefishspecies(Request $request) {
     }
     
 
+
     public function editfishvariety(Request $request) {
         $id = $request->input('editid');
         $commonName = strtoupper($request->input('commonname-edit'));
@@ -555,6 +578,11 @@ public function deletefishspecies(Request $request) {
         $qtyperbag = $request->input('qtyperbag-edit');
         $size = strtoupper($request->input('size-edit'));
         $sizeCm = strtoupper($request->input('size_cm-edit'));
+    
+        // Validate the input fields including image
+        $validatedData = $request->validate([
+            'image-edit' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048' // optional image validation
+        ]);
     
         // Check if a variety with the same details already exists (excluding the current record)
         $existingVariety = FishVariety::where('id', '!=', $id)
@@ -584,6 +612,26 @@ public function deletefishspecies(Request $request) {
             $fishVariety->size_cm = $sizeCm;
             $fishVariety->qtyperbag = $qtyperbag;
     
+            if ($request->hasFile('avatar-edit')) {
+                // Delete the old image if it exists
+                if ($fishVariety->image) {
+                    Storage::delete(str_replace('/storage/', 'public/', $fishVariety->image));
+                }
+            
+                // Store the new image
+                $image = $request->file('avatar-edit');
+                $imageName = Str::slug($commonName) . '_' . time() . '.' . $image->getClientOriginalExtension();
+                $imagePath = $image->storeAs('public/fishimages', $imageName);
+            
+                // Check if the image was stored successfully
+                if (Storage::exists($imagePath)) {
+                    $fishVariety->image = Storage::url($imagePath); // Save the new image path
+                } else {
+                    return response()->json(['status' => 'error', 'message' => 'Image upload failed!']);
+                }
+            }
+            
+    
             // Regenerate fish code if necessary
             if ($codeRequiresUpdate) {
                 $fishVariety->fish_code = Util::generateFishCode($speciesId, $size, $sizeCm);
@@ -600,8 +648,6 @@ public function deletefishspecies(Request $request) {
             return response()->json(['status' => 'success', 'message' => 'Fish Variety updated successfully!']);
         }
     }
-    
-
 
 
     public function deletefishvariety(Request $request) {
