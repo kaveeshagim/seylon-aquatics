@@ -54,7 +54,8 @@
                             <th scope="col" class="p-4">Tot Discount applied</th>
                             <th scope="col" class="p-4">Order Total</th>
                             <th scope="col" class="p-4">Status</th>
-                            <th scope="col" class="p-4">View</th>
+                            <th scope="col" class="p-4">View Order</th>
+                            <th scope="col" class="p-4">View Invoice</th>
                         </tr>
                     </thead>
 
@@ -131,12 +132,23 @@ function searchdata() {
           {
             sortable: false,
             "render": function(data, type, full, meta) {
-              return '<td><button type="button" onclick="vieworder(\'' + full.id + '\')" class="text-xs py-2 px-3 flex items-center text-sm font-medium text-center text-white bg-green-700 rounded-lg hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">'+
-                                  '<svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">'+
-                    '<path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M9 8h10M9 12h10M9 16h10M4.99 8H5m-.02 4h.01m0 4H5" clip-rule="evenodd"/>'+
-                    '</svg>'+
-                    'View'+
-                '</button>';
+              return '<td><div style="display: flex; justify-content: center; align-items: center;"><button type="button" onclick="vieworder(\'' + full.id + '\')" class="text-xs py-2 px-3 flex items-center text-sm font-medium text-center text-white bg-green-700 rounded-lg hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">'+
+                    '<svg class="w-4 h-4 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">'+
+  '<path stroke="currentColor" stroke-width="2" d="M21 12c0 1.2-4.03 6-9 6s-9-4.8-9-6c0-1.2 4.03-6 9-6s9 4.8 9 6Z"/>'+
+  '<path stroke="currentColor" stroke-width="2" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/>'+
+'</svg>'+
+                '</button></div></td>';
+            }
+          },
+          {
+            sortable: false,
+            "render": function(data, type, full, meta) {
+              return '<td><div style="display: flex; justify-content: center; align-items: center;"><button type="button" onclick="viewinvoice(\'' + full.id + '\')" class="text-xs py-2 px-3 flex items-center text-sm font-medium text-center text-white bg-green-700 rounded-lg hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">'+
+                    '<svg class="w-4 h-4 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">'+
+  '<path stroke="currentColor" stroke-width="2" d="M21 12c0 1.2-4.03 6-9 6s-9-4.8-9-6c0-1.2 4.03-6 9-6s9 4.8 9 6Z"/>'+
+  '<path stroke="currentColor" stroke-width="2" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/>'+
+'</svg>'+
+                '</button></div></td>';
             }
           }
         ],
@@ -150,17 +162,6 @@ function searchdata() {
             $('.dt-length').find('label').addClass('text-gray-700 dark:text-white');
             $('#dt-length-1').addClass('text-gray-700 dark:text-white bg-gray-50 dark:bg-gray-700');
 
-            const tbody = $('table tbody');
-            const rows = tbody.find('tr');
-
-            rows.each(function() {
-                // $(this).addClass('border-b dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700');
-                
-                const cells = $(this).find('td');
-                cells.each(function() {
-                    $(this).addClass('p-2 w-4');
-                });
-            });
         },
         "columnDefs": [
           { className: "text-center", "targets": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 ] }
@@ -196,11 +197,41 @@ function searchdata() {
 }
 
 function addneworderpage() {
-    location.href= "{{ url('addorderpage') }}";
+
+        var priv = 'Add Data_21';
+
+        $.ajax({
+            url: "{{url('privcheck')}}",
+            type: 'GET',
+            data: { priv: priv },
+            success: function (response) {
+                if(response.status == "success") {
+                    bootbox.alert({
+                        message: response.message,
+                        backdrop: true,
+                        callback: function () {
+                            location.href= "{{ url('addorderpage') }}";
+                        }
+                    }).find('.modal-content').addClass("flex items-center p-4 mb-4 text-sm text-green-800 border border-green-300 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400 dark:border-green-800");
+
+                }else if(response.status == "error"){
+                    bootbox.alert({
+                        message: response.message,
+                        backdrop: true,
+                        callback: function () {
+                        }
+                    }).find('.modal-content').addClass("flex items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800");
+                }
+            }
+        });
 }
 
 function vieworder(id) {
     location.href= "{{ url('vieworderdetpage') }}" + "/" + id;
+}
+
+function viewinvoice(id) {
+    location.href= "{{ url('viewinvoicedetpage') }}" + "/" + id;
 }
 
 </script>

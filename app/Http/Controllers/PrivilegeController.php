@@ -216,6 +216,20 @@ class PrivilegeController extends Controller
     
         return response()->json(['success' => true, 'message' => 'User Privilege Added Successfully']);
     }
+
+    public function privcheck(Request $request) {
+
+        if(Util::Privilege($request->input('priv')) == 'LOGOUT'){
+            return response()->json(['status' => 'error', 'message' => 'You dont have necessary privileges']);
+        }
+        if(Util::Privilege($request->input('priv')) == 'DENIED'){
+            return response()->json(['status' => 'error', 'message' => 'You dont have necessary privileges']);
+        }
+
+        return response()->json(['status' => 'success', 'message' => '']);
+
+
+    }
     
 
 }

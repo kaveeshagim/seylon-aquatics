@@ -76,13 +76,14 @@
                     <table id="recordsTableExcel" class="min-w-full divide-y divide-gray-200 dark:divide-gray-600 mt-5">
                             <thead>
                             <tr>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Fish Code</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Size</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Size in cm</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Gross Price(USD)</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Quantity</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Special Offer</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Discount(%)</th>
+                                    <th class="px-2 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Fish Code</th>
+                                    <th class="px-2 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Common Name</th>
+                                    <th class="px-2 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Size</th>
+                                    <th class="px-2 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Size in cm</th>
+                                    <th class="px-2 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Gross Price(USD)</th>
+                                    <th class="px-2 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Quantity</th>
+                                    <th class="px-2 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Special Offer</th>
+                                    <th class="px-2 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Discount(%)</th>
                                 </tr>
                             </thead>
                             <tbody id="recordsBodyExcel">
@@ -165,14 +166,14 @@
                         <table id="recordsTable" class="min-w-full divide-y divide-gray-200 dark:divide-gray-600 mt-5">
                             <thead>
                                 <tr>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Fish Code</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Size</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Size in cm</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Gross Price(USD)</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Quantity</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Special Offer</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Discount(%)</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Actions</th>
+                                    <th class="px-2 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Fish Code</th>
+                                    <th class="px-2 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Size</th>
+                                    <th class="px-2 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Size in cm</th>
+                                    <th class="px-2 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Gross Price(USD)</th>
+                                    <th class="px-2 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Quantity</th>
+                                    <th class="px-2 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Special Offer</th>
+                                    <th class="px-2 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Discount(%)</th>
+                                    <th class="px-2 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Actions</th>
                                 </tr>
                             </thead>
                             <tbody id="recordsBody">
@@ -264,13 +265,14 @@ function displayTable(fishData, rows) {
         const fishDetails = fishData[row.fish_code] || { size: 'N/A', size_cm: 'N/A' };
         const tr = document.createElement('tr');
         tr.innerHTML = `
-            <td class="px-6 py-4 whitespace-nowrap text-gray-900 dark:text-gray-50">${row.fish_code}</td>
-            <td class="px-6 py-4 whitespace-nowrap text-gray-900 dark:text-gray-50">${fishDetails.size}</td>
-            <td class="px-6 py-4 whitespace-nowrap text-gray-900 dark:text-gray-50">${fishDetails.size_cm}</td>
-            <td class="px-6 py-4 whitespace-nowrap text-gray-900 dark:text-gray-50">${row.gross_price}</td>
-            <td class="px-6 py-4 whitespace-nowrap text-gray-900 dark:text-gray-50">${row.quantity}</td>
-            <td class="px-6 py-4 whitespace-nowrap text-gray-900 dark:text-gray-50">${row.special_offer}</td>
-            <td class="px-6 py-4 whitespace-nowrap text-gray-900 dark:text-gray-50">${row.discount}</td>
+            <td class="px-2 py-2 text-xs whitespace-nowrap text-gray-900 dark:text-gray-50">${row.fish_code}</td>
+            <td class="px-2 py-2 text-xs whitespace-nowrap text-gray-900 dark:text-gray-50">${fishDetails.common_name}</td>
+            <td class="px-2 py-2 text-xs whitespace-nowrap text-gray-900 dark:text-gray-50">${fishDetails.size || ''}</td>
+            <td class="px-2 py-2 text-xs whitespace-nowrap text-gray-900 dark:text-gray-50">${fishDetails.size_cm}</td>
+            <td class="px-2 py-2 text-xs whitespace-nowrap text-gray-900 dark:text-gray-50">${row.gross_price}</td>
+            <td class="px-2 py-2 text-xs whitespace-nowrap text-gray-900 dark:text-gray-50">${row.quantity}</td>
+            <td class="px-2 py-2 text-xs whitespace-nowrap text-gray-900 dark:text-gray-50">${row.special_offer}</td>
+            <td class="px-2 py-2 text-xs whitespace-nowrap text-gray-900 dark:text-gray-50">${row.discount}</td>
         `;
         tbody.appendChild(tr);
     });
@@ -280,7 +282,7 @@ function displayTable(fishData, rows) {
 
 
 function fetchFishData(validatedRows) {
-    const fishCodes = validatedRows.map(row => row.fish_code);
+    const fishCodes = validatedRows.map(row => row.fish_code.trim());
 
     $.ajax({
         url: '{{url('fetchfishweeklyexceldata')}}',
@@ -305,7 +307,7 @@ function fetchFishData(validatedRows) {
 
 
 
-    function validateExcel() {
+function validateExcel() {
     const fileInput = document.getElementById('excel_input');
     const file = fileInput.files[0];
 
@@ -360,7 +362,8 @@ function fetchFishData(validatedRows) {
                     return;
                 }
 
-                const [fish_code, gross_price, quantity, special_offer, discount] = row;
+                // Trim whitespace from each cell in the row
+                const [fish_code, gross_price, quantity, special_offer, discount] = row.map(cell => cell ? cell.toString().trim() : '');
 
                 if (!fish_code || !gross_price || !quantity || !special_offer) {
                     showBootboxAlert('Required fields are missing in a row.', 'red');
@@ -382,8 +385,13 @@ function fetchFishData(validatedRows) {
                     return;
                 }
 
-                if (discount !== '' && (isNaN(discount) || parseFloat(discount) < 0)) {
-                    showBootboxAlert('Invalid discount value.', 'red');
+                if (special_offer === 'no' && discount !== '') {
+                    showBootboxAlert('Discount should be empty when special offer is "no".', 'red');
+                    return;
+                }
+
+                if (special_offer === 'yes' && (discount === '' || isNaN(discount) || parseFloat(discount) < 0)) {
+                    showBootboxAlert('Invalid discount value. It must be a non-negative number if special offer is "yes".', 'red');
                     return;
                 }
 
@@ -477,14 +485,14 @@ function updateTable() {
     records.forEach((record, index) => {
         tableBody.innerHTML += `
             <tr>
-                <td class="px-6 py-4 whitespace-nowrap text-gray-900 dark:text-gray-50">${record.fishCode}</td>
-                <td class="px-6 py-4 whitespace-nowrap text-gray-900 dark:text-gray-50">${record.size}</td>
-                <td class="px-6 py-4 whitespace-nowrap text-gray-900 dark:text-gray-50">${record.sizeCm}</td>
-                <td class="px-6 py-4 whitespace-nowrap text-gray-900 dark:text-gray-50">${record.grossPrice}</td>
-                <td class="px-6 py-4 whitespace-nowrap text-gray-900 dark:text-gray-50">${record.quantity}</td>
-                <td class="px-6 py-4 whitespace-nowrap text-gray-900 dark:text-gray-50">${record.specialOffer}</td>
-                <td class="px-6 py-4 whitespace-nowrap text-gray-900 dark:text-gray-50">${record.discount}</td>
-                <td class="px-6 py-4 whitespace-nowrap">
+                <td class="px-2 py-2 text-xs whitespace-nowrap text-gray-900 dark:text-gray-50">${record.fishCode}</td>
+                <td class="px-2 py-2 text-xs whitespace-nowrap text-gray-900 dark:text-gray-50">${record.size}</td>
+                <td class="px-2 py-2 text-xs whitespace-nowrap text-gray-900 dark:text-gray-50">${record.sizeCm}</td>
+                <td class="px-2 py-2 text-xs whitespace-nowrap text-gray-900 dark:text-gray-50">${record.grossPrice}</td>
+                <td class="px-2 py-2 text-xs whitespace-nowrap text-gray-900 dark:text-gray-50">${record.quantity}</td>
+                <td class="px-2 py-2 text-xs whitespace-nowrap text-gray-900 dark:text-gray-50">${record.specialOffer}</td>
+                <td class="px-2 py-2 text-xs whitespace-nowrap text-gray-900 dark:text-gray-50">${record.discount}</td>
+                <td class="px-2 py-2 text-xs whitespace-nowrap">
                     <button onclick="editRecord(${index})" type="button" class="px-3 py-2 text-xs font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Edit</button>
                     <button onclick="deleteRecord(${index})" type="button" class="px-3 py-2 text-xs font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Delete</button>
                 </td>
@@ -695,11 +703,23 @@ document.getElementById('fish_code').addEventListener('change', function() {
 });
 
 
+// function refresh() {
+//     $('#weeklylistForm')[0].reset();
+//     $('#excelForm').addClass('hidden');
+//     $('#formSubmission').addClass('hidden');
+// }
 function refresh() {
-    $('#weeklylistForm')[0].reset();
-    $('#excelForm').addClass('hidden');
-    $('#formSubmission').addClass('hidden');
+    // Clear the form fields
+    document.getElementById('weeklylistForm').reset();
+
+    // Clear the table body content
+    document.getElementById('recordsBodyExcel').innerHTML = '';
+
+    // Disable the Submit button
+    document.getElementById('submitButtonExcel').disabled = true;
+
 }
+
 
 </script>
 

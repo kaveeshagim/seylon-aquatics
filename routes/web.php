@@ -62,7 +62,7 @@ Route::get('/download-pdf', [App\Http\Controllers\PDFController::class, 'downloa
 // Grouping routes under the 'App\Http\Controllers' namespace
 Route::namespace('App\Http\Controllers')->group(function () {
 
-    Route::get('/update-status', 'OrderController@updateStatus');
+    
 
         // Login routes
     Route::get('/orderscount', 'OrderController@count');
@@ -72,7 +72,7 @@ Route::namespace('App\Http\Controllers')->group(function () {
 
         Route::post('/logout', 'LoginController@logout')->name('logout');
         Route::get('/access_denied', 'UsersController@errorpage');
-        Route::get('/home', 'PageController@home')->name('home');
+
 
         // Users routes
         Route::get('/users', 'PageController@users')->name('users');
@@ -124,6 +124,9 @@ Route::namespace('App\Http\Controllers')->group(function () {
 
         // Dashboard routes
         Route::get('/dashboard', 'PageController@dashboard')->name('dashboard');
+        Route::get('/update-status', 'DashboardController@updateStatus');
+        Route::get('/update-status-customer', 'DashboardController@updateStatusCustomer');
+        Route::get('/home', 'PageController@home')->name('home');
 
         // Orders routes
         Route::get('/orderupload', 'PageController@orderupload')->name('orderupload');
@@ -143,11 +146,16 @@ Route::namespace('App\Http\Controllers')->group(function () {
         Route::get('/vieworderdetpage/{id}', 'PageController@vieworderdetpage')->name('vieworderdetpage');
         Route::get('/getcusorderdetail/{id}', 'OrderController@getcusorderdetail')->name('getcusorderdetail');
         Route::get('/orderconfirm/{id}', 'PageController@orderconfirm')->name('orderconfirm');
+        Route::get('/orderconfirmstatuscheck/{id}', 'OrderController@orderconfirmstatuscheck')->name('orderconfirmstatuscheck');
         Route::get('/cancelorder', 'OrderController@cancelorder')->name('orderconfirm');
+        Route::get('/deleteorderdet', 'OrderController@deleteorderdet')->name('deleteorderdet');
+        Route::get('/editorderdet', 'OrderController@editorderdet')->name('editorderdet');
+        Route::get('/getorderitemdetgetorderitemdet', 'OrderController@getorderitemdet')->name('getorderitemdet');
 
         // Invoice routes
         Route::get('/invoices', 'PageController@invoices')->name('invoices');
         Route::get('/getinvoices', 'InvoiceController@getinvoices')->name('getinvoices');
+        Route::get('/updateinvoice', 'InvoiceController@updateinvoice')->name('updateinvoice');
         Route::get('/viewinvoicedetpage/{id}', 'PageController@viewinvoicedetpage')->name('viewinvoicedetpage');
 
 
@@ -158,6 +166,7 @@ Route::namespace('App\Http\Controllers')->group(function () {
         Route::post('/addpasswordresetreq', 'PasswordController@addpasswordresetreq')->name('addpasswordresetreq');
         Route::post('/approvepasswordrequest', 'PasswordController@approvepasswordrequest')->name('approvepasswordrequest');
         Route::get('/rejectpasswordrequest', 'PasswordController@rejectpasswordrequest')->name('rejectpasswordrequest');
+        Route::post('/resetpassword', 'PasswordController@resetpassword')->name('resetpassword');
 
         // Fish routes
         Route::get('/genfishcode', 'FishController@genfishcode')->name('genfishcode');
@@ -246,6 +255,8 @@ Route::namespace('App\Http\Controllers')->group(function () {
         Route::get('/get_categories', 'PrivilegeController@get_categories');
         Route::get('/get_prev_section', 'PrivilegeController@get_prev_section');
         Route::get('/save_user_prev', 'PrivilegeController@save_user_prev');
+
+        Route::get('/privcheck', 'PrivilegeController@privcheck');
 
         
         //notification routes

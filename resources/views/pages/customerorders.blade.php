@@ -93,12 +93,12 @@ function searchdata() {
           {
             sortable: false,
             "render": function(data, type, full, meta) {
-              return '<td><button type="button" onclick="vieworder(\'' + full.id + '\')" class="text-xs py-2 px-3 flex items-center text-sm font-medium text-center text-white bg-green-700 rounded-lg hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">'+
+              return '<td><div style="display: flex; justify-content: center; align-items: center;"><button type="button" onclick="vieworder(\'' + full.id + '\')" class="text-xs py-2 px-3 flex items-center text-sm font-medium text-center text-white bg-green-700 rounded-lg hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">'+
                                   '<svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">'+
                     '<path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M9 8h10M9 12h10M9 16h10M4.99 8H5m-.02 4h.01m0 4H5" clip-rule="evenodd"/>'+
                     '</svg>'+
                     'View Order'+
-                '</button>';
+                '</button></div></td>';
             }
           }
         ],
@@ -112,17 +112,17 @@ function searchdata() {
             $('.dt-length').find('label').addClass('text-gray-700 dark:text-white');
             $('#dt-length-1').addClass('text-gray-700 dark:text-white bg-gray-50 dark:bg-gray-700');
 
-            const tbody = $('table tbody');
-            const rows = tbody.find('tr');
+            // const tbody = $('table tbody');
+            // const rows = tbody.find('tr');
 
-            rows.each(function() {
-                // $(this).addClass('border-b dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700');
+            // rows.each(function() {
+            //     // $(this).addClass('border-b dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700');
                 
-                const cells = $(this).find('td');
-                cells.each(function() {
-                    $(this).addClass('p-2 w-4');
-                });
-            });
+            //     const cells = $(this).find('td');
+            //     cells.each(function() {
+            //         $(this).addClass('p-2 w-4');
+            //     });
+            // });
         },
         "columnDefs": [
           { className: "text-center", "targets": [0, 1, 2, 3, 4, 5] }

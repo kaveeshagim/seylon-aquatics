@@ -59,11 +59,12 @@
                             <th scope="col" class="p-4">Size</th>
                             <th scope="col" class="p-4">Size in cm</th>
                             <th scope="col" class="p-4">Gross Price</th>
+                            <th scope="col" class="p-4">Stock Status</th>
                             <th scope="col" class="p-4">Special Offer</th>
                             <th scope="col" class="p-4">Discount</th>
                             <th scope="col" class="p-4">Image</th>
-                            <th scope="col" class="p-4">Edit</th>
-                            <th scope="col" class="p-4">Delete</th>
+                            <!-- <th scope="col" class="p-4">Edit</th> -->
+                            <!-- <th scope="col" class="p-4">Delete</th> -->
                         </tr>
                     </thead>
 
@@ -79,7 +80,7 @@
 <!-- End block -->
 
 
-<button data-modal-target="delete-modal" data-modal-toggle="delete-modal" class="hidden text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">
+<button id="deletetoggle" data-modal-target="delete-modal" data-modal-toggle="delete-modal" class="hidden text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">
 Toggle modal
 </button>
 
@@ -144,38 +145,39 @@ function searchdata() {
           { "data": "size" },
           { "data": "size_cm" },
           { "data": "gross_price" },
+          { "data": "stock_status" },
           { "data": "special_offer" },
           { "data": "discount" },
           { 
             "data": "image",
             "render": function(data) {
-              return `<img src="${data}" alt="Fish Image" class="w-16 h-16 object-cover">`;
+              return `<img src="storage/${data}" alt="Fish Image" class="w-16 h-16 object-cover">`;
             }
           },
-          {
-            sortable: false,
-            "render": function(data, type, full, meta) {
-            return '<td><button type="button" onclick="editfishweekly(\'' + full.id + '\')" data-modal-target="edit-modal" data-modal-toggle="edit-modal" class="text-xs py-2 px-3 flex items-center text-sm font-medium text-center text-white bg-primary-700 rounded-lg hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">'+
-                    '<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2 -ml-0.5" viewbox="0 0 20 20" fill="currentColor" aria-hidden="true">'+
-                        '<path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z" />'+
-                        '<path fill-rule="evenodd" d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" clip-rule="evenodd" />'+
-                    '</svg>'+
-                    'Edit'+
-                '</button>';
-            }
+          // {
+          //   sortable: false,
+          //   "render": function(data, type, full, meta) {
+          //   return '<td><div style="display: flex; justify-content: center; align-items: center;"><button type="button" onclick="editfishweekly(\'' + full.id + '\')" data-modal-target="edit-modal" data-modal-toggle="edit-modal" class="text-xs py-2 px-3 flex items-center text-sm font-medium text-center text-white bg-primary-700 rounded-lg hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">'+
+          //           '<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2 -ml-0.5" viewbox="0 0 20 20" fill="currentColor" aria-hidden="true">'+
+          //               '<path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z" />'+
+          //               '<path fill-rule="evenodd" d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" clip-rule="evenodd" />'+
+          //           '</svg>'+
+          //           'Edit'+
+          //       '</button></div></td>';
+          //   }
 
-          },
-          {
-            sortable: false,
-            "render": function(data, type, full, meta) {
-             return    '<td><button type="button" onclick="deletemodal(\'' + full.id + '\')" data-modal-target="delete-modal" data-modal-toggle="delete-modal" class="text-xs flex items-center text-red-700 hover:text-white border border-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-3 py-2 text-center dark:border-red-500 dark:text-red-500 dark:hover:text-white dark:hover:bg-red-600 dark:focus:ring-red-900">'+
-                                        '<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2 -ml-0.5" viewbox="0 0 20 20" fill="currentColor" aria-hidden="true">'+
-                                            '<path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />'+
-                                        '</svg>'+
-                                        'Delete'+
-                                    '</button>';
-            }
-          }
+          // },
+          // {
+          //   sortable: false,
+          //   "render": function(data, type, full, meta) {
+          //    return    '<td><div style="display: flex; justify-content: center; align-items: center;"><button type="button" onclick="deletemodal(\'' + full.id + '\')" data-modal-target="delete-modal" data-modal-toggle="delete-modal" class="text-xs flex items-center text-red-700 hover:text-white border border-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-3 py-2 text-center dark:border-red-500 dark:text-red-500 dark:hover:text-white dark:hover:bg-red-600 dark:focus:ring-red-900">'+
+          //                               '<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2 -ml-0.5" viewbox="0 0 20 20" fill="currentColor" aria-hidden="true">'+
+          //                                   '<path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />'+
+          //                               '</svg>'+
+          //                               'Delete'+
+          //                           '</button></div></td>';
+          //   }
+          // }
         ],
          "initComplete": function(settings, json) {
             $('.dt-info').addClass('text-sm font-normal text-gray-500 dark:text-gray-400 ml-3');
@@ -187,20 +189,14 @@ function searchdata() {
             $('.dt-length').find('label').addClass('text-gray-700 dark:text-white');
             $('#dt-length-1').addClass('text-gray-700 dark:text-white bg-gray-50 dark:bg-gray-700');
 
-            const tbody = $('table tbody');
-            const rows = tbody.find('tr');
-
-            rows.each(function() {
-                // $(this).addClass('border-b dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700');
-                
-                const cells = $(this).find('td');
-                cells.each(function() {
-                    $(this).addClass('p-2 w-4');
-                });
-            });
+        },
+        "rowCallback": function(row, data, index) {
+          if (data.stock_status === 'out-of-stock') {
+            $(row).css('background-color', 'rgba(255, 99, 132, 0.2)');
+          }
         },
         "columnDefs": [
-          { className: "text-center", "targets": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10] }
+          { className: "text-center", "targets": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11] }
         ],
         "dom": 'Bfrtip',
         "buttons": [
@@ -209,7 +205,7 @@ function searchdata() {
                 title: 'Fish Weekly List - Week',
                 text: 'Export to Excel',
                 exportOptions: {
-                  columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10] 
+                  columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11] 
                 }
             },
             {
@@ -219,7 +215,7 @@ function searchdata() {
                 orientation: 'landscape',
                 pageSize: 'A4',
                 exportOptions: {
-                  columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]  
+                  columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]  
                 }
             },
             {
@@ -227,12 +223,12 @@ function searchdata() {
                 title: 'Fish Weekly List - Week',
                 text: 'Print',
                 exportOptions: {
-                  columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10] 
+                  columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11] 
                 }
             }
         ],
         "pageLength": 25,
-        // "order": [[0, "desc"]],
+        "order": [[5, "desc"]],
         "searching": true
       });
 
@@ -264,38 +260,33 @@ $.ajax({
       "data": data,
       "columns": [
         { "data": "year" },
-        { "data": "week" },
-        { "data": "fish_code" },
-        { "data": "common_name" },
-        { "data": "scientific_name" },
-        { "data": "quantity" },
-        { "data": "size" },
-        { "data": "size_cm" },
-        { "data": "gross_price" },
-        { "data": "special_offer" },
-        { "data": "discount" },
+          { "data": "week" },
+          { "data": "fish_code" },
+          { "data": "common_name" },
+          { "data": "scientific_name" },
+          { "data": "quantity" },
+          { "data": "size" },
+          { "data": "size_cm" },
+          { "data": "gross_price" },
+          { "data": "special_offer" },
+          { "data": "discount" },
+          { 
+            "data": "image",
+            "render": function(data) {
+              return `<img src="${data}" alt="Fish Image" class="w-16 h-16 object-cover">`;
+            }
+          },
         {
           sortable: false,
           "render": function(data, type, full, meta) {
-          return '<td><button type="button" onclick="editfishweekly(\'' + full.id + '\')" data-modal-target="edit-modal" data-modal-toggle="edit-modal" class="text-xs py-2 px-3 flex items-center text-sm font-medium text-center text-white bg-primary-700 rounded-lg hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">'+
-                  '<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2 -ml-0.5" viewbox="0 0 20 20" fill="currentColor" aria-hidden="true">'+
-                      '<path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z" />'+
-                      '<path fill-rule="evenodd" d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" clip-rule="evenodd" />'+
-                  '</svg>'+
-                  'Edit'+
-              '</button>';
+          return '';
           }
 
         },
         {
           sortable: false,
           "render": function(data, type, full, meta) {
-           return    '<td><button type="button" onclick="deletemodal(\'' + full.id + '\')" data-modal-target="delete-modal" data-modal-toggle="delete-modal" class="text-xs flex items-center text-red-700 hover:text-white border border-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-3 py-2 text-center dark:border-red-500 dark:text-red-500 dark:hover:text-white dark:hover:bg-red-600 dark:focus:ring-red-900">'+
-                                      '<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2 -ml-0.5" viewbox="0 0 20 20" fill="currentColor" aria-hidden="true">'+
-                                          '<path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />'+
-                                      '</svg>'+
-                                      'Delete'+
-                                  '</button>';
+           return    '';
           }
         }
       ],
@@ -309,17 +300,17 @@ $.ajax({
           $('.dt-length').find('label').addClass('text-gray-700 dark:text-white');
           $('#dt-length-1').addClass('text-gray-700 dark:text-white bg-gray-50 dark:bg-gray-700');
 
-          const tbody = $('table tbody');
-          const rows = tbody.find('tr');
+          // const tbody = $('table tbody');
+          // const rows = tbody.find('tr');
 
-          rows.each(function() {
-              // $(this).addClass('border-b dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700');
+          // rows.each(function() {
+          //     // $(this).addClass('border-b dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700');
               
-              const cells = $(this).find('td');
-              cells.each(function() {
-                  $(this).addClass('p-2 w-4');
-              });
-          });
+          //     const cells = $(this).find('td');
+          //     cells.each(function() {
+          //         $(this).addClass('p-2 w-4');
+          //     });
+          // });
       },
       "columnDefs": [
         { className: "text-center", "targets": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10] }
@@ -374,21 +365,19 @@ function addnewfishweeklypage() {
 }
 
 function editfishweekly(id) {
-  location.href = "{{url('editfishweeklpage')}}" + "/" + id;
+
 }
 
   function deletemodal(id) {
     document.getElementById('deleteid').value = id;
-    const deleteModal = document.getElementById('delete-modal');
-    deleteModal.classList.remove('hidden');
-    deleteModal.classList.add('block');
+    $('#deletetoggle').click();
 }
 
 
 function deletefishweekly() {
   const id = document.getElementById('deleteid').value;
   $.ajax({
-    url: 'deleteuser',
+    url: 'deletefishweekly',
     type: 'GET',
     data: { id: id },
     success: function (response) {

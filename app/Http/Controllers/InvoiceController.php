@@ -7,6 +7,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use App\Services\PHPMailerService;
 
 class InvoiceController extends Controller
 {
@@ -96,21 +97,30 @@ class InvoiceController extends Controller
                 'orderdet_id' => $item->id,
                 'quantity' => $quantity,
                 'discount' => $discount,
+                'unit_price' => $grossPrice,
                 'total_price' => $discountedPrice,
                 'created_at' => now(),
                 'updated_at' => now(),
             ];
         }
+
+        $discountapplied = $grossTotal - $finalTotal;
     
         // Insert the summary into tbl_invoice_mst and retrieve the invoice_id
         $invoiceId = DB::table('tbl_invoice_mst')->insertGetId([
             'order_id' => $orderId,
             'gross_total' => $grossTotal,
+            'discount_total' => $discountapplied,
             'final_total' => $finalTotal,
             'payment_status' => 'pending',
+            'invoice_status' => 'pending',
             'created_at' => now(),
             'updated_at' => now(),
         ]);
+
+
+
+        DB::table('tbl_order_mst')->where('id',$orderId)->update(['order_total'=>$finalTotal, 'discount_applied'=>$discountapplied]);
     
         // Add the retrieved invoice_id to each invoice detail
         foreach ($invoiceDetails as &$detail) {
@@ -122,6 +132,43 @@ class InvoiceController extends Controller
     
         return response()->json(['status' => 'success', 'message' => 'Invoice generated successfully.']);
     }
+
+    public function updateinvoice(Request $request) {
+        $invoiceid = $request->input('invoiceid');
+        $orderid = $request->input('orderid');
+        $orderno = $request->input('orderno');
+        $paymentstatus = $request->input('paymentstatus');
+
+        $orderdetails = DB::table('tbl_order_mst')->select('*')->where('id', $orderid)->first();
+    
+        // Calculate the shipment date as 5 days from today
+        $shipmentDate = now()->addDays(5);
+    
+        DB::table('tbl_invoice_mst')
+            ->where('id', $invoiceid)
+            ->update([
+                'payment_status' => $paymentstatus, 
+                'invoice_status' => 'completed',
+                'shipment_date' => $shipmentDate
+            ]);
+
+        DB::table('tbl_shipment')
+        ->insert([
+            'order_id'=> $orderid, 
+            'order_no'=> $orderno, 
+            'customer_name'=> $orderdetails->customer_name, 
+            'status'=>'pending', 
+            'shipment_date' => $shipmentDate, 
+            'shipped_by'=> 'Bio World Holdings (Pvt) Ltd', 
+            'shipped_to'=>$orderdetails->shipping_address,
+            'tot_boxes'=>$orderdetails->tot_boxes,
+            'tot_fish'=>$orderdetails->tot_fish,
+            'created_at' =>now()
+        ]);    
+    
+        return response()->json(['status' => 'success', 'message' => 'Payment Status and Shipment Date updated successfully.']);
+    }
+    
     
     
 }

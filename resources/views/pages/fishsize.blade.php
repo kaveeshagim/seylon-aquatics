@@ -102,7 +102,7 @@
     </div>
 </div> 
 
-<button data-modal-target="edit-modal" data-modal-toggle="edit-modal" class="hidden text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">
+<button id="edittoggle" data-modal-target="edit-modal" data-modal-toggle="edit-modal" class="hidden text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">
 Toggle modal
 </button>
 
@@ -147,7 +147,7 @@ Toggle modal
     </div>
 </div> 
 
-<button data-modal-target="delete-modal" data-modal-toggle="delete-modal" class="hidden text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">
+<button id="deletetoggle" data-modal-target="delete-modal" data-modal-toggle="delete-modal" class="hidden text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">
 Toggle modal
 </button>
 
@@ -182,6 +182,7 @@ Toggle modal
   document.addEventListener("DOMContentLoaded", function(event) {
    searchdata();
 });
+
   </script>
 
 <script>
@@ -207,25 +208,25 @@ function searchdata() {
           {
             sortable: false,
             "render": function(data, type, full, meta) {
-                   return '<td><button type="button" onclick="editmodal(\'' + full.id + '\')" data-modal-target="edit-modal" data-modal-toggle="edit-modal" class="text-xs py-2 px-3 flex items-center text-sm font-medium text-center text-white bg-primary-700 rounded-lg hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">'+
+                   return '<td><div style="display: flex; justify-content: center; align-items: center;"><button type="button" onclick="editmodal(\'' + full.id + '\')" data-modal-target="edit-modal" data-modal-toggle="edit-modal" class="text-xs py-2 px-3 flex items-center text-sm font-medium text-center text-white bg-primary-700 rounded-lg hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">'+
                     '<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2 -ml-0.5" viewbox="0 0 20 20" fill="currentColor" aria-hidden="true">'+
                         '<path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z" />'+
                         '<path fill-rule="evenodd" d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" clip-rule="evenodd" />'+
                     '</svg>'+
                     'Edit'+
-                '</button>';
+                '</button></div></td>';
             }
 
           },
           {
             sortable: false,
             "render": function(data, type, full, meta) {
-                         return    '<td><button type="button" onclick="deletemodal(\'' + full.id + '\')" data-modal-target="delete-modal" data-modal-toggle="delete-modal" class="text-xs flex items-center text-red-700 hover:text-white border border-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-3 py-2 text-center dark:border-red-500 dark:text-red-500 dark:hover:text-white dark:hover:bg-red-600 dark:focus:ring-red-900">'+
+                         return    '<td><div style="display: flex; justify-content: center; align-items: center;"><button type="button" onclick="deletemodal(\'' + full.id + '\')" data-modal-target="delete-modal" data-modal-toggle="delete-modal" class="text-xs flex items-center text-red-700 hover:text-white border border-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-3 py-2 text-center dark:border-red-500 dark:text-red-500 dark:hover:text-white dark:hover:bg-red-600 dark:focus:ring-red-900">'+
                                         '<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2 -ml-0.5" viewbox="0 0 20 20" fill="currentColor" aria-hidden="true">'+
                                             '<path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />'+
                                         '</svg>'+
                                         'Delete'+
-                                    '</button>';
+                                    '</button></div></td>';
             }
           }
         ],
@@ -239,20 +240,10 @@ function searchdata() {
             $('.dt-length').find('label').addClass('text-gray-700 dark:text-white');
             $('#dt-length-1').addClass('text-gray-700 dark:text-white bg-gray-50 dark:bg-gray-700');
 
-            const tbody = $('table tbody');
-            const rows = tbody.find('tr');
-
-            rows.each(function() {
-                $(this).addClass('border-b dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700');
-                
-                const cells = $(this).find('td');
-                cells.each(function() {
-                    $(this).addClass('p-2 w-4');
-                });
-            });
+           
         },
         "columnDefs": [
-          { className: "text-center", "targets": [0, 1] }
+          { className: "text-center", "targets": [0, 1, 2, 3] }
         ],
         "pageLength": 25,
         // "order": [[0, "desc"]],
@@ -285,6 +276,7 @@ function searchdata() {
                         message: response.message,
                         backdrop: true,
                         callback: function () {
+                            refresh()
                             searchdata();
                         }
                     }).find('.modal-content').addClass("flex items-center p-4 mb-4 text-sm text-green-800 border border-green-300 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400 dark:border-green-800");
@@ -294,6 +286,7 @@ function searchdata() {
                         message: response.message,
                         backdrop: true,
                         callback: function () {
+                            refresh()
                             searchdata();
                         }
                     }).find('.modal-content').addClass("flex items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800");
@@ -308,9 +301,7 @@ function searchdata() {
 
 function deletemodal(id) {
     document.getElementById('deleteid').value = id;
-    const deleteModal = document.getElementById('delete-modal');
-    deleteModal.classList.remove('hidden');
-    deleteModal.classList.add('block');
+    $('#deletetoggle').click();
 }
 
 
@@ -357,9 +348,7 @@ function editmodal(id) {
       document.getElementById('description-edit').value = response.description;
     }
   });
-    const editmodal = document.getElementById('edit-modal');
-    editmodal.classList.remove('hidden');
-    editmodal.classList.add('block');
+  $('#edittoggle').click();
 }
 
 
@@ -380,6 +369,7 @@ function editfishsize() {
                     message: response.message,
                     backdrop: true,
                     callback: function () {
+                        hideeditmodal();
                         searchdata();
                     }
                 }).find('.modal-content').addClass("flex items-center p-4 mb-4 text-sm text-green-800 border border-green-300 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400 dark:border-green-800");
@@ -388,6 +378,7 @@ function editfishsize() {
                     message: response.message,
                     backdrop: true,
                     callback: function () {
+                        hideeditmodal();
                         searchdata();
                     }
                 }).find('.modal-content').addClass("flex items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800");
@@ -399,6 +390,17 @@ function editfishsize() {
 function refresh(){
 
     $('#create-form')[0].reset();
+}
+
+function editformrefresh(){
+
+$('#edit-form')[0].reset();
+}
+
+function hideeditmodal() {
+    editformrefresh()
+    $('#edittoggle').click();
+
 }
 
 </script>

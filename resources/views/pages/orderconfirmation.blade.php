@@ -5,7 +5,7 @@
   <div class="mx-auto max-w-2xl px-4 2xl:px-0">
       <h2 class="text-xl font-semibold text-gray-900 dark:text-white sm:text-2xl mb-2">Order Confirmed! Thanks for your order!</h2>
       <!-- <p class="text-gray-500 dark:text-gray-400 mb-6 md:mb-8">Your order <a href="#" class="font-medium text-gray-900 dark:text-white hover:underline">#7564804</a> will be processed within 24 hours during working days. We will notify you by email once your order has been shipped.</p> -->
-      <p class="text-gray-500 dark:text-gray-400 mb-6 md:mb-8">Your order <a href="#" class="font-medium text-gray-900 dark:text-white hover:underline">{{$orderdetail->order_no}}</a> will be processed within 24 hours during working days. We will notify you by email once your invoice has been finalized.</p>
+      <p class="text-gray-500 dark:text-gray-400 mb-6 md:mb-8">Your order <a href="#" class="font-medium text-gray-900 dark:text-white hover:underline">{{$orderdetail->order_no}}</a> is confirmed. Click the 'view invoice' button to generate your invoice.</p>
       
       <div id="order-details" class="space-y-4 sm:space-y-2 rounded-lg border border-gray-100 bg-gray-50 p-6 dark:border-gray-700 dark:bg-gray-800 mb-6 md:mb-8">
       <div class="mb-6 text-center">

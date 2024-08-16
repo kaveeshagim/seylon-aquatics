@@ -28,25 +28,28 @@
             <div class="flex flex-col md:flex-row items-stretch md:items-center md:space-x-3 space-y-3 md:space-y-0 justify-between mx-4 py-4 border-t dark:border-gray-700">
                 
             <div class="flex flex-col px-4 py-3 space-y-3 lg:flex-row lg:items-center lg:justify-between lg:space-y-0 lg:space-x-4">
-              <div class="flex items-center flex-1 space-x-4">
-                  <h5>
-                      <span class="text-gray-500">Total shipments:</span>
-                      <span id="total-shipments" class="dark:text-white">Loading...</span>
-                  </h5>
-              </div>
-
-          </div>
-
-<form class="max-w-sm mx-auto">
-  <label for="countries" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Select an duration</label>
-  <select onchange="searchdata()" id="date-filter" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-  <option value="day">By Day</option>
-  <option value="week">By Week</option>
-  <option value="month">By Month</option>
-  <option value="year">By Year</option>
-  </select>
-</form>
+                <div class="flex items-center flex-1 space-x-4">
+                    <div>
+                        <label for="from-date" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">From Date</label>
+                        <input type="date" id="from-date" class="mt-1 block w-full border-gray-300 dark:border-gray-600 rounded-md shadow-sm text-gray-900 dark:text-white bg-gray-50 dark:bg-gray-700 focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                    </div>
+                    <div>
+                        <label for="to-date" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">To Date</label>
+                        <input type="date" id="to-date" class="mt-1 block w-full border-gray-300 dark:border-gray-600 rounded-md shadow-sm text-gray-900 dark:text-white bg-gray-50 dark:bg-gray-700 focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                    </div>
+                    <div>
+                        <label for="status" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Status</label>
+                        <select id="status" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                            <option value="">All</option>
+                            <option value="pending">Pending</option>
+                            <option value="in-transit">In-Transit</option>
+                            <option value="completed">Completed</option>
+                        </select>
+                    </div>
+                </div>
             </div>
+
+        </div>
 
 
             <div class="overflow-x-auto">
@@ -54,9 +57,15 @@
                     <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                         <tr>
                         <th scope="col" class="p-4">Date</th>
-
-            <th scope="col" class="p-4">Status</th>
-            <th scope="col" class="p-4">Number of Shipments</th>
+                        <th scope="col" class="p-4">Customer Name</th>
+                        <th scope="col" class="p-4">Order No</th>
+                        <th scope="col" class="p-4">Shipment Status</th>
+                        <th scope="col" class="p-4">Shipped By</th>
+                        <th scope="col" class="p-4">Shipped To</th>
+                        <th scope="col" class="p-4">Shipment Date</th>
+                        <th scope="col" class="p-4">Deliver Date</th>
+                        <th scope="col" class="p-4">No of boxes</th>
+                        <th scope="col" class="p-4">No of fish</th>
                         </tr>
                     </thead>
 
@@ -82,45 +91,27 @@
 <script>
 
 function searchdata() {
-    let dateFilter = $('#date-filter').val();
+    // Get filter values
+    const fromDate = $('#from-date').val();
+    const toDate = $('#to-date').val();
+    const status = $('#status').val();
 
+    let dateRangeText = '';
+    dateRangeText = `Report Date: ${fromDate} to ${toDate}`;
+
+    // Destroy the existing DataTable instance
     $('#shipmentreport-table').DataTable().destroy();
 
     $.ajax({
         url: "getshipmentreport",
         type: "GET",
-        dataSrc: "data",
-        data: { date_filter: dateFilter },
+        data: {
+            from_date: fromDate,
+            to_date: toDate,
+            status: status
+        },
         success: function(response) {
             console.log("Data:", response);
-
-            $('#total-shipments').text(response.total_shipments);
-
-            // Define the date range based on the selected filter
-            let dateRangeText = '';
-            let currentDate = new Date();
-
-            switch (dateFilter) {
-                case 'day':
-                    dateRangeText = `Report Date: ${currentDate.toISOString().split('T')[0]}`;
-                    break;
-                case 'week':
-                    let startOfWeek = new Date(currentDate.setDate(currentDate.getDate() - currentDate.getDay() + 1)); // Monday
-                    let endOfWeek = new Date(startOfWeek);
-                    endOfWeek.setDate(startOfWeek.getDate() + 6); // Sunday
-                    dateRangeText = `Report Week: ${startOfWeek.toISOString().split('T')[0]} to ${endOfWeek.toISOString().split('T')[0]}`;
-                    break;
-                case 'month':
-                    let year = currentDate.getFullYear();
-                    let month = currentDate.toLocaleString('default', { month: 'long' });
-                    dateRangeText = `Report Month: ${month} ${year}`;
-                    break;
-                case 'year':
-                    dateRangeText = `Report Year: ${currentDate.getFullYear()}`;
-                    break;
-                default:
-                    dateRangeText = 'All Time Report';
-            }
 
             // Initialize the DataTable with the retrieved data
             $('#shipmentreport-table').DataTable({
@@ -128,32 +119,59 @@ function searchdata() {
                 "deferRender": true,
                 "data": response.data,
                 "columns": [
-                    { "data": "date_time" }, // New date column
-                    { "data": "status" },
-                    { "data": "no_of_shipments" }
+                    { "data": "shipment_date" },
+                    { "data": "customer_name" },
+                    { "data": "order_no" },
+                    // {
+                    //     "data": "order_status",
+                    //     sortable: false,
+                    //     "render": function(data, type, full, meta) {
+                    //         if(full.order_status == 'pending') {
+                    //         return '<span class="bg-yellow-100 text-yellow-800 text-xs font-medium px-2 py-0.5 rounded dark:bg-yellow-900 dark:text-yellow-300">' + full.order_status + '</span>';
+
+                    //         }else if(full.order_status == 'confirmed') {
+                    //         return '<span class="bg-blue-100 text-blue-800 text-xs font-medium px-2 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300">' + full.order_status + '</span>';
+
+                    //         }else if(full.order_status == 'cancelled') {
+                    //         return '<span class="bg-red-100 text-red-800 text-xs font-medium px-2 py-0.5 rounded dark:bg-red-900 dark:text-red-300">' + full.order_status + '</span>';
+
+                    //         }else if(full.order_status == 'completed') {
+                    //         return '<span class="bg-green-100 text-green-800 text-xs font-medium px-2 py-0.5 rounded dark:bg-green-900 dark:text-green-300">' + full.order_status + '</span>';
+
+                    //         }
+                    //     }
+                    // },
+                    {
+                        "data": "status",
+                        sortable: false,
+                        "render": function(data, type, full, meta) {
+                            if(full.status == 'pending') {
+                            return '<span class="bg-yellow-100 text-yellow-800 text-xs font-medium px-2 py-0.5 rounded dark:bg-yellow-900 dark:text-yellow-300">' + full.status + '</span>';
+
+                            }else if(full.status == 'in-transit') {
+                            return '<span class="bg-blue-100 text-blue-800 text-xs font-medium px-2 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300">' + full.status + '</span>';
+
+                            }else if(full.status == 'completed') {
+                            return '<span class="bg-green-100 text-green-800 text-xs font-medium px-2 py-0.5 rounded dark:bg-green-900 dark:text-green-300">' + full.status + '</span>';
+
+                            }
+                        }
+                    },
+                    { "data": "shipped_by" },
+                    { "data": "shipped_to" },
+                    { "data": "shipment_date" },
+                    { "data": "delivered_date" },
+                    { "data": "tot_boxes" },
+                    { "data": "tot_fish" }
                 ],
                 "initComplete": function(settings, json) {
+                    // Custom styling for DataTable
                     $('.dt-info').addClass('text-sm font-normal text-gray-500 dark:text-gray-400 ml-3');
                     $('.dt-paging').addClass('inline-flex items-stretch -space-x-px');
                     $('.pagination').addClass('inline-flex items-stretch -space-x-px');
-                    $('#dt-search-1').addClass('bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-72 float-right pl-10 p-2 mb-3 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500').attr('placeholder', 'Search');
-                    $('.dt-length').addClass('ml-3');
-                    $('#dt-search-1').find('label').addClass('text-gray-700 dark:text-white');
-                    $('.dt-length').find('label').addClass('text-gray-700 dark:text-white');
-                    $('#dt-length-1').addClass('text-gray-700 dark:text-white bg-gray-50 dark:bg-gray-700');
-
-                    const tbody = $('table tbody');
-                    const rows = tbody.find('tr');
-
-                    rows.each(function() {
-                        const cells = $(this).find('td');
-                        cells.each(function() {
-                            $(this).addClass('p-2 w-4');
-                        });
-                    });
                 },
                 "columnDefs": [
-                    { className: "text-center", "targets": [0, 1, 2] }
+                    { className: "text-center", "targets": "_all" }
                 ],
                 "dom": 'Bfrtip',
                 "buttons": [
@@ -184,6 +202,7 @@ function searchdata() {
         }
     });
 }
+
 
 </script>
 @endsection

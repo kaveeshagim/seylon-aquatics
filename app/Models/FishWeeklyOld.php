@@ -33,6 +33,10 @@ class FishWeeklyOld extends Model
     {
         return $this->belongsTo(FishVariety::class, 'fish_code', 'fish_code');
     }
+    public function size()
+    {
+        return $this->belongsTo(Size::class, 'size');
+    }
     
      public function getCreatedAtAttribute($value)
     {

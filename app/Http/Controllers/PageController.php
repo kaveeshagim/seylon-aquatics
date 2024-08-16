@@ -41,6 +41,32 @@ class PageController extends Controller
         return view('pages.home');
     }
 
+    public function dashboard()
+    {
+
+        $updateLastActivityTime = Util::updateLastActivityTime();
+
+        if($updateLastActivityTime == 'false') {
+            return redirect('/expired');
+        }elseif($updateLastActivityTime == 'invalid') {
+            return redirect('/');
+        }
+
+        if(Util::Privilege("View Data_1") == 'LOGOUT'){
+            return redirect('/');
+        }
+        if(Util::Privilege("View Data_1") == 'DENIED'){
+            return view('pages.accessdenied');
+        }
+
+
+        $username = session()->get('username');
+        $ipaddress = Util::get_client_ip();
+        Util::user_auth_log($ipaddress,"user opened dashboard ",$username, "View Dashboard Page");
+
+        return view('pages.dashboard');
+    }
+
     public function users()
     {
 
@@ -475,31 +501,7 @@ class PageController extends Controller
     }
 
 
-    public function dashboard()
-    {
 
-        $updateLastActivityTime = Util::updateLastActivityTime();
-
-        if($updateLastActivityTime == 'false') {
-            return redirect('/expired');
-        }elseif($updateLastActivityTime == 'invalid') {
-            return redirect('/');
-        }
-
-        if(Util::Privilege("View Data_1") == 'LOGOUT'){
-            return redirect('/');
-        }
-        if(Util::Privilege("View Data_1") == 'DENIED'){
-            return view('pages.accessdenied');
-        }
-
-
-        $username = session()->get('username');
-        $ipaddress = Util::get_client_ip();
-        Util::user_auth_log($ipaddress,"user opened dashboard ",$username, "View Dashboard Page");
-
-        return view('pages.dashboard');
-    }
 
     public function passwordmanager()
     {
@@ -707,10 +709,14 @@ class PageController extends Controller
         }
 
         $username = session()->get('username');
+
+        $data = User::where('username', $username)->with('userType')->first();
+// dd($data);
+        $username = session()->get('username');
         $ipaddress = Util::get_client_ip();
         Util::user_auth_log($ipaddress,"user opened user profile ",$username, "View Profile Page");
 
-        return view('pages.userprofile');
+        return view('pages.userprofile')->with('data', $data);
     }
 
     public function fish_stock() {
@@ -922,7 +928,7 @@ class PageController extends Controller
 
         $fishspecieslist = FishSpecies::select('id', 'name')->get();
         $fishsizelist = Size::select('id', 'name')->get();
-
+// dd($fishspecieslist);
         $username = session()->get('username');
         $ipaddress = Util::get_client_ip();
         Util::user_auth_log($ipaddress,"user opened fish variety interface ",$username, "View Fish Variety Page");
@@ -1186,6 +1192,7 @@ class PageController extends Controller
         }
 
         $orderid = $id;
+        $orderno = DB::table('tbl_order_mst')->select('order_no')->where('id',$orderid)->first();
 
 
 
@@ -1193,7 +1200,7 @@ class PageController extends Controller
         $ipaddress = Util::get_client_ip();
         Util::user_auth_log($ipaddress,"user opened view order interface ",$username, "View View Order Page");
 
-        return view('pages.vieworder')->with('orderid', $orderid);
+        return view('pages.vieworder')->with('orderid', $orderid)->with('order_no',$orderno);
 
 
     }
@@ -1228,21 +1235,30 @@ class PageController extends Controller
         }
 
         // Retrieve the invoice master details
-        $invoiceMaster = DB::table('tbl_invoice_mst')->where('order_id', $orderId)->first();
+        $invoiceMaster = DB::table('tbl_invoice_mst')
+                        ->select('tbl_invoice_mst.*', 'tbl_order_mst.*')
+                        ->join('tbl_order_mst','tbl_invoice_mst.order_id','=','tbl_order_mst.id')
+                        ->where('tbl_invoice_mst.order_id', $orderId)
+                        ->first();
         
         // Retrieve the invoice details
         $invoiceDetails = DB::table('tbl_invoice_det as invoice')
-        ->join('tbl_order_det as order', 'invoice.orderdet_id', '=', 'order.id') // Join tbl_order_det
-        ->select(
-            'invoice.*',
-            'order.fish_code',
-        )
-        ->where('invoice.order_id', $orderId)
-        ->get();
+                        ->join('tbl_order_det as order', 'invoice.orderdet_id', '=', 'order.id') // Join tbl_order_det
+                        ->join('tbl_fish_variety as variety', 'order.fish_code', '=', 'variety.fish_code') // Join tbl_order_det
+                        ->select(
+                            'invoice.*',
+                            'order.fish_code',
+                            'order.quantity as qty',
+                            'variety.*',
+                        )
+                        ->where('invoice.order_id', $orderId)
+                        ->get();
+
         $username = session()->get('username');
         $ipaddress = Util::get_client_ip();
         Util::user_auth_log($ipaddress,"user opened invoice page",$username, "View Invoice Page");
 
+// dd($invoiceMaster);
         return view('pages.viewinvoice', [
             'invoiceMaster' => $invoiceMaster,
             'invoiceDetails' => $invoiceDetails
@@ -1283,25 +1299,37 @@ class PageController extends Controller
         $orderItems = DB::table('tbl_order_det')
             ->where('order_id', $id)
             ->get();
-    
+            
         // Step 4: For each fish_code, update the inventory levels in tbl_fishweekly
         foreach ($orderItems as $item) {
             // Get the fish_code and ordered quantity
             $fishCode = $item->fish_code;
             $orderedQuantity = $item->orders;
-    
-            // Deduct the ordered quantity from the tbl_fishweekly
-            DB::table('tbl_fishweekly')
+
+            // Deduct the ordered quantity from the tbl_fishweekly and get the updated quantity
+            $updatedQuantity = DB::table('tbl_fishweekly')
                 ->where('fish_code', $fishCode)
                 ->decrement('quantity', $orderedQuantity);
+            
+            // Check if the updated quantity is less than 100
+            $currentQuantity = DB::table('tbl_fishweekly')
+                ->where('fish_code', $fishCode)
+                ->value('quantity');
+
+            if ($currentQuantity < 100) {
+                // Update stock status to out-of-stock
+                DB::table('tbl_fishweekly')
+                    ->where('fish_code', $fishCode)
+                    ->update(['stock_status' => 'out-of-stock']);
+            }
         }
-    
+            
         // Step 5: Call the generateinvoice function
         app('App\Http\Controllers\InvoiceController')->generateinvoice($id);
     
         // Step 6: Return the view with the order details
-        // return view('pages.orderconfirmation')->with('orderdetail', $orderdetail);
-        return response()->json(['status' => 'success', 'message' => 'Order confirmed successfully!', 'orderdetail' => $orderdetail]);
+        return view('pages.orderconfirmation')->with('orderdetail', $orderdetail);
+        // return response()->json(['status' => 'success', 'message' => 'Order confirmed successfully!', 'orderdetail' => $orderdetail]);
 
 
         }

@@ -104,6 +104,7 @@
                         <input type="text" name="qtyperbag" id="qtyperbag" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" required />
                     </div>
                     <div>
+                    <label for="species" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Species</label>
                         <select id="species" name="species" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
                             <option selected value="">Select a species</option>
                             @if($fishspecieslist)
@@ -114,6 +115,7 @@
                         </select>
                     </div>
                     <div>
+                    <label for="size" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Size</label>
                         <select id="size" name="size" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
                             <option selected value="">Select a size</option>
                             @if($fishsizelist)
@@ -127,18 +129,19 @@
                         <label for="size_cm" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Size in cm</label>
                         <input type="text" name="size_cm" id="size_cm" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" required />
                     </div>
-                    <div>
-                
-                <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white" for="file_input">Avatar</label>
-                <input name="avatar" onchange="displaySelectedImage(event)" class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" aria-describedby="file_input_help" id="avatar" type="file">
-                <p class="mt-1 text-sm text-gray-500 dark:text-gray-300" id="file_input_help">SVG, PNG, JPG or GIF (MAX. 800x400px).</p>
 
-                <button onclick="cancelSelectedImage()" type="button" class="inline-flex items-center px-3 py-2 ml-2 text-sm font-medium text-center text-white rounded-lg bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800">
-                    Cancel
-                </button>
-                <p id="selectedImageText" class="hidden mt-1 text-sm text-gray-500">Selected image: <span id="selectedImageName"></span></p>
-                <img id="selectedImagePreview" class="hidden mt-2" src="" alt="Selected Image Preview" style="max-width: 200px; max-height: 200px;">
-            </div>
+                    <div>
+                        <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white" for="file_input">Avatar</label>
+                        <input name="avatar" onchange="displaySelectedImage(event)" class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" aria-describedby="file_input_help" id="avatar" type="file">
+                        <p class="mt-1 text-sm text-gray-500 dark:text-gray-300" id="file_input_help">SVG, PNG, JPG or GIF (MAX. 800x400px).</p>
+
+                        <button onclick="cancelSelectedImage()" type="button" class="inline-flex items-center px-3 py-2 ml-2 text-sm font-medium text-center text-white rounded-lg bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800">
+                            Cancel
+                        </button>
+                        <p id="selectedImageText" class="hidden mt-1 text-sm text-gray-500">Selected image: <span id="selectedImageName"></span></p>
+                        <img id="selectedImagePreview" class="hidden mt-2" src="" alt="Selected Image Preview" style="max-width: 200px; max-height: 200px;">
+                    </div>
+
                     <div class="flex items-center p-4 md:p-5 border-t border-gray-200 rounded-b dark:border-gray-600">
                         <button type="button" onclick="addnewfishvariety()" data-modal-hide="create-modal" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Submit</button>
                         <button type="button" onclick="refresh()"  class="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 focus:outline-none bg-gray-50 rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">Cancel</button>
@@ -149,7 +152,7 @@
     </div>
 </div> 
 
-<button data-modal-target="edit-modal" data-modal-toggle="edit-modal" class="hidden text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">
+<button id="edittoggle" data-modal-target="edit-modal" data-modal-toggle="edit-modal" class="hidden text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">
 Toggle modal
 </button>
 
@@ -204,18 +207,18 @@ Toggle modal
                         <label for="size_cm-edit" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Size in cm</label>
                         <input type="text" name="size_cm-edit" id="size_cm-edit" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" required />
                     </div>
-                    <div>
-                
-                <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white" for="file_input">Avatar</label>
-                <input name="avatar-edit" onchange="displaySelectedImage(event)" class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" aria-describedby="file_input_help" id="avatar" type="file">
-                <p class="mt-1 text-sm text-gray-500 dark:text-gray-300" id="file_input_help">SVG, PNG, JPG or GIF (MAX. 800x400px).</p>
+                    <div class="w-full">
+    <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white" for="file_input">Avatar</label>
+    <input name="avatar-edit" onchange="displaySelectedImageEdit(event)" class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" aria-describedby="file_input_help" id="avatar-edit" type="file">
+    <p class="mt-1 text-sm text-gray-500 dark:text-gray-300" id="file_input_help">SVG, PNG, JPG or GIF (MAX. 800x400px).</p>
 
-                <button onclick="cancelSelectedImage()" type="button" class="inline-flex items-center px-3 py-2 ml-2 text-sm font-medium text-center text-white rounded-lg bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800">
-                    Cancel
-                </button>
-                <p id="selectedImageText" class="hidden mt-1 text-sm text-gray-500">Selected image: <span id="selectedImageName"></span></p>
-                <img id="selectedImagePreview" class="hidden mt-2" src="" alt="Selected Image Preview" style="max-width: 200px; max-height: 200px;">
-            </div>
+    <button onclick="cancelSelectedImageEdit()" type="button" class="inline-flex items-center px-3 py-2 ml-2 text-sm font-medium text-center text-white rounded-lg bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800">
+        Cancel
+    </button>
+    <p id="selectedImageText-edit" class="hidden mt-1 text-sm text-gray-500">Selected image: <span id="selectedImageName-edit"></span></p>
+    
+    <img id="selectedImagePreview-edit" class="mt-2" src="" alt="Selected Image Preview" style="max-width: 200px; max-height: 200px;">
+    </div>
                     <button type="button" onclick="editfishvariety()" class="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Submit</button>
                 </form>
             </div>
@@ -223,7 +226,7 @@ Toggle modal
     </div>
 </div> 
 
-<button data-modal-target="delete-modal" data-modal-toggle="delete-modal" class="hidden text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">
+<button id="deletetoggle" data-modal-target="delete-modal" data-modal-toggle="delete-modal" class="hidden text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">
 Toggle modal
 </button>
 
@@ -244,7 +247,7 @@ Toggle modal
                 </svg>
                 <input hidden="true" id="deleteid" name="deleteid"/>
                 <h3 class="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">Are you sure you want to delete this record?</h3>
-                <button onclick="deletefishhabitat()" data-modal-hide="delete-modal" type="button" class="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center">
+                <button onclick="deletefishvariety()" data-modal-hide="delete-modal" type="button" class="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center">
                     Yes
                 </button>
                 <button data-modal-hide="delete-modal" type="button" class="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 focus:outline-none bg-gray-50 rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">Cancel</button>
@@ -306,25 +309,25 @@ function searchdata() {
             sortable: false,
             "render": function(data, type, full, meta) {
 
-                return '<td><button type="button" onclick="editmodal(\'' + full.id + '\')" data-modal-target="edit-modal" data-modal-toggle="edit-modal" aria-controls="drawer-update-product" class="text-xs py-2 px-3 flex items-center text-sm font-medium text-center text-white bg-primary-700 rounded-lg hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">'+
+                return '<td><div style="display: flex; justify-content: center; align-items: center;"><button type="button" onclick="editmodal(\'' + full.id + '\')" data-modal-target="edit-modal" data-modal-toggle="edit-modal" aria-controls="drawer-update-product" class="text-xs py-2 px-3 flex items-center text-sm font-medium text-center text-white bg-primary-700 rounded-lg hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">'+
                     '<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2 -ml-0.5" viewbox="0 0 20 20" fill="currentColor" aria-hidden="true">'+
                         '<path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z" />'+
                         '<path fill-rule="evenodd" d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" clip-rule="evenodd" />'+
                     '</svg>'+
                     'Edit'+
-                '</button>';
+                '</button></div></td>';
             }
 
           },
           {
             sortable: false,
             "render": function(data, type, full, meta) {
-                        return    '<td><button type="button" onclick="deletemodal(\'' + full.id + '\')" data-modal-target="delete-modal" data-modal-toggle="delete-modal" class="text-xs flex items-center text-red-700 hover:text-white border border-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-3 py-2 text-center dark:border-red-500 dark:text-red-500 dark:hover:text-white dark:hover:bg-red-600 dark:focus:ring-red-900">'+
+                        return    '<td><div style="display: flex; justify-content: center; align-items: center;"><button type="button" onclick="deletemodal(\'' + full.id + '\')" data-modal-target="delete-modal" data-modal-toggle="delete-modal" class="text-xs flex items-center text-red-700 hover:text-white border border-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-3 py-2 text-center dark:border-red-500 dark:text-red-500 dark:hover:text-white dark:hover:bg-red-600 dark:focus:ring-red-900">'+
                     '<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2 -ml-0.5" viewbox="0 0 20 20" fill="currentColor" aria-hidden="true">'+
                         '<path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />'+
                     '</svg>'+
                     'Delete'+
-                '</button>';
+                '</button></div></td>';
             }
           }
         ],
@@ -338,17 +341,17 @@ function searchdata() {
             $('.dt-length').find('label').addClass('text-gray-700 dark:text-white');
             $('#dt-length-1').addClass('text-gray-700 dark:text-white bg-gray-50 dark:bg-gray-700');
 
-            const tbody = $('table tbody');
-            const rows = tbody.find('tr');
+            // const tbody = $('table tbody');
+            // const rows = tbody.find('tr');
 
-            rows.each(function() {
-                // $(this).addClass('border-b dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700');
+            // rows.each(function() {
+            //     // $(this).addClass('border-b dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700');
                 
-                const cells = $(this).find('td');
-                cells.each(function() {
-                    $(this).addClass('p-2 w-4');
-                });
-            });
+            //     const cells = $(this).find('td');
+            //     cells.each(function() {
+            //         $(this).addClass('p-2 w-4');
+            //     });
+            // });
         },
         "columnDefs": [
           { className: "text-center", "targets": [0, 1, 2, 3, 4, 5, 6, 7, 8] }
@@ -368,6 +371,13 @@ function searchdata() {
 
       const form = document.getElementById('create-form');
       const formData = new FormData(form);
+      
+    const fileInput = document.getElementById('avatar');
+
+    // Append the selected file to the FormData object
+    if (fileInput.files.length > 0) {
+        formData.append('avatar', fileInput.files[0]);
+    }
 
       $.ajax({
           url: '{{url('addfishvariety')}}',
@@ -383,6 +393,7 @@ function searchdata() {
                     message: response.message,
                     backdrop: true,
                     callback: function () {
+                        refresh();
                         searchdata();
                     }
                 }).find('.modal-content').addClass("flex items-center p-4 mb-4 text-sm text-green-800 border border-green-300 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400 dark:border-green-800");
@@ -392,22 +403,46 @@ function searchdata() {
                     message: response.message,
                     backdrop: true,
                     callback: function () {
+                        refresh();
                         searchdata();
                     }
                 }).find('.modal-content').addClass("flex items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800");
             }
           },
           error: function(jqXHR, textStatus, errorThrown) {
-              alert('Form submission failed:', textStatus, errorThrown);
-          }
-      });
+    // Parse the JSON response
+    var response = jqXHR.responseJSON;
+
+    // Determine the message to display
+    var errorMessage = 'Form submission failed: ' + textStatus + ' - ' + errorThrown;
+    if (response && response.message) {
+        errorMessage = response.message; // Use the message from the JSON response
+    }
+
+    // Display the error message using Bootbox
+    bootbox.alert({
+        message: errorMessage,
+        backdrop: true,
+        callback: function () {
+
+        }
+    }).find('.modal-content').addClass("flex items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800");
+}
+
+
+
+      
+
+
+    });
   }
 
   function deletemodal(id) {
     document.getElementById('deleteid').value = id;
-    const deleteModal = document.getElementById('delete-modal');
-    deleteModal.classList.remove('hidden');
-    deleteModal.classList.add('block');
+    // const deleteModal = document.getElementById('delete-modal');
+    // deleteModal.classList.remove('hidden');
+    // deleteModal.classList.add('block');
+    $('#deletetoggle').click();
 }
 
 
@@ -452,17 +487,18 @@ function editmodal(id) {
             document.getElementById('scientificname-edit').value = response.data.scientific_name;
             document.getElementById('size_cm-edit').value = response.data.size_cm;
             document.getElementById('qtyperbag-edit').value = response.data.qtyperbag;
+
             const speciesSelect = document.getElementById('species-edit');
             const sizeSelect = document.getElementById('size-edit');
             speciesSelect.innerHTML = '';
             sizeSelect.innerHTML = '';
 
-            // Populate habitat-edit select options
+            // Populate species-edit select options
             response.specieslist.forEach(species => {
                 const option = document.createElement('option');
                 option.value = species.id;
                 option.text = species.name;
-                if(response.data.species_id == species.id) {
+                if (response.data.species_id == species.id) {
                     option.selected = true;
                 }
                 speciesSelect.appendChild(option);
@@ -473,7 +509,7 @@ function editmodal(id) {
                 const option = document.createElement('option');
                 option.value = size.id;
                 option.text = size.name;
-                if(response.data.size == size.id) {
+                if (response.data.size == size.id) {
                     option.selected = true;
                 }
                 sizeSelect.appendChild(option);
@@ -483,25 +519,36 @@ function editmodal(id) {
             speciesSelect.value = response.data.species_id;
             sizeSelect.value = response.data.size;
 
-            // Display the existing image if available
+            // Handle image display
+            const selectedImagePreview = document.getElementById('selectedImagePreview-edit');
             if (response.data.image) {
-                const selectedImagePreview = document.getElementById('selectedImagePreview');
-                selectedImagePreview.src = response.data.image;
+                selectedImagePreview.src = `/storage/${response.data.image}`;
                 selectedImagePreview.classList.remove('hidden');
             } else {
-                cancelSelectedImage();
+                selectedImagePreview.src = ''; // Reset the src to an empty string
+                selectedImagePreview.classList.add('hidden'); // Optionally, hide the image element
             }
         }
     });
-    const editmodal = document.getElementById('edit-modal');
-    editmodal.classList.remove('hidden');
-    editmodal.classList.add('block');
+
+    // const editmodal = document.getElementById('edit-modal');
+    // editmodal.classList.remove('hidden');
+    // editmodal.classList.add('block');
+
+    $('#edittoggle').click();
 }
+
 
 function editfishvariety() {
 
     const form = document.getElementById('edit-form');
     const formData = new FormData(form);
+    const fileInput = document.getElementById('avatar-edit');
+
+// Append the selected file to the FormData object
+if (fileInput.files.length > 0) {
+    formData.append('avatar-edit', fileInput.files[0]);
+}
 
     $.ajax({
         url: '{{url('editfishvariety')}}',
@@ -515,6 +562,8 @@ function editfishvariety() {
                 message: response.message,
                 backdrop: true,
                 callback: function () {
+                    cancelSelectedImageEdit();
+                    hideeditmodel();
                     searchdata();
                 }
                 }).find('.modal-content').addClass("flex items-center p-4 mb-4 text-sm text-green-800 border border-green-300 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400 dark:border-green-800");
@@ -523,7 +572,6 @@ function editfishvariety() {
                 message: response.message,
                 backdrop: true,
                 callback: function () {
-                    searchdata();
                 }
                 }).find('.modal-content').addClass("flex items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800");
             }
@@ -557,6 +605,39 @@ function refresh(){
         document.getElementById('avatar').value = '';
         document.getElementById('selectedImageText').classList.add('hidden');
         document.getElementById('selectedImagePreview').classList.add('hidden');
+    }
+
+
+
+
+    function displaySelectedImageEdit(event) {
+        const input = event.target;
+        const imageName = input.files[0].name;
+        document.getElementById('selectedImageName-edit').textContent = imageName;
+        document.getElementById('selectedImageText-edit').classList.remove('hidden');
+
+        const reader = new FileReader();
+        reader.onload = function () {
+            const preview = document.getElementById('selectedImagePreview-edit');
+            preview.src = reader.result;
+            preview.classList.remove('hidden');
+        };
+        reader.readAsDataURL(input.files[0]);
+    }
+
+    function cancelSelectedImageEdit() {
+        document.getElementById('avatar-edit').value = '';
+        document.getElementById('selectedImageText-edit').classList.add('hidden');
+        document.getElementById('selectedImagePreview-edit').classList.add('hidden');
+    }
+
+    function hideeditmodel() {
+
+        cancelSelectedImageEdit();
+        $('#edit-form')[0].reset();
+
+        $('#edittoggle').click();
+
     }
 </script>
 @endsection

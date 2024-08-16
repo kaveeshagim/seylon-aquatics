@@ -8,7 +8,7 @@ use PHPMailer\PHPMailer\Exception;
 $mail = new PHPMailer(true);
 try {
     //Server settings
-    $mail->SMTPDebug = 0;   // Enable verbose debug output
+    $mail->SMTPDebug = 2;   // Enable verbose debug output
     $mail->isSMTP();
     $mail->Host = 'smtp.gmail.com';  // Specify main and backup SMTP servers
     $mail->SMTPAuth = true;     // Enable SMTP authentication

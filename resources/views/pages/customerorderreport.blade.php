@@ -24,34 +24,41 @@
             </div>
             <div class="flex flex-col md:flex-row items-stretch md:items-center md:space-x-3 space-y-3 md:space-y-0 justify-between mx-4 py-4 border-t dark:border-gray-700">
                 
-                <form class="flex flex-col md:flex-row space-y-3 md:space-y-0 md:space-x-3">
+                <div class="flex items-center flex-1 space-x-4">
                     <div>
                         <label for="from-date" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">From Date</label>
-                        <input type="date" id="from-date" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                        <input type="date" id="from-date" class="mt-1 block w-full border-gray-300 dark:border-gray-600 rounded-md shadow-sm text-gray-900 dark:text-white bg-gray-50 dark:bg-gray-700 focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
                     </div>
                     <div>
                         <label for="to-date" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">To Date</label>
-                        <input type="date" id="to-date" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                        <input type="date" id="to-date" class="mt-1 block w-full border-gray-300 dark:border-gray-600 rounded-md shadow-sm text-gray-900 dark:text-white bg-gray-50 dark:bg-gray-700 focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
                     </div>
-                </form>
+                    <div>
+                        <label for="status" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Status</label>
+                        <select id="status" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                            <option value="">All</option>
+                            <option value="pending">Pending</option>
+                            <option value="confirmed">Confirmed</option>
+                            <option value="cancelled">Cancelled</option>
+                            <option value="completed">Completed</option>
+                        </select>
+                    </div>
+                </div>
             </div>
 
             <div class="overflow-x-auto">
                 <table id="customerorderreport-table" class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
                     <thead class="text-xs text-gray-700 uppercase bg-gray-100 dark:bg-gray-700 dark:text-gray-400">
                         <tr>
+                            <th scope="col" class="px-6 py-3">Order Date</th>
                             <th scope="col" class="px-6 py-3">Order Number</th>
                             <th scope="col" class="px-6 py-3">Customer Name</th>
-                            <th scope="col" class="px-6 py-3">Customer ID</th>
-                            <th scope="col" class="px-6 py-3">Executive ID</th>
+                            <th scope="col" class="px-6 py-3">Executive Name</th>
                             <th scope="col" class="px-6 py-3">Status</th>
-                            <th scope="col" class="px-6 py-3">Advanced Payment</th>
-                            <th scope="col" class="px-6 py-3">Shipping Address</th>
                             <th scope="col" class="px-6 py-3">Total Orders</th>
                             <th scope="col" class="px-6 py-3">Total Bags</th>
                             <th scope="col" class="px-6 py-3">Total Boxes</th>
-                            <th scope="col" class="px-6 py-3">Order Date</th>
-                            <th scope="col" class="px-6 py-3">Delivery Date</th>
+                            <th scope="col" class="px-6 py-3">Total Fish</th>
                             <th scope="col" class="px-6 py-3">Order Total</th>
                             <th scope="col" class="px-6 py-3">Discount Applied</th>
                             <th scope="col" class="px-6 py-3">Remarks</th>
@@ -80,8 +87,12 @@
 <script>
 
 function searchdata() {
-    let fromDate = $('#from-date').val();
-    let toDate = $('#to-date').val();
+    const fromDate = $('#from-date').val();
+    const toDate = $('#to-date').val();
+    const status = $('#status').val();
+
+    let dateRangeText = '';
+    dateRangeText = `Report Date: ${fromDate} to ${toDate}`;
 
     $('#customerorderreport-table').DataTable().destroy();
 
@@ -90,7 +101,8 @@ function searchdata() {
         type: "GET",
         data: {
             from_date: fromDate,
-            to_date: toDate
+            to_date: toDate,
+            status: status
         },
         success: function(response) {
             console.log("Data:", response);
@@ -101,32 +113,49 @@ function searchdata() {
                 "deferRender": true,
                 "data": response,
                 "columns": [
-                    { "data": "order_no", "title": "Order Number" },
-                    { "data": "customer_name", "title": "Customer Name" },
-                    { "data": "cus_id", "title": "Customer ID" },
-                    { "data": "executive_id", "title": "Executive ID" },
-                    { "data": "status", "title": "Status" },
-                    { "data": "advanced_payment", "title": "Advanced Payment" },
-                    { "data": "shipping_address", "title": "Shipping Address" },
-                    { "data": "tot_orders", "title": "Total Orders" },
-                    { "data": "tot_bags", "title": "Total Bags" },
-                    { "data": "tot_boxes", "title": "Total Boxes" },
-                    { "data": "created_at", "title": "Order Date" },
-                    { "data": "delivery_date", "title": "Delivery Date" },
-                    { "data": "order_total", "title": "Order Total" },
-                    { "data": "discount_applied", "title": "Discount Applied" },
-                    { "data": "remarks", "title": "Remarks" }
+                    { "data": "order_date"},
+                    { "data": "order_no"},
+                    { "data": "customer_name"},
+                    { "data": "executive_name"},
+                    {
+                        "data": "status",
+                        sortable: false,
+                        "render": function(data, type, full, meta) {
+                            if(full.status == 'pending') {
+                            return '<span class="bg-yellow-100 text-yellow-800 text-xs font-medium px-2 py-0.5 rounded dark:bg-yellow-900 dark:text-yellow-300">' + full.status + '</span>';
+
+                            }else if(full.status == 'confirmed') {
+                            return '<span class="bg-blue-100 text-blue-800 text-xs font-medium px-2 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300">' + full.status + '</span>';
+
+                            }else if(full.status == 'cancelled') {
+                            return '<span class="bg-red-100 text-red-800 text-xs font-medium px-2 py-0.5 rounded dark:bg-red-900 dark:text-red-300">' + full.status + '</span>';
+
+                            }else if(full.status == 'completed') {
+                            return '<span class="bg-green-100 text-green-800 text-xs font-medium px-2 py-0.5 rounded dark:bg-green-900 dark:text-green-300">' + full.status + '</span>';
+
+                            }
+                        }
+                    },
+                    { "data": "tot_orders"},
+                    { "data": "tot_bags"},
+                    { "data": "tot_boxes"},
+                    { "data": "tot_fish"},
+                    { "data": "order_total"},
+                    { "data": "discount_applied"},
+                    { "data": "remarks" }
                 ],
                 "dom": 'Bfrtip',
                 "buttons": [
                     {
                         extend: 'excelHtml5',
                         title: 'Customer Order Report',
+                        messageTop: dateRangeText,
                         text: 'Export to Excel'
                     },
                     {
                         extend: 'pdfHtml5',
                         title: 'Customer Order Report',
+                        messageTop: dateRangeText,
                         text: 'Export to PDF',
                         orientation: 'landscape',
                         pageSize: 'A4'
@@ -134,6 +163,7 @@ function searchdata() {
                     {
                         extend: 'print',
                         title: 'Customer Order Report',
+                        messageTop: dateRangeText,
                         text: 'Print'
                     }
                 ],
@@ -147,20 +177,9 @@ function searchdata() {
             $('.dt-length').find('label').addClass('text-gray-700 dark:text-white');
             $('#dt-length-1').addClass('text-gray-700 dark:text-white bg-gray-50 dark:bg-gray-700');
 
-            const tbody = $('table tbody');
-            const rows = tbody.find('tr');
-
-            rows.each(function() {
-                // $(this).addClass('border-b dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700');
-                
-                const cells = $(this).find('td');
-                cells.each(function() {
-                    $(this).addClass('p-2 w-4');
-                });
-            });
         },
                 "columnDefs": [
-          { className: "text-center", "targets": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14] }
+          { className: "text-center", "targets": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11] }
         ],
                 "pageLength": 25,
                 "searching": true

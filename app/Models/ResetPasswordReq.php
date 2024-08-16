@@ -20,8 +20,9 @@ class ResetPasswordReq extends Model
     protected $fillable = [
         'user_id',
         'reason',
-        'cur_password',
+        'new_password',
         'status',
+        'email_status',
     ];
 
     public function user()

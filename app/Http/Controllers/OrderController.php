@@ -10,11 +10,14 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\SampleExcelExportOrder;
+use App\Models\User;
 use App\Models\Order;
 use App\Models\OrderDet;
 use App\Models\FishWeekly;
 use App\Models\TestOrder;
 use App\Events\OrderStatusChanged;
+use App\Services\PHPMailerService;
+use Illuminate\Support\Facades\Log;
 
 class OrderController extends Controller
 {
@@ -52,8 +55,8 @@ class OrderController extends Controller
             ->where('id', $userId)
             ->value('tbl_usertype_id');
     
-        // Check if the user is a customer (user type ID = 3)
-        if ($userType == 3) {
+        // Check if the user is a customer (user type ID = 5)
+        if ($userType == 5) {
             // Get the customer ID associated with the user
             $customerId = DB::table('tbl_customers')
                 ->where('user_id', $userId)
@@ -63,7 +66,9 @@ class OrderController extends Controller
             $orders = DB::table('tbl_order_mst')
                 ->where('cus_id', $customerId)
                 ->get();
-        } else {
+        }elseif($userType == 3)
+            $orders = DB::table('tbl_order_mst')->where('executive_id', $userId)->get();
+        else {
             // Fetch all orders if the user is not a customer
             $orders = DB::table('tbl_order_mst')->get();
         }
@@ -145,28 +150,6 @@ class OrderController extends Controller
         ]);
     }
 
-public function updateStatus()
-{
-
-    $pendingOrders = DB::table('tbl_order_mst')->select('id')->where('status','pending')->count();
-    $totalOrders = DB::table('tbl_order_mst')->select('id')->count();
-    $pendinginvoices = DB::table('tbl_invoice_mst')->select('id')->where('invoice_status','pending')->count();
-    $shippedOrders = DB::table('tbl_shipment')->select('id')->where('status','completed')->count();
-    $inTransitOrders = DB::table('tbl_shipment')->select('id')->where('status','in-transit')->count();
-    $completedOrders = DB::table('tbl_order_mst')->select('id')->where('status','completed')->count();
-
-    // Send data to Node.js server
-    Http::post('http://localhost:6050/updateOrders', [
-        'pendingOrders' => $pendingOrders,
-        'totalOrders' => $totalOrders,
-        'pendingInvoices' => $pendinginvoices,
-        'shippedOrders' => $shippedOrders,
-        'inTransitOrders' => $inTransitOrders,
-        'completedOrders' => $completedOrders,
-    ]);
-
-    return response()->json(['status' => 'Order status updated']);
-}
 
 public function getorderdetail($id) {
 
@@ -328,6 +311,45 @@ $customerName = trim(sprintf(
         'tot_boxes' => $totalBoxes,
     ]);
 
+    try {
+
+        // Retrieve the user details
+        $user = User::where('id', $customerId)->where('active_status', 1)->first();
+
+        if (!$user) {
+            return response()->json(['status' => 'error', 'message' => 'Active user not found']);
+        }
+
+
+        $subject = "Order Created";
+        $body = 'Hi ' . $user->username . ',<br><br>Your order, order no ' .  $orderNo. ' is created.';
+    
+        DB::table('tbl_notifications')->insert([
+            'user_id' => $user->id,
+            'notification' => 'Order No ' .  $orderNo . 'Created',
+            'seen_status' => 0,
+            'created_at' => now(),
+        ]);
+
+        // Send email to each user
+        try {
+            $mailerService = new PHPMailerService();
+            $mailerService->sendEmail($user->email, $subject, nl2br($body));
+            Log::info('Email sent to: ' . $user->email);
+        } catch (\Exception $e) {
+            Log::error('Email sending failed for ' . $user->email . '. Error: ' . $e->getMessage());
+        }
+
+
+    
+    } catch (\Exception $e) {
+        Log::error('Failed to send notifications and emails. Error: ' . $e->getMessage());
+    }
+
+    $dashboardController = new \App\Http\Controllers\DashboardController();
+    $dashboardController->updateStatus();
+
+
     // Return success response
     return response()->json(['status' => 'success', 'id' => $orderMst->id, 'message' => 'Order uploaded successfully.']);
 }
@@ -353,18 +375,18 @@ public function orderuploadform(Request $request)
     }
 
         // Retrieve customer details
-$customer = DB::table('tbl_customers')->where('user_id', $customerId)->first();
-if (!$customer) {
-    return response()->json(['status' => 'error', 'message' => 'Customer not found.']);
-}
+    $customer = DB::table('tbl_customers')->where('user_id', $customerId)->first();
+    if (!$customer) {
+        return response()->json(['status' => 'error', 'message' => 'Customer not found.']);
+    }
 
-// Concatenate customer name
-$customerName = trim(sprintf(
-    "%s %s %s",
-    $customer->title ?? '',
-    $customer->fname ?? '',
-    $customer->lname ?? ''
-));
+    // Concatenate customer name
+    $customerName = trim(sprintf(
+        "%s %s %s",
+        $customer->title ?? '',
+        $customer->fname ?? '',
+        $customer->lname ?? ''
+    ));
 
     // Insert the record into tbl_order_mst
     $orderMst = Order::create([
@@ -444,6 +466,46 @@ $customerName = trim(sprintf(
         'tot_boxes' => $totalBoxes,
     ]);
 
+
+    try {
+
+        // Retrieve the user details
+        $user = User::where('id', $customerId)->where('active_status', 1)->first();
+
+        if (!$user) {
+            return response()->json(['status' => 'error', 'message' => 'Active user not found']);
+        }
+
+
+        $subject = "Order Created";
+        $body = 'Hi ' . $user->username . ',<br><br>Your order, order no ' .  $orderNo. ' is created.';
+    
+        DB::table('tbl_notifications')->insert([
+            'user_id' => $user->id,
+            'notification' => 'Order No ' .  $orderNo . 'Created',
+            'seen_status' => 0,
+            'created_at' => now(),
+        ]);
+
+        // Send email to each user
+        try {
+            $mailerService = new PHPMailerService();
+            $mailerService->sendEmail($user->email, $subject, nl2br($body));
+            Log::info('Email sent to: ' . $user->email);
+        } catch (\Exception $e) {
+            Log::error('Email sending failed for ' . $user->email . '. Error: ' . $e->getMessage());
+        }
+
+
+    
+    } catch (\Exception $e) {
+        Log::error('Failed to send notifications and emails. Error: ' . $e->getMessage());
+    }
+
+    $dashboardController = new \App\Http\Controllers\DashboardController();
+    $dashboardController->updateStatus();
+    
+
     // Return success response
     return response()->json(['status' => 'success', 'id' => $orderMst->id, 'message' => 'Order submitted successfully.']);
 }
@@ -454,14 +516,93 @@ public function cancelorder(Request $request) {
 
     $id = $request->input('id');
 
-    DB::table('tbl_order_mst')->where('id', $id)->update(['status' => 'cancelled']);
+    $order = DB::table('tbl_order_mst')->where('id', $id)->first();
 
-    $username = session()->get('username');
-    $ipaddress = Util::get_client_ip();
-    Util::user_auth_log($ipaddress,"order cancelled ",$username, "Order Cancelled");
+    if (!$order) {
+        return response()->json(['status' => 'error', 'message' => 'Order not found']);
+    }
 
-    return response()->json(['status' => 'success', 'message' => 'Order cancelled successfully!']);
+    if($order->status == 'pending') {
+        DB::table('tbl_order_mst')->where('id',$id)->update(['status'=>'cancelled']);
 
+        try {
+        
+            $cus_id = $order->cus_id;
+    
+            // Get customer details from tbl_customers using cus_id
+            $customer = DB::table('tbl_customers')->where('id', $cus_id)->first();
+    
+            if (!$customer) {
+                return response()->json(['status' => 'error', 'message' => 'Customer not found']);
+            }
+    
+            // Get user_id from the customer record
+            $user_id = $customer->user_id;
+    
+            // Retrieve the user details
+            $user = User::where('id', $user_id)->where('active_status', 1)->first();
+    
+            if (!$user) {
+                return response()->json(['status' => 'error', 'message' => 'Active user not found']);
+            }
+    
+    
+            $subject = "Order Cancelled";
+            $body = 'Hi ' . $user->username . ',<br><br>Your order, order no ' . $id . ' is cancelled.';
+        
+            DB::table('tbl_notifications')->insert([
+                'user_id' => $user->id,
+                'notification' => 'Order No ' . $order->order_no . 'Cancelled',
+                'seen_status' => 0,
+                'created_at' => now(),
+            ]);
+    
+            // Send email to each user
+            try {
+                $mailerService = new PHPMailerService();
+                $mailerService->sendEmail($user->email, $subject, nl2br($body));
+                Log::info('Email sent to: ' . $user->email);
+            } catch (\Exception $e) {
+                Log::error('Email sending failed for ' . $user->email . '. Error: ' . $e->getMessage());
+            }
+    
+    
+        
+        } catch (\Exception $e) {
+            Log::error('Failed to send notifications and emails. Error: ' . $e->getMessage());
+        }
+
+        
+
+        $dashboardController = new \App\Http\Controllers\DashboardController();
+        $dashboardController->updateStatus();
+        
+        $username = session()->get('username');
+        $ipaddress = Util::get_client_ip();
+        Util::user_auth_log($ipaddress,"order cancelled ",$username, "Order Cancelled");
+
+        return response()->json(['status' => 'success', 'message' => 'Order cancelled successfully!']);
+
+
+    }else{
+        return response()->json(['status' => 'error', 'message' => 'Order is already confirmed, cannot cancel!']);
+    }
+
+
+
+}
+
+public function orderconfirmstatuscheck($id) {
+
+    $order = DB::table('tbl_order_mst')->select('status')->where('id',$id)->first();
+    
+    if($order->status == 'pending') {
+        return response()->json(['status' => 'success', 'message' => 'Order confirmed successfully!']);
+
+    }else{
+        return response()->json(['status' => 'error', 'message' => 'Order is already confirmed!']);
+
+    }
 }
 
 }

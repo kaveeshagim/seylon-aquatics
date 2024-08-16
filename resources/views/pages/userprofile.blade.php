@@ -26,7 +26,7 @@
 
 <div class="grid grid-cols-1 px-4 pt-6 xl:grid-cols-3 xl:gap-4 dark:bg-gray-900">
     <div class="mb-4 col-span-full xl:mb-2">
-        <h1 class="text-xl font-semibold text-gray-900 sm:text-2xl dark:text-white">User settings</h1>
+        <h1 class="text-xl font-semibold text-gray-900 sm:text-2xl dark:text-white">User Profile</h1>
     </div>
     <!-- Right Content -->
     <div class="col-span-full xl:col-auto">
@@ -34,8 +34,8 @@
             <div class="items-center sm:flex xl:block 2xl:flex sm:space-x-4 xl:space-x-0 2xl:space-x-4">
                 <img class="mb-4 rounded-full w-28 h-28 sm:mb-0 xl:mb-4 2xl:mb-0" src="{{ asset(session('avatar') ? 'storage/' . session('avatar') : 'images/userjpeg.jpeg') }}" alt="Jese picture">
                 <div>
-                    <h3 class="mb-1 text-xl font-bold text-gray-900 dark:text-white">Profile picture</h3>
-                    <div class="mb-4 text-sm text-gray-500 dark:text-gray-400">
+                    <h3 class="mb-1 text-xl font-bold text-gray-900 dark:text-white">{{ $data->fname ?? '' }} {{ $data->lname ?? '' }}</h3>
+                    <!-- <div class="mb-4 text-sm text-gray-500 dark:text-gray-400">
                         JPG, GIF or PNG. Max size of 800K
                     </div>
                     <div class="flex items-center space-x-4">
@@ -46,11 +46,11 @@
                         <button type="button" class="py-2 px-3 text-sm font-medium text-gray-900 focus:outline-none bg-gray-50 rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700" {{ session('avatar') ? '' : 'disabled' }}>
                             Delete
                         </button>
-                    </div>
+                    </div> -->
                 </div>
             </div>
         </div>
-        <div class="p-4 mb-4 bg-gray-50 border border-gray-200 rounded-lg shadow-sm 2xl:col-span-2 dark:border-gray-700 sm:p-6 dark:bg-gray-800">
+        <!-- <div class="p-4 mb-4 bg-gray-50 border border-gray-200 rounded-lg shadow-sm 2xl:col-span-2 dark:border-gray-700 sm:p-6 dark:bg-gray-800">
             <h3 class="mb-4 text-xl font-semibold dark:text-white">Language & Time</h3>
             <div class="mb-4">
                 <label for="settings-language" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Select language</label>
@@ -79,8 +79,8 @@
             <div>
                 <button class="text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">Save all</button>
             </div>
-        </div>
-        <div class="p-4 mb-4 bg-gray-50 border border-gray-200 rounded-lg shadow-sm 2xl:col-span-2 dark:border-gray-700 sm:p-6 dark:bg-gray-800">
+        </div> -->
+        <!-- <div class="p-4 mb-4 bg-gray-50 border border-gray-200 rounded-lg shadow-sm 2xl:col-span-2 dark:border-gray-700 sm:p-6 dark:bg-gray-800">
             <div class="flow-root">
                 <h3 class="text-xl font-semibold dark:text-white">Social accounts</h3>
                 <ul class="divide-y divide-gray-200 dark:divide-gray-700">
@@ -161,8 +161,8 @@
                     <button class="text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">Save all</button>
                 </div>
             </div>
-        </div>
-        <div class="p-4 mb-4 bg-gray-50 border border-gray-200 rounded-lg shadow-sm 2xl:col-span-2 dark:border-gray-700 sm:p-6 dark:bg-gray-800">
+        </div> -->
+        <!-- <div class="p-4 mb-4 bg-gray-50 border border-gray-200 rounded-lg shadow-sm 2xl:col-span-2 dark:border-gray-700 sm:p-6 dark:bg-gray-800">
             <div class="flow-root">
                 <h3 class="text-xl font-semibold dark:text-white">Other accounts</h3>
                 <ul class="mb-6 divide-y divide-gray-200 dark:divide-gray-700">
@@ -263,7 +263,7 @@
                     <button class="text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">Save all</button>
                 </div>
             </div>
-        </div>
+        </div> -->
     </div>
     <div class="col-span-2">
         <div class="p-4 mb-4 bg-gray-50 border border-gray-200 rounded-lg shadow-sm 2xl:col-span-2 dark:border-gray-700 sm:p-6 dark:bg-gray-800">
@@ -272,108 +272,97 @@
                 <div class="grid grid-cols-6 gap-6">
                     <div class="col-span-6 sm:col-span-3">
                         <label for="first-name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">First Name</label>
-                        <input type="text" name="first-name" id="first-name" class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Bonnie" required>
+                        <input type="text" name="first-name" id="first-name" class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" value="{{$data->fname}}" readonly>
                     </div>
                     <div class="col-span-6 sm:col-span-3">
                         <label for="last-name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Last Name</label>
-                        <input type="text" name="last-name" id="last-name" class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Green" required>
+                        <input type="text" name="last-name" id="last-name" class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" value="{{$data->lname}}" readonly>
                     </div>
-                    <div class="col-span-6 sm:col-span-3">
+                    <!-- <div class="col-span-6 sm:col-span-3">
                         <label for="country" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Country</label>
                         <input type="text" name="country" id="country" class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="United States" required>
-                    </div>
-                    <div class="col-span-6 sm:col-span-3">
+                    </div> -->
+                    <!-- <div class="col-span-6 sm:col-span-3">
                         <label for="city" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">City</label>
                         <input type="text" name="city" id="city" class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="e.g. San Francisco" required>
-                    </div>
-                    <div class="col-span-6 sm:col-span-3">
+                    </div> -->
+                    <!-- <div class="col-span-6 sm:col-span-3">
                         <label for="address" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Address</label>
                         <input type="text" name="address" id="address" class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="e.g. California" required>
-                    </div>
+                    </div> -->
                     <div class="col-span-6 sm:col-span-3">
                         <label for="email" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Email</label>
-                        <input type="email" name="email" id="email" class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="example@company.com" required>
+                        <input type="email" name="email" id="email" class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" value="{{$data->email}}" readonly>
                     </div>
                     <div class="col-span-6 sm:col-span-3">
                         <label for="phone-number" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Phone Number</label>
-                        <input type="number" name="phone-number" id="phone-number" class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="e.g. +(12)3456 789" required>
+                        <input type="number" name="phone-number" id="phone-number" class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" value="{{$data->primary_contact}}" readonly>
                     </div>
-                    <div class="col-span-6 sm:col-span-3">
+                    <!-- <div class="col-span-6 sm:col-span-3">
                         <label for="birthday" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Birthday</label>
                         <input type="number" name="birthday" id="birthday" class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="15/08/1990" required>
-                    </div>
+                    </div> -->
                     <div class="col-span-6 sm:col-span-3">
                         <label for="organization" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Organization</label>
-                        <input type="text" name="organization" id="organization" class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Company Name" required>
+                        <input type="text" name="organization" id="organization" class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" value="{{$data->company}}" readonly>
                     </div>
                     <div class="col-span-6 sm:col-span-3">
                         <label for="role" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Role</label>
-                        <input type="text" name="role" id="role" class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="React Developer" required>
+                        <input type="text" name="role" id="role" class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" value="{{$data->userType->title}}">
                     </div>
-                    <div class="col-span-6 sm:col-span-3">
+                    <!-- <div class="col-span-6 sm:col-span-3">
                         <label for="department" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Department</label>
                         <input type="text" name="department" id="department" class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Development" required>
-                    </div>
-                    <div class="col-span-6 sm:col-span-3">
+                    </div> -->
+                    <!-- <div class="col-span-6 sm:col-span-3">
                         <label for="zip-code" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Zip/postal code</label>
                         <input type="number" name="zip-code" id="zip-code" class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="123456" required>
-                    </div>
-                    <div class="col-span-6 sm:col-full">
+                    </div> -->
+                    <!-- <div class="col-span-6 sm:col-full">
                         <button class="text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800" type="submit">Save all</button>
-                    </div>
+                    </div> -->
                 </div>
             </form>
         </div>
         <div class="p-4 mb-4 bg-gray-50 border border-gray-200 rounded-lg shadow-sm 2xl:col-span-2 dark:border-gray-700 sm:p-6 dark:bg-gray-800">
-            <h3 class="mb-4 text-xl font-semibold dark:text-white">Password information</h3>
-            <form action="#">
-                <div class="grid grid-cols-6 gap-6">
-                    <div class="col-span-6 sm:col-span-3">
-                        <label for="current-password" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Current password</label>
-                        <input type="text" name="current-password" id="current-password" class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="••••••••" required>
-                    </div>
-                    <div class="col-span-6 sm:col-span-3">
-                        <label for="password" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">New password</label>
-                        <input data-popover-target="popover-password" data-popover-placement="bottom" type="password" id="password" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="••••••••" required>
-                        <div data-popover id="popover-password" role="tooltip" class="absolute z-10 invisible inline-block text-sm font-light text-gray-500 transition-opacity duration-300 bg-gray-50 border border-gray-200 rounded-lg shadow-sm opacity-0 w-72 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-400">
-                            <div class="p-3 space-y-2">
-                                <h3 class="font-semibold text-gray-900 dark:text-white">Must have at least 6 characters</h3>
-                                <div class="grid grid-cols-4 gap-2">
-                                    <div class="h-1 bg-orange-300 dark:bg-orange-400"></div>
-                                    <div class="h-1 bg-orange-300 dark:bg-orange-400"></div>
-                                    <div class="h-1 bg-gray-200 dark:bg-gray-600"></div>
-                                    <div class="h-1 bg-gray-200 dark:bg-gray-600"></div>
-                                </div>
-                                <p>It’s better to have:</p>
-                                <ul>
-                                    <li class="flex items-center mb-1">
-                                        <svg class="w-4 h-4 mr-2 text-green-400 dark:text-green-500" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
-                                        Upper & lower case letters
-                                    </li>
-                                    <li class="flex items-center mb-1">
-                                        <svg class="w-4 h-4 mr-2 text-gray-300 dark:text-gray-400" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
-                                        A symbol (#$&)
-                                    </li>
-                                    <li class="flex items-center">
-                                        <svg class="w-4 h-4 mr-2 text-gray-300 dark:text-gray-400" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
-                                        A longer password (min. 12 chars.)
-                                    </li>
-                                </ul>
-                        </div>
-                        <div data-popper-arrow></div>
-                        </div>
-                    </div>
-                    <div class="col-span-6 sm:col-span-3">
-                        <label for="confirm-password" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Confirm password</label>
-                        <input type="text" name="confirm-password" id="confirm-password" class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="••••••••" required>
-                    </div>
-                    <div class="col-span-6 sm:col-full">
-                        <button class="text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800" type="submit">Save all</button>
+            <h3 class="mb-4 text-xl font-semibold dark:text-white">Reset Password</h3>
+            <form id="passwordForm" enctype="multipart/form-data">
+            @csrf
+            <div class="w-full">
+                  <label for="password" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Password</label>
+                  <input type="password" name="password" id="password" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" required="">
+                  <span id="errorMessage" class="font-semibold text-red-500"></span>
+
+
+                </div>
+                <div class="w-full">
+            <div class="flex p-4 mb-2 mt-4 text-sm text-blue-800 rounded-lg bg-blue-50 dark:bg-gray-800 dark:text-blue-400" role="alert">
+                    <svg class="flex-shrink-0 inline w-4 h-4 me-3 mt-[2px]" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
+                    </svg>
+                    <span class="sr-only">Info</span>
+                    <div>
+                        <span class="font-medium">Ensure that these requirements are met:</span>
+                        <ul class="mt-1.5 list-disc list-inside">
+                            <li id="minLength"><i class="fas fa-times 
+                                text-red-500"></i> Minimum 8 characters</li>
+                            <li id="uppercase"><i class="fas fa-times 
+                                text-red-500"></i> At least one uppercase letter</li>
+                            <li id="lowercase"><i class="fas fa-times
+                                text-red-500"></i> At least one lowercase letter</li>
+                            <li id="symbol"><i class="fas fa-times
+                                text-red-500"></i> At least one symbol (@$!%*?&)</li>
+                        </ul>
                     </div>
                 </div>
+                 <div class="col-span-6 sm:col-full">
+                        <button onclick="savepassword()" class="text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800" type="button" id="resetpasswordbtn">Save</button>
+                    </div>
+                
+            </div>
             </form>
         </div>
-        <div class="p-4 mb-4 bg-gray-50 border border-gray-200 rounded-lg shadow-sm 2xl:col-span-2 dark:border-gray-700 sm:p-6 dark:bg-gray-800">
+        <!-- <div class="p-4 mb-4 bg-gray-50 border border-gray-200 rounded-lg shadow-sm 2xl:col-span-2 dark:border-gray-700 sm:p-6 dark:bg-gray-800">
             <div class="flow-root">
                 <h3 class="text-xl font-semibold dark:text-white">Sessions</h3>
                 <ul class="divide-y divide-gray-200 dark:divide-gray-700">
@@ -418,17 +407,17 @@
                     <button class="text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">See more</button>
                 </div>
             </div>
-        </div>
+        </div> -->
     </div>
     
 </div>
-<div class="grid grid-cols-1 px-4 xl:grid-cols-2 xl:gap-4">
+<!-- <div class="grid grid-cols-1 px-4 xl:grid-cols-2 xl:gap-4">
     <div class="p-4 mb-4 bg-gray-50 border border-gray-200 rounded-lg shadow-sm dark:border-gray-700 sm:p-6 dark:bg-gray-800 xl:mb-0">
         <div class="flow-root">
             <h3 class="text-xl font-semibold dark:text-white">Alerts & Notifications</h3>
             <p class="text-sm font-normal text-gray-500 dark:text-gray-400">You can set up Themesberg to get notifications</p>
             <div class="divide-y divide-gray-200 dark:divide-gray-700">
-                <!-- Item 1 -->
+      
                 <div class="flex items-center justify-between py-4">
                     <div class="flex flex-col flex-grow">
                         <div class="text-lg font-semibold text-gray-900 dark:text-white">Company News</div>
@@ -439,7 +428,7 @@
                         <span class="h-6 bg-gray-200 border border-gray-200 rounded-full w-11 toggle-bg dark:bg-gray-700 dark:border-gray-600"></span>
                     </label>
                 </div>
-                <!-- Item 2 -->
+
                 <div class="flex items-center justify-between py-4">
                     <div class="flex flex-col flex-grow">
                         <div class="text-lg font-semibold text-gray-900 dark:text-white">Account Activity</div>
@@ -450,7 +439,7 @@
                         <span class="h-6 bg-gray-200 border border-gray-200 rounded-full w-11 toggle-bg dark:bg-gray-700 dark:border-gray-600"></span>
                     </label>
                 </div>
-                <!-- Item 3 -->
+           
                 <div class="flex items-center justify-between py-4">
                     <div class="flex flex-col flex-grow">
                         <div class="text-lg font-semibold text-gray-900 dark:text-white">Meetups Near You</div>
@@ -461,7 +450,7 @@
                         <span class="h-6 bg-gray-200 border border-gray-200 rounded-full w-11 toggle-bg dark:bg-gray-700 dark:border-gray-600"></span>
                     </label>
                 </div>
-                <!-- Item 4 -->
+          
                 <div class="flex items-center justify-between pt-4">
                     <div class="flex flex-col flex-grow">
                         <div class="text-lg font-semibold text-gray-900 dark:text-white">New Messages</div>
@@ -483,7 +472,7 @@
             <h3 class="text-xl font-semibold dark:text-white">Email Notifications</h3>
             <p class="text-sm font-normal text-gray-500 dark:text-gray-400">You can set up Themesberg to get email notifications </p>
             <div class="divide-y divide-gray-200 dark:divide-gray-700">
-                <!-- Item 1 -->
+          
                 <div class="flex items-center justify-between py-4">
                     <div class="flex flex-col flex-grow">
                         <div class="text-lg font-semibold text-gray-900 dark:text-white">Rating reminders</div>
@@ -494,7 +483,7 @@
                         <span class="h-6 bg-gray-200 border border-gray-200 rounded-full w-11 toggle-bg dark:bg-gray-700 dark:border-gray-600"></span>
                     </label>
                 </div>
-                <!-- Item 2 -->
+             
                 <div class="flex items-center justify-between py-4">
                     <div class="flex flex-col flex-grow">
                         <div class="text-lg font-semibold text-gray-900 dark:text-white">Item update notifications</div>
@@ -505,7 +494,7 @@
                         <span class="h-6 bg-gray-200 border border-gray-200 rounded-full w-11 toggle-bg dark:bg-gray-700 dark:border-gray-600"></span>
                     </label>
                 </div>
-                <!-- Item 3 -->
+            
                 <div class="flex items-center justify-between py-4">
                     <div class="flex flex-col flex-grow">
                         <div class="text-lg font-semibold text-gray-900 dark:text-white">Item comment notifications</div>
@@ -516,7 +505,7 @@
                         <span class="h-6 bg-gray-200 border border-gray-200 rounded-full w-11 toggle-bg dark:bg-gray-700 dark:border-gray-600"></span>
                     </label>
                 </div>
-                <!-- Item 4 -->
+                
                 <div class="flex items-center justify-between pt-4">
                     <div class="flex flex-col flex-grow">
                         <div class="text-lg font-semibold text-gray-900 dark:text-white">Buyer review notifications</div>
@@ -533,6 +522,102 @@
             </div>
         </div>
     </div>
+</div> -->
 </div>
-</div>
+
+<script>
+
+    function savepassword()  {
+
+        // Check if the required fields are filled
+        let requiredFields = ['#password'];
+        let allFieldsFilled = true;
+
+        requiredFields.forEach(function(selector) {
+            if ($(selector).val() === '') {
+                allFieldsFilled = false;
+            }
+        });
+
+        if (!allFieldsFilled) {
+            bootbox.alert({
+                message: "Please fill in all required fields and select an active status.",
+                backdrop: true,
+            }).find('.modal-content').addClass("flex items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800");
+            return;
+        }
+
+        // Validate password requirements
+        const password = $('#password').val();
+        const strongPasswordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+        if (!strongPasswordRegex.test(password)) {
+            bootbox.alert({
+                message: "Password does not meet the requirements.",
+                backdrop: true,
+            }).find('.modal-content').addClass("flex items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800");
+            return;
+        }
+
+
+        const formData = new FormData(document.getElementById('passwordForm'));
+
+        // Append the other form fields to the FormData object
+        formData.append('_token', $('input[name="_token"]').val());
+        formData.append('password', $('input[name="password"]').val());
+
+
+        $.ajax({
+            url: '{{url('resetpassword')}}',
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function(response) {
+
+                if(response.status == "success") {
+                    bootbox.alert({
+                        message: response.message,
+                        backdrop: true,
+                        callback: function () {
+                            window.location.reload();
+                        }
+                    }).find('.modal-content').addClass("flex items-center p-4 mb-4 text-sm text-green-800 border border-green-300 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400 dark:border-green-800");
+
+                } else if(response.status == "error"){
+                    bootbox.alert({
+                        message: response.message,
+                        backdrop: true,
+                        callback: function () {}
+                    }).find('.modal-content').addClass("flex items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800");
+                }
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+
+            }
+        });
+
+    }
+    
+    $('#password').on('input', function () {
+        const password = $(this).val();
+        const strongPasswordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+
+        // Check if all password conditions are met
+        const isStrongPassword = strongPasswordRegex.test(password);
+
+        // Update the submit button state
+        $('#resetpasswordbtn').prop('disabled', !isStrongPassword);
+
+        // Update the password strength message
+        const errorMessage = $('#errorMessage');
+        $('#minLength').html(password.length >= 8 ? '<i class="fas fa-check text-green-500"></i> Minimum 8 characters' : '<i class="fas fa-times text-red-500"></i> Minimum 8 characters');
+        $('#uppercase').html(/[A-Z]/.test(password) ? '<i class="fas fa-check text-green-500"></i> At least one uppercase letter' : '<i class="fas fa-times text-red-500"></i> At least one uppercase letter');
+        $('#lowercase').html(/[a-z]/.test(password) ? '<i class="fas fa-check text-green-500"></i> At least one lowercase letter' : '<i class="fas fa-times text-red-500"></i> At least one lowercase letter');
+        $('#symbol').html(/[@$!%*?&]/.test(password) ? '<i class="fas fa-check text-green-500"></i> At least one symbol (@$!%*?&)' : '<i class="fas fa-times text-red-500"></i> At least one symbol (@$!%*?&)');
+
+        // Update the error message based on password strength
+        errorMessage.text(isStrongPassword ? 'Strong Password' : 'Weak Password').toggleClass('text-red-500', !isStrongPassword).toggleClass('text-green-500', isStrongPassword);
+    });
+
+	</script>
 @endsection

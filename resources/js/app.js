@@ -72,14 +72,8 @@ import "datatables.net-staterestore-bs5/css/stateRestore.bootstrap5.min.css";
 import jszip from "jszip";
 import pdfmake from "pdfmake";
 
-pdfmake.fonts = {
-    Roboto: {
-        normal: '/fonts/Roboto-Regular.ttf',
-        bold: '/path/to/Roboto-Medium.ttf',
-        italics: '/path/to/Roboto-Italic.ttf',
-        bolditalics: '/path/to/Roboto-MediumItalic.ttf'
-    }
-};
+pdfmake.fonts = {};
+
 
 // Styles
 import "normalize.css/normalize.css";

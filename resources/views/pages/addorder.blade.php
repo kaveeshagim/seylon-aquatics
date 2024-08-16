@@ -699,18 +699,14 @@ document.getElementById('fish_code').addEventListener('change', function() {
 
 
 function refresh() {
-    // Reset the order form fields
-    $('#orderForm')[0].reset();
-    
-    // Hide the Excel form and submission button
-    $('#excelForm').addClass('hidden');
-    $('#formSubmission').addClass('hidden');
+    // Clear the form fields
+    document.getElementById('orderForm').reset();
 
-    // Clear the shipping address field
-    $('textarea[name="shippingaddress"]').val('');
+    // Clear the table body content
+    // document.getElementById('recordsBodyExcel').innerHTML = '';
 
-    // Clear the selection of the radio buttons for the upload method
-    $('input[name="upload-radio"]').prop('checked', false);
+    // Disable the Submit button
+    document.getElementById('submitButtonExcel').disabled = true;
 }
 
 function vieworder(id) {

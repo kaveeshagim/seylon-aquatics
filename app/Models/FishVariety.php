@@ -24,6 +24,7 @@ class FishVariety extends Model
         'common_name', 
         'scientific_name', 
         'size_cm', 
+        'qtyperbag',
         'image',
         'size',
     ];
@@ -42,6 +43,12 @@ class FishVariety extends Model
     {
         return $this->hasMany(FishWeekly::class, 'fish_code', 'fish_code');
     }
+
+    public function fishweeklyold()
+    {
+        return $this->hasMany(FishWeeklyOld::class, 'fish_code', 'fish_code');
+    }
+
 
      public function getCreatedAtAttribute($value)
     {

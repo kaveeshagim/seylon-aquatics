@@ -70,7 +70,7 @@ class CustomersController extends Controller
                 'email' => $validatedData['email'],
                 'primary_contact' => $validatedData['primary_contact'],
                 'secondary_contact' => $validatedData['secondary_contact'] ?? null,
-                'executive' => $validatedData['executive'],
+                'executive_id' => $validatedData['executive'],
             ]);
     
             // Log the user's action
@@ -106,6 +106,7 @@ class CustomersController extends Controller
             'executive' => 'required|integer',
             'cususer' => 'required|integer',
         ]);
+
     
         try {
             // Find the customer by cus_id
@@ -123,7 +124,7 @@ class CustomersController extends Controller
                 'email' => $validatedData['email'],
                 'primary_contact' => $validatedData['primary_contact'],
                 'secondary_contact' => $validatedData['secondary_contact'] ?? null,
-                'executive' => $validatedData['executive'],
+                'executive_id' => $validatedData['executive'],
                 'user_id' => $validatedData['cususer'],
             ]);
     

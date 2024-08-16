@@ -25,23 +25,44 @@ app.use((req, res, next) => {
 });
 
 
+app.use((req, res, next) => {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    next();
+});
+
+
 // Endpoint to receive updates from Laravel
 app.post("/updateOrders", (req, res) => {
     const data = req.body;
     console.log("Received updateOrders request:", data);
-    io.emit("orders", data); // Broadcast to all clients
+    io.emit("updateOrders", data); // Broadcast to all clients
     res.sendStatus(200);
 });
+
+app.post("/updateOrdersCustomer", (req, res) => {
+    const data = req.body;
+    console.log("Received customer updateOrders request:", data);
+    io.emit("updateOrdersCustomer", data); // Broadcast to all clients
+    res.sendStatus(200);
+});
+
 
 // Handle WebSocket connections
 io.on("connection", (socket) => {
     console.log("New client connected");
 
-    // Listen for messages from Laravel
-    socket.on("updateOrders", (data) => {
+    socket.on("test", (data) => {
         console.log("Received updateOrders event:", data);
-        io.emit("orders", data); // Broadcast to all clients
+      
     });
+
+
+    // Listen for messages from Laravel
+    // socket.on("updateOrders", (data) => {
+    //     console.log("Received updateOrders event:", data);
+    //     io.emit("orders", data); 
+    // });
 
     socket.on("disconnect", () => {
         console.log("Client disconnected");

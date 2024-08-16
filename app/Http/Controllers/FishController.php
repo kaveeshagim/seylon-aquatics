@@ -19,6 +19,7 @@ use App\Models\FishFamily;
 use App\Models\FishSpecies;
 use App\Models\FishWeekly;
 use App\Models\FishWeeklyOld;
+use App\Services\PHPMailerService;
 
 class FishController extends Controller
 {
@@ -86,14 +87,16 @@ public function addfishfamily(Request $request) {
     }
 
         FishFamily::create([
-            'name' => $name,
-            'habitat-id' => $habitat
+            'name' => strtoupper($family),
+            'habitat_id' => $habitat
         ]);
 
         $username = session()->get('username');
         $ipaddress = Util::get_client_ip();
         Util::user_auth_log($ipaddress,"fish family added ",$username, "Fish Family Added");
 
+        $dashboardController = new \App\Http\Controllers\DashboardController();
+        $dashboardController->updateStatus();
     
         return response()->json(['status' => 'success', 'message' => 'Fish Family added successfully!']);
 }
@@ -145,6 +148,9 @@ public function deletefishfamily(Request $request) {
     $username = session()->get('username');
     $ipaddress = Util::get_client_ip();
     Util::user_auth_log($ipaddress,"fish habitat deleted ",$username, "Fish Habitat Deleted");
+
+    $dashboardController = new \App\Http\Controllers\DashboardController();
+    $dashboardController->updateStatus();
 
     return response()->json(['status' => 'success', 'message' => 'Fish Habitat deleted successfully!']);
 
@@ -209,7 +215,9 @@ public function addfishspecies(Request $request) {
     $ipaddress = Util::get_client_ip();
     Util::user_auth_log($ipaddress,"fish species added ",$username, "Fish Species Added");
 
-    
+    $dashboardController = new \App\Http\Controllers\DashboardController();
+    $dashboardController->updateStatus();
+
     return response()->json(['status' => 'success', 'message' => 'Fish Species added successfully!']);
 }
 
@@ -263,6 +271,9 @@ public function deletefishspecies(Request $request) {
     $ipaddress = Util::get_client_ip();
     Util::user_auth_log($ipaddress,"fish species deleted ",$username, "Fish Species Deleted");
 
+    $dashboardController = new \App\Http\Controllers\DashboardController();
+    $dashboardController->updateStatus();
+
     return response()->json(['status' => 'success', 'message' => 'Fish Species deleted successfully!']);
 
 }
@@ -285,6 +296,7 @@ public function deletefishspecies(Request $request) {
             'special_offer' => $fish->special_offer,
             'discount' => $fish->discount,
             'created_at' => $fish->created_at,
+            'stock_status' => $fish->stock_status,
             'id' => $fish->id,
             'image' => $fish->variety ? $fish->variety->image : null,
         ];
@@ -317,6 +329,10 @@ public function deletefishspecies(Request $request) {
     });
 
         return response()->json($data);
+    }
+
+    public function deletefishweekly(Request $request) {
+        
     }
 
     
@@ -420,7 +436,9 @@ public function deletefishspecies(Request $request) {
             $ipaddress = Util::get_client_ip();
             Util::user_auth_log($ipaddress,"fish habitat added ",$username, "Fish Habitat Added");
 
-        
+            $dashboardController = new \App\Http\Controllers\DashboardController();
+            $dashboardController->updateStatus();
+
             return response()->json(['status' => 'success', 'message' => 'Fish Habitat added successfully!']);
         }
 
@@ -470,6 +488,9 @@ public function deletefishspecies(Request $request) {
         $ipaddress = Util::get_client_ip();
         Util::user_auth_log($ipaddress,"fish habitat deleted ",$username, "Fish Habitat Deleted");
 
+        $dashboardController = new \App\Http\Controllers\DashboardController();
+        $dashboardController->updateStatus();
+
         return response()->json(['status' => 'success', 'message' => 'Fish Habitat deleted successfully!']);
 
     }
@@ -477,10 +498,11 @@ public function deletefishspecies(Request $request) {
     public function getfishvariety() {
 
         $data = DB::table('tbl_fish_variety')
-            ->select('tbl_fish_variety.*', 'tbl_fish_species.name as species', 'tbl_fishhabitat.name as habitat', 'tbl_fish_family.name as family')
+            ->select('tbl_fish_variety.*', 'tbl_fish_species.name as species', 'tbl_fishhabitat.name as habitat', 'tbl_fish_family.name as family', 'tbl_size.name as size')
             ->join('tbl_fish_species', 'tbl_fish_species.id', '=', 'tbl_fish_variety.species_id')
             ->join('tbl_fish_family', 'tbl_fish_family.id', '=', 'tbl_fish_species.family_id')
             ->join('tbl_fishhabitat', 'tbl_fishhabitat.id', '=', 'tbl_fish_family.habitat_id')
+            ->leftjoin('tbl_size', 'tbl_fish_variety.size', '=', 'tbl_size.id')
             ->get();
         return $data;    
 
@@ -512,9 +534,9 @@ public function deletefishspecies(Request $request) {
             'scientificname' => 'required|string|max:255',
             'species' => 'required|integer',
             'qtyperbag' => 'required|integer',
-            'size' => 'required|string|max:255',
-            'size_cm' => 'required|string|max:255',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048' // optional image validation
+            'size' => 'nullable|string|max:255',
+            'size_cm' => 'nullable|string|max:255',
+            'avatar' => 'nullable|file|max:2048',        
         ]);
     
         $commonName = strtoupper($validatedData['commonname']);
@@ -538,14 +560,18 @@ public function deletefishspecies(Request $request) {
             // Generate fish code using Util function
             $fishCode = Util::generateFishCode($speciesId, $size, $sizeCm);
     
-            // Handle image upload
-            $imagePath = null;
-            if ($request->hasFile('avatar')) {
-                $image = $request->file('avatar');
-                $imageName = Str::slug($commonName) . '_' . time() . '.' . $image->getClientOriginalExtension();
-                $imagePath = $image->storeAs('public/fishimages', $imageName);
-                $imagePath = Storage::url($imagePath); // Get the public URL of the image
-            }
+    
+        // Handle the file upload
+        $avatarPath = null;
+        if ($request->hasFile('avatar')) {
+            $avatar = $request->file('avatar');
+            $originalExtension = $avatar->getClientOriginalExtension(); // Get the original file extension
+    
+            // Generate a new filename using the username and current date/time
+            $newFileName = $fishCode . '-' . now()->format('Y-m-d-H-i-s') . '.' . $originalExtension;
+    
+            $avatarPath = $avatar->storeAs('fishimages', $newFileName, 'public');
+        }
     
             // Create new FishVariety record
             FishVariety::create([
@@ -556,7 +582,7 @@ public function deletefishspecies(Request $request) {
                 'size_cm' => $sizeCm,
                 'qtyperbag' => $qtyperbag,
                 'fish_code' => $fishCode,
-                'image' => $imagePath, // Save the image path
+                'image' => $avatarPath, // Save the image path
             ]);
     
             // Log the user's action
@@ -564,6 +590,9 @@ public function deletefishspecies(Request $request) {
             $ipaddress = Util::get_client_ip();
             Util::user_auth_log($ipaddress, "fish variety added", $username, "Fish Variety Added");
     
+            $dashboardController = new \App\Http\Controllers\DashboardController();
+            $dashboardController->updateStatus();
+
             return response()->json(['status' => 'success', 'message' => 'Fish Variety added successfully!']);
         }
     }
@@ -581,19 +610,18 @@ public function deletefishspecies(Request $request) {
     
         // Validate the input fields including image
         $validatedData = $request->validate([
-            'image-edit' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048' // optional image validation
+            'avatar-edit' => 'nullable|file|max:2048',
         ]);
     
         // Check if a variety with the same details already exists (excluding the current record)
         $existingVariety = FishVariety::where('id', '!=', $id)
-                                      ->where('common_name', $commonName)
-                                      ->where('scientific_name', $scientificName)
-                                      ->where('species_id', $speciesId)
-                                      ->where(function($query) use ($size, $sizeCm) {
-                                          $query->where('size', $size)
-                                                ->orWhere('size_cm', $sizeCm);
-                                      })
-                                      ->first();
+        ->where('common_name', $commonName)
+        ->where('scientific_name', $scientificName)
+        ->where('species_id', $speciesId)
+        ->where('size', $size)  // Use where for both size and size_cm
+        ->where('size_cm', $sizeCm)
+        ->first();
+    
     
         if ($existingVariety) {
             return response()->json(['status' => 'error', 'message' => 'Fish variety with these details already exists!']);
@@ -612,25 +640,24 @@ public function deletefishspecies(Request $request) {
             $fishVariety->size_cm = $sizeCm;
             $fishVariety->qtyperbag = $qtyperbag;
     
-            if ($request->hasFile('avatar-edit')) {
-                // Delete the old image if it exists
-                if ($fishVariety->image) {
-                    Storage::delete(str_replace('/storage/', 'public/', $fishVariety->image));
-                }
-            
-                // Store the new image
-                $image = $request->file('avatar-edit');
-                $imageName = Str::slug($commonName) . '_' . time() . '.' . $image->getClientOriginalExtension();
-                $imagePath = $image->storeAs('public/fishimages', $imageName);
-            
-                // Check if the image was stored successfully
-                if (Storage::exists($imagePath)) {
-                    $fishVariety->image = Storage::url($imagePath); // Save the new image path
-                } else {
-                    return response()->json(['status' => 'error', 'message' => 'Image upload failed!']);
-                }
+            // Handle the fish image upload
+        $avatarPath = null;
+        if ($request->hasFile('avatar-edit')) {
+            $avatar = $request->file('avatar-edit');
+            $originalExtension = $avatar->getClientOriginalExtension(); // Get the original file extension
+    
+            // Generate a new filename using the username and current date/time
+            $newFileName = $fishVariety->fish_code . '-' . now()->format('Y-m-d-H-i-s') . '.' . $originalExtension;
+    
+            // Check if the file already exists in the storage
+            if (!Storage::disk('public')->exists('fishimages/' . $newFileName)) {
+                $avatarPath = $avatar->storeAs('fishimages', $newFileName, 'public');
+            } else {
+                // If the file exists, use the existing path
+                $avatarPath = 'fishimages/' . $newFileName;
             }
-            
+            $fishVariety->image = $avatarPath;
+        }
     
             // Regenerate fish code if necessary
             if ($codeRequiresUpdate) {
@@ -648,23 +675,27 @@ public function deletefishspecies(Request $request) {
             return response()->json(['status' => 'success', 'message' => 'Fish Variety updated successfully!']);
         }
     }
+    
 
 
     public function deletefishvariety(Request $request) {
 
         $id = $request->input('id');
 
-        $fishVariety = FishVariety::with('fishFamilies')->find($id);
+        $fishVariety = FishVariety::with(['fishweekly', 'fishweeklyold'])->find($id);
 
-        if ($fishHabitat && $fishHabitat->fishFamilies->isNotEmpty()) {
-            return response()->json(['status' => 'error', 'message' => 'Cannot delete Fish Variety because it has related fish families!']);
+        if ($fishVariety && $fishVariety->fishweekly->isNotEmpty() && $fishVariety->fishweeklyold->isNotEmpty()) {
+            return response()->json(['status' => 'error', 'message' => 'Cannot delete Fish Variety because it has related fish weekly records!']);
         }
     
-        FishHabitat::destroy($id);
+        FishVariety::destroy($id);
 
         $username = session()->get('username');
         $ipaddress = Util::get_client_ip();
         Util::user_auth_log($ipaddress,"fish habitat deleted ",$username, "Fish Variety Deleted");
+
+        $dashboardController = new \App\Http\Controllers\DashboardController();
+        $dashboardController->updateStatus();
 
         return response()->json(['status' => 'success', 'message' => 'Fish Variety deleted successfully!']);
 
@@ -790,13 +821,14 @@ public function deletefishspecies(Request $request) {
 
     public function deletefishsize(Request $request) {
 
-        $id = session()->get('id');
+        $id = $request->input('id');
 
         $fishSize = Size::with('variety')->find($id);
 
         if ($fishSize && $fishSize->variety->isNotEmpty()) {
             return response()->json(['status' => 'error', 'message' => 'Cannot delete Fish Size because it has related fish varieties!']);
         }
+
     
         Size::destroy($id);
 
@@ -882,15 +914,27 @@ public function downloadSampleExcel()
     return Excel::download(new SampleExcelExportFishWeekly, $filename);
 }
 
-public function fetchfishweeklyexceldata(Request $request) {
-
+public function fetchfishweeklyexceldata(Request $request)
+{
     $fishCodes = $request->input('fish_codes');
-    $fishData = FishVariety::whereIn('fish_code', $fishCodes)
-                ->get(['fish_code', 'size', 'size_cm'])
-                ->keyBy('fish_code');
-    return response()->json($fishData);
 
+    // Fetch fish data along with size names
+    $fishData = FishVariety::select('tbl_fish_variety.fish_code', 'tbl_fish_variety.size', 'tbl_fish_variety.size_cm', 'tbl_fish_variety.common_name', 'sizes.name as size_name')
+        ->leftjoin('tbl_size as sizes', 'tbl_fish_variety.size', '=', 'sizes.id') // Join with tbl_size table to get size name
+        ->whereIn('tbl_fish_variety.fish_code', $fishCodes)
+        ->get()
+        ->keyBy('fish_code');
+
+    // Map the size ID to the size name
+    $fishData = $fishData->map(function ($item) {
+        $item->size = $item->size_name; // Map size to the name
+        unset($item->size_name); // Remove the size_name field
+        return $item;
+    });
+
+    return response()->json($fishData);
 }
+
 
 public function fishweeklyuploadform(Request $request)
 {
@@ -929,6 +973,48 @@ public function fishweeklyuploadform(Request $request)
             // Delete current records in tbl_fishweekly
             DB::table('tbl_fishweekly')->truncate();
             \Log::info('tbl_fishweekly truncated.');
+
+
+            try {
+                $activeUsers = User::where('active_status', 1)->get();
+        
+                if ($activeUsers->isEmpty()) {
+
+                }else{
+
+                    $subject = "Weekly Fish Stock List - " . now()->weekOfYear;
+                    $body = 'Hi, <br><br>New Fish Weekly Stock List Added';
+            
+                    foreach ($activeUsers as $user) {
+                        // Insert notification for each user
+                        DB::table('tbl_notifications')->insert([
+                            'user_id' => $user->id,
+                            'notification' => 'New Fish Weekly Stock List Added',
+                            'seen_status' => 0,
+                            'created_at' => now(),
+                        ]);
+            
+                        // Send email to each user
+                        try {
+                            $mailerService = new PHPMailerService();
+                            $mailerService->sendEmail($user->email, $subject, nl2br($body));
+                            Log::info('Email sent to: ' . $user->email);
+                        } catch (\Exception $e) {
+                            Log::error('Email sending failed for ' . $user->email . '. Error: ' . $e->getMessage());
+                        }
+                    }
+
+                }
+        
+
+        
+        
+            } catch (\Exception $e) {
+                Log::error('Failed to send notifications and emails. Error: ' . $e->getMessage());
+            }
+
+
+
         }
 
         // Insert the new data into tbl_fishweekly
@@ -986,16 +1072,18 @@ public function fishweeklyuploadexcel(Request $request)
         $rows = array_slice($data, 1);
 
         // Fetch sizes for fish codes
-        $fishCodes = array_column($rows, 0); // Extract fish codes from rows
+        $fishCodes = array_map('trim', array_column($rows, 0)); // Extract fish codes from rows
         $fishVarieties = DB::table('tbl_fish_variety')
-            ->whereIn('fish_code', $fishCodes)
+            ->whereIn(DB::raw('TRIM(fish_code)'), $fishCodes) // Trim fish_code from DB
             ->get()
-            ->keyBy('fish_code'); // Key by fish_code for quick lookup
+            ->keyBy(function ($item) {
+                return trim($item->fish_code); // Trim the fish_code key
+            }); // Key by fish_code for quick lookup
 
         // Validate fish codes and retrieve size and size_cm
         $insertData = [];
         foreach ($rows as $index => $row) {
-            $fishCode = $row[0];
+            $fishCode = trim($row[0]);
             if (!isset($fishVarieties[$fishCode])) {
                 // Rollback transaction and return error with line number (index + 2 because of header)
                 // DB::rollBack();
@@ -1010,7 +1098,7 @@ public function fishweeklyuploadexcel(Request $request)
                 'fish_code' => $fishCode,
                 'year' => now()->year,
                 'month' => now()->month,
-                'week' => now()->weekOfMonth,
+                'week' => now()->weekOfYear,
                 'size' => $fishDetails->size, // Ensure this is a string or properly formatted value
                 'size_cm' => $fishDetails->size_cm, // Ensure this is a string or properly formatted value
                 'gross_price' => $row[1],

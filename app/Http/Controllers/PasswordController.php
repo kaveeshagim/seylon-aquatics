@@ -9,7 +9,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\ResetPasswordReq;
 use App\Models\ResetPassword;
+use Illuminate\Support\Facades\Hash;
 use App\Models\User;
+use Illuminate\Support\Facades\Log;
+
 
 class PasswordController extends Controller
 {
@@ -66,7 +69,7 @@ class PasswordController extends Controller
 
         try {
             // Validate the input
-            $request->validate([
+            $validated =  $request->validate([
                 'editid' => 'required|exists:tbl_reset_password_req,id',
                 'newpassword' => [
                     'required',
@@ -81,6 +84,8 @@ class PasswordController extends Controller
             $id = $validated['editid'];
             $newpassword = $validated['newpassword'];
             
+            // Hash the new password
+            $hashedPassword = Hash::make($newpassword);
         
             // Find the password request record
             $passwordRequest = ResetPasswordReq::find($id);
@@ -92,7 +97,7 @@ class PasswordController extends Controller
             // Update the password request status
             $passwordRequest->update([
                 'status' => 'approved',
-                'new_password' => $newpassword,
+                'new_password' => $hashedPassword,
                 'updated_by' => session()->get('userid'),
             ]);
         
@@ -102,10 +107,15 @@ class PasswordController extends Controller
             if (!$user) {
                 return response()->json(['status' => 'error', 'message' => 'User not found']);
             }
+
+            $user->password = $hashedPassword;
+            $user->save();
+
+            DB::table('tbl_notifications')->insert(['user_id'=> $passwordRequest->user_id, 'notification' => 'Password Changed', 'seen_status' => 0, 'created_at'=> NOW()]);
         
             $username = $user->username;
             $email = $user->email;
-        
+
             $subject = "Password Change Request";
             $body = 'Hi ' . $username . ',<br><br>';
             $body .= 'New Password: ' . $newpassword;
@@ -114,13 +124,18 @@ class PasswordController extends Controller
             try {
                 $mailerService = new PHPMailerService();
                 $mailerService->sendEmail($email, $subject, nl2br($body));
+                Log::info('Email sent to: ' . $email);
+                $passwordRequest->update([
+                    'email_status' => 'sent'
+                ]);
+
+
             } catch (\Exception $e) {
+                Log::error('Email sending failed. Error: ' . $e->getMessage());
                 return response()->json(['status' => 'error', 'message' => 'Password update successful. Failed to send email']);
             }
         
-            $passwordRequest->update([
-                'email_status' => 'sent'
-            ]);
+
 
             $username = session()->get('username');
             $ipaddress = Util::get_client_ip();
@@ -138,6 +153,47 @@ class PasswordController extends Controller
         }
         
 
+    }
+
+    public function resetpassword(Request $request)
+    {
+        // Validate the password input
+        $validated = $request->validate([
+            'password' => [
+                'required',
+                'string',
+                'min:8',  // Minimum length of 8 characters
+                'regex:/[A-Z]/',  // At least one uppercase letter
+                'regex:/[!@#$%^&*(),.?":{}|<>]/',  // At least one symbol
+                'regex:/[0-9]/',  // At least one number
+            ],
+        ]);
+
+    
+        // Retrieve the new password from the request
+        $newPassword = $validated['password'];
+    
+        // Get the user ID from the session
+        $userId = session()->get('userid');
+    
+        // Find the user by ID
+        $user = User::find($userId);
+    
+        // Check if the user exists
+        if ($user) {
+            // Hash the new password
+            $hashedPassword = Hash::make($newPassword);
+    
+            // Update the user's password
+            $user->password = $hashedPassword;
+    
+            // Save the changes to the database
+            $user->save();
+    
+            return response()->json(['status' => 'success', 'message'=>'Password has been reset successfully.']);
+        } else {
+            return response()->json(['status' => 'error', 'message'=>'User Not Found']);
+        }
     }
     
    
