@@ -22,6 +22,16 @@ class Invoice extends Model
         'gross_total',
         'final_total',
         'shipment_date',
+        'invoice_no',
+        'order_no',
+        'discount_total',
+        'handling_fee',
+        'packaging_fee',
+        'shipment_date',	
+        'shipping_cost'	,
+        'payment_status',	
+        'invoice_status'	
+
     ];
 
     public function order()

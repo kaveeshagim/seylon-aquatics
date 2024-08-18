@@ -36,7 +36,7 @@
    </button>
   <div class="py-4 overflow-y-auto">
       <ul class="space-y-2 font-medium">
-        @if(Session::get('user_type') == 1 || Session::get('user_type') == 3 || Session::get('user_type') == 8)
+        @if(Session::get('user_type') == 1 || Session::get('user_type') == 3 || Session::get('user_type') == 8 || Session::get('user_type') == 9)
          <li>
             <a href="{{ route('dashboard') }}" class="no-underline flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
                <svg class="w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 21">
@@ -97,28 +97,15 @@
 
          @if(Session::get('user_type') == 1 || Session::get('user_type') == 3 || Session::get('user_type') == 5 )
          <li>
-            <button type="button" class="flex items-center w-full p-2 text-base text-gray-900 transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700" aria-controls="dropdown-orders" data-collapse-toggle="dropdown-orders">
-                  <svg class="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 18 21">
-                     <path d="M15 12a1 1 0 0 0 .962-.726l2-7A1 1 0 0 0 17 3H3.77L3.175.745A1 1 0 0 0 2.208 0H1a1 1 0 0 0 0 2h.438l.6 2.255v.019l2 7 .746 2.986A3 3 0 1 0 9 17a2.966 2.966 0 0 0-.184-1h2.368c-.118.32-.18.659-.184 1a3 3 0 1 0 3-3H6.78l-.5-2H15Z"/>
-                  </svg>
-                  <span class="flex-1 ms-3 text-left rtl:text-right whitespace-nowrap">Orders</span>
-                  <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
-                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
-                  </svg>
-            </button>
-            <ul id="dropdown-orders" class="hidden py-2 space-y-2">
-                    @if(Session::get('user_type') == 5 || Session::get('user_type') == 3 || Session::get('user_type') == 1)
-                  <li>
-                     <a href="{{ route('orderhistory') }}" class="no-underline flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Orders</a>
-                  </li>
-                  @endif
-                  @if(Session::get('user_type') == 1 || Session::get('user_type') == 3)
-                  <li>
-                     <a href="{{ route('customerorders') }}" class=" no-underline flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Customer Orders</a>
-                  </li>
-                  @endif
-            </ul>
+            <a href="{{ route('orderhistory') }}" class="no-underline flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+               <svg class="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="m17.418 3.623-.018-.008a6.713 6.713 0 0 0-2.4-.569V2h1a1 1 0 1 0 0-2h-2a1 1 0 0 0-1 1v2H9.89A6.977 6.977 0 0 1 12 8v5h-2V8A5 5 0 1 0 0 8v6a1 1 0 0 0 1 1h8v4a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1v-4h6a1 1 0 0 0 1-1V8a5 5 0 0 0-2.582-4.377ZM6 12H4a1 1 0 0 1 0-2h2a1 1 0 0 1 0 2Z"/>
+               </svg>
+               <span class="flex-1 ms-3 whitespace-nowrap">Orders</span>
+            </a>
          </li>
+
+
          @endif
 
 
@@ -202,7 +189,14 @@
             </ul>
          </li>
          @endif
-
+         <li>
+            <a href="{{ route('companydet') }}" class="no-underline flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+               <svg class="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="m17.418 3.623-.018-.008a6.713 6.713 0 0 0-2.4-.569V2h1a1 1 0 1 0 0-2h-2a1 1 0 0 0-1 1v2H9.89A6.977 6.977 0 0 1 12 8v5h-2V8A5 5 0 1 0 0 8v6a1 1 0 0 0 1 1h8v4a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1v-4h6a1 1 0 0 0 1-1V8a5 5 0 0 0-2.582-4.377ZM6 12H4a1 1 0 0 1 0-2h2a1 1 0 0 1 0 2Z"/>
+               </svg>
+               <span class="flex-1 ms-3 whitespace-nowrap">About</span>
+            </a>
+         </li>
 
       </ul>
    </div>
@@ -212,7 +206,7 @@
 
             <div class="hidden justify-between items-center w-full lg:flex lg:w-auto lg:order-1" id="mobile-menu-2">
                 <ul class="flex flex-col mt-4 font-medium lg:flex-row lg:space-x-8 lg:mt-0">
-                    @if(Session::get('user_type') == 1 || Session::get('user_type') == 3 || Session::get('user_type') == 8)
+                    @if(Session::get('user_type') == 1 || Session::get('user_type') == 3 || Session::get('user_type') == 8 || Session::get('user_type') == 9)
                     <li>
                         <a href="{{ route('dashboard') }}" class="block no-underline  pr-4 pl-3 text-gray-700 rounded bg-primary-700 lg:bg-transparent lg:text-primary-700 lg:p-0 dark:text-white" aria-current="page">Dashboards</a>
                     </li>
@@ -255,26 +249,11 @@
                     </li>
 
                     @if(Session::get('user_type') == 1 || Session::get('user_type') == 3 || Session::get('user_type') == 5)
+
                     <li>
-                        <button id="dropdownNavbarLinkOrders" data-dropdown-toggle="dropdownOrders" class="flex items-center justify-between w-full text-gray-700 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 md:w-auto dark:text-gray-400 dark:hover:text-white dark:focus:text-white dark:border-gray-700 dark:hover:bg-gray-700 md:dark:hover:bg-transparent">Orders <svg class="w-2.5 h-2.5 ms-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
-                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
-                        </svg></button>
-                        <!-- Dropdown menu -->
-                        <div id="dropdownOrders" class="z-10 hidden font-normal bg-gray-50 divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700 dark:divide-gray-600">
-                            <ul class="py-2 px-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownLargeButton">
-                            @if(Session::get('user_type') == 5 || Session::get('user_type') == 3 || Session::get('user_type') == 1)
-                            <li>
-                                <a href="{{ route('orderhistory') }}" class="block px-4 py-2 no-underline text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Orders</a>
-                            </li>
-                            @endif
-                            @if(Session::get('user_type') == 1 || Session::get('user_type') == 3)
-                            <li>
-                                <a href="{{ route('customerorders') }}" class="block px-4 py-2 no-underline text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Customer Orders</a>
-                            </li>
-                            @endif
-                            </ul>
-                        </div>
+                        <a href="{{ route('orderhistory') }}" class="blockpr-4 no-underline pl-3 text-gray-700 border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 lg:hover:text-primary-700 lg:p-0 dark:text-gray-400 lg:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white lg:dark:hover:bg-transparent dark:border-gray-700">Orders</a>
                     </li>
+
                     @endif
 
                     @if(Session::get('user_type') == 1 || Session::get('user_type') == 3 || Session::get('user_type') == 5)
@@ -349,6 +328,9 @@
                         </div>
                     </li>
                     @endif
+                    <li>
+                        <a href="{{ route('companydet') }}" class="blockpr-4 no-underline pl-3 text-gray-700 border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 lg:hover:text-primary-700 lg:p-0 dark:text-gray-400 lg:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white lg:dark:hover:bg-transparent dark:border-gray-700">About</a>
+                    </li>
                 </ul>
             </div>
 

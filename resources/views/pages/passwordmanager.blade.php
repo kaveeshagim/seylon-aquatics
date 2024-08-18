@@ -56,7 +56,7 @@
 </section>
 <!-- End block -->
 
-<button data-modal-target="edit-modal" data-modal-toggle="edit-modal" class="hidden text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">
+<button id="edittoggle" data-modal-target="edit-modal" data-modal-toggle="edit-modal" class="hidden text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">
 Toggle modal
 </button>
 
@@ -86,9 +86,9 @@ Toggle modal
                     <input type="hidden" name="_token" value="{{ csrf_token() }}">
                     <input type="hidden" id="editid" name="editid" required/>
                     <div>
-                        <label for="newpassword" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">New Password</label>
+                        <label for="newpassword" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">New Password<span class="text-red-500">*</span></label>
                         <input type="text" name="newpassword" id="newpassword" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" required />
-                        <span class="text-red-600 dark:text-red-400" id="newpassword-error"></span>
+                        <span class="text-red-600 dark:text-red-300" id="newpassword-error"></span>
                     </div>
 
                     <button type="button" onclick="approvepswdreq()" class="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Submit</button>
@@ -99,7 +99,7 @@ Toggle modal
 </div>
 
 
-<button data-modal-target="delete-modal" data-modal-toggle="delete-modal" class="hidden text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">
+<button id="deletetoggle"  data-modal-target="delete-modal" data-modal-toggle="delete-modal" class="hidden text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">
 Toggle modal
 </button>
 
@@ -188,7 +188,7 @@ function searchdata() {
           },
         ],
         "columnDefs": [
-          { className: "text-center", "targets": [0, 1, 2, 3, 4, 5] }
+          { className: "text-center", "targets": [0, 1, 2, 3] }
         ],
         "initComplete": function(settings, json) {
             $('.dt-info').addClass('text-sm font-normal text-gray-500 dark:text-gray-400 ml-3');
@@ -225,47 +225,119 @@ function searchdata() {
 
 
 function reject(id) {
-    document.getElementById('deleteid').value = id;
-    const deleteModal = document.getElementById('delete-modal');
-    deleteModal.classList.remove('hidden');
-    deleteModal.classList.add('block');
+    var priv = 'Approve Reject_17';
+    $.ajax({
+      url: "{{url('privcheck')}}",
+      type: 'GET',
+      data: { priv: priv },
+      success: function (response) {
+          if(response.status == "success") {
+              
+            document.getElementById('deleteid').value = id;
+            $('#deletetoggle').click();
+
+
+          }else if(response.status == "error"){
+              bootbox.alert({
+                  message: response.message,
+                  backdrop: true,
+                  callback: function () {
+                  }
+              }).find('.modal-content').addClass("flex items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800");
+          }
+      }
+  });
+
+
+
 }
 
 function rejectrequest() {
   const id = document.getElementById('deleteid').value;
+  startspinner();
   $.ajax({
     url: '{{url('rejectpasswordrequest')}}',
     type: 'GET',
     data: { id: id },
     success: function (response) {
+        stopspinner();
       if (response.status == "success") {
         bootbox.alert({
             message: response.message,
             backdrop: true,
             callback: function () {
+                $('#deletetoggle').click();
                 searchdata();
             }
         }).find('.modal-content').addClass("flex items-center p-4 mb-4 text-sm text-green-800 border border-green-300 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400 dark:border-green-800");
 
       }
-    }
+    },      error: function(jqXHR, textStatus, errorThrown) {
+            stopspinner();
+                // Parse the JSON response to get the error messages
+                var response = jqXHR.responseJSON;
+
+                // Default error message
+                var errorMessage = 'Form submission failed.';
+
+                // Check if there are validation errors
+                if (response && response.errors) {
+                    // Collect all error messages
+                    var errorMessages = [];
+                    var errors = response.errors;
+                    for (var field in errors) {
+                        if (errors.hasOwnProperty(field)) {
+                            errorMessages.push(errors[field][0]); // Add each error message to the array
+                        }
+                    }
+
+                    // Join all error messages into a single string
+                    errorMessage = errorMessages.join('<br>'); // Using <br> to create new lines between messages
+                }
+
+                // Show the error message(s) in a bootbox alert
+                bootbox.alert({
+                    message: errorMessage,
+                    backdrop: true,
+                    callback: function () {}
+                }).find('.modal-content').addClass("flex items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800");
+            }
   });
 }
 
 function approverequest(id) {
-    document.getElementById('editid').value = id;
+    var priv = 'Approve Reject_17';
+    $.ajax({
+      url: "{{url('privcheck')}}",
+      type: 'GET',
+      data: { priv: priv },
+      success: function (response) {
+          if(response.status == "success") {
+              
+            document.getElementById('editid').value = id;
+            $('#edittoggle').click();
 
-    const editmodal = document.getElementById('edit-modal');
-    editmodal.classList.remove('hidden');
-    editmodal.classList.add('block');
+
+          }else if(response.status == "error"){
+              bootbox.alert({
+                  message: response.message,
+                  backdrop: true,
+                  callback: function () {
+                  }
+              }).find('.modal-content').addClass("flex items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800");
+          }
+      }
+  });
+
 }
 
 
 function approvepswdreq() {
 
+    
 const form = document.getElementById('edit-form');
 const formData = new FormData(form);
-
+startspinner();
 $.ajax({
     url: '{{url('approvepasswordrequest')}}',
     type: 'POST',
@@ -273,14 +345,13 @@ $.ajax({
     processData: false,
     contentType: false,
     success: function (response) {
+        stopspinner();
     if (response.status == "success") {
         bootbox.alert({
             message: response.message,
             backdrop: true,
             callback: function () {
-                const editmodal = document.getElementById('edit-modal');
-                editmodal.classList.remove('block');
-                editmodal.classList.add('hidden');
+                $('#edittoggle').click();
                 searchdata();
             }
         }).find('.modal-content').addClass("flex items-center p-4 mb-4 text-sm text-green-800 border border-green-300 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400 dark:border-green-800");
@@ -296,6 +367,7 @@ $.ajax({
     }
     },
     error: function(xhr) {
+        stopspinner();
         // Handle validation errors
         if (xhr.status === 422) {
             var errors = xhr.responseJSON.errors;

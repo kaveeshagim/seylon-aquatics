@@ -15,6 +15,10 @@
                     <dd class="font-medium text-gray-900 dark:text-white sm:text-end">{{$invoiceMaster->customer_name}}</dd>
                 </dl>
                 <dl class="sm:flex items-center justify-between gap-4">
+                    <dt class="font-normal mb-1 sm:mb-0 text-gray-500 dark:text-gray-400">Invoice No</dt>
+                    <dd class="font-medium text-gray-900 dark:text-white sm:text-end">{{$invoiceMaster->invoice_no}}</dd>
+                </dl>
+                <dl class="sm:flex items-center justify-between gap-4">
                     <dt class="font-normal mb-1 sm:mb-0 text-gray-500 dark:text-gray-400">Invoice Date</dt>
                     <dd class="font-medium text-gray-900 dark:text-white sm:text-end">{{$invoiceMaster->created_at}}</dd>
                 </dl>
@@ -23,6 +27,20 @@
                     <dd class="font-medium text-gray-900 dark:text-white sm:text-end">{{$invoiceMaster->invoice_status}}</dd>
                 </dl>
                 <hr class="h-2 my-8 bg-gray-200 border-0 dark:bg-gray-700">
+                <dl class="sm:flex items-center justify-between gap-4">
+                    <dt class="font-normal mb-1 sm:mb-0 text-gray-500 dark:text-gray-400">No of orders</dt>
+                    <dd class="font-medium text-gray-900 dark:text-white sm:text-end">{{$invoiceMaster->tot_orders}}</dd>
+                </dl>
+                <dl class="sm:flex items-center justify-between gap-4">
+                    <dt class="font-normal mb-1 sm:mb-0 text-gray-500 dark:text-gray-400">No fish pieces</dt>
+                    <dd class="font-medium text-gray-900 dark:text-white sm:text-end">{{$invoiceMaster->tot_fish}}</dd>
+                </dl>
+                <dl class="sm:flex items-center justify-between gap-4">
+                    <dt class="font-normal mb-1 sm:mb-0 text-gray-500 dark:text-gray-400">No of boxes</dt>
+                    <dd class="font-medium text-gray-900 dark:text-white sm:text-end">{{$invoiceMaster->tot_boxes}}</dd>
+                </dl>
+                <hr class="h-2 my-8 bg-gray-200 border-0 dark:bg-gray-700">
+
                 <dl class="sm:flex items-center justify-between gap-4">
                     <dt class="font-normal mb-1 sm:mb-0 text-gray-500 dark:text-gray-400">Order Number</dt>
                     <dd class="font-medium text-gray-900 dark:text-white sm:text-end">{{$invoiceMaster->order_no}}</dd>
@@ -42,16 +60,24 @@
                 </dl>
                 <hr class="h-2 my-8 bg-gray-200 border-0 dark:bg-gray-700">
                 <dl class="sm:flex items-center justify-between gap-4">
-                    <dt class="font-normal mb-1 sm:mb-0 text-gray-500 dark:text-gray-400">Gross Total</dt>
-                    <dd class="font-medium text-gray-900 dark:text-white sm:text-end">{{ number_format($invoiceMaster->gross_total, 2) }}</dd>
+                    <dt class="font-normal mb-1 sm:mb-0 text-gray-500 dark:text-gray-400">Sub Total</dt>
+                    <dd class="font-medium text-gray-900 dark:text-white sm:text-end">${{ number_format($invoiceMaster->gross_total, 2) }}</dd>
+                </dl>
+                <dl class="sm:flex items-center justify-between gap-4">
+                    <dt class="font-normal mb-1 sm:mb-0 text-gray-500 dark:text-gray-400">Document Handling Fee & Airway Bill</dt>
+                    <dd class="font-medium text-gray-900 dark:text-white sm:text-end">+ ${{$invoiceMaster->handling_fee}}</dd>
+                </dl>
+                <dl class="sm:flex items-center justify-between gap-4">
+                    <dt class="font-normal mb-1 sm:mb-0 text-gray-500 dark:text-gray-400">Packing Charges</dt>
+                    <dd class="font-medium text-gray-900 dark:text-white sm:text-end">+ ${{$invoiceMaster->packaging_fee}}</dd>
                 </dl>
                 <dl class="sm:flex items-center justify-between gap-4">
                     <dt class="font-normal mb-1 sm:mb-0 text-gray-500 dark:text-gray-400">Discounts Applied</dt>
-                    <dd class="font-medium text-gray-900 dark:text-white sm:text-end">{{ number_format($invoiceMaster->discount_total, 2) }}</dd>
+                    <dd class="font-medium text-gray-900 dark:text-white sm:text-end">- ${{ number_format($invoiceMaster->discount_total, 2) }}</dd>
                 </dl>
                 <dl class="sm:flex items-center justify-between gap-4">
-                    <dt class="font-normal mb-1 sm:mb-0 text-gray-500 dark:text-gray-400">Final Total (after discounts)</dt>
-                    <dd class="font-medium text-gray-900 dark:text-white sm:text-end">{{ number_format($invoiceMaster->final_total, 2) }}</dd>
+                    <dt class="font-normal mb-1 sm:mb-0 text-gray-500 dark:text-gray-400">Net Total</dt>
+                    <dd class="font-medium text-gray-900 dark:text-white sm:text-end">${{ number_format($invoiceMaster->final_total, 2) }}</dd>
                 </dl>
                 <hr class="h-2 my-8 bg-gray-200 border-0 dark:bg-gray-700">
 
@@ -229,6 +255,7 @@
                         message: response.message,
                         backdrop: true,
                         callback: function () {
+                            window.location.reload();
                         }
                     }).find('.modal-content').addClass("flex items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800");
                 }

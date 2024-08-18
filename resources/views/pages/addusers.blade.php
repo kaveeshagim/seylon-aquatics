@@ -219,34 +219,34 @@
                 }
             },
             error: function(jqXHR, textStatus, errorThrown) {
-    // Parse the JSON response to get the error messages
-    var response = jqXHR.responseJSON;
+                // Parse the JSON response to get the error messages
+                var response = jqXHR.responseJSON;
 
-    // Default error message
-    var errorMessage = 'Form submission failed.';
+                // Default error message
+                var errorMessage = 'Form submission failed.';
 
-    // Check if there are validation errors
-    if (response && response.errors) {
-        // Collect all error messages
-        var errorMessages = [];
-        var errors = response.errors;
-        for (var field in errors) {
-            if (errors.hasOwnProperty(field)) {
-                errorMessages.push(errors[field][0]); // Add each error message to the array
+                // Check if there are validation errors
+                if (response && response.errors) {
+                    // Collect all error messages
+                    var errorMessages = [];
+                    var errors = response.errors;
+                    for (var field in errors) {
+                        if (errors.hasOwnProperty(field)) {
+                            errorMessages.push(errors[field][0]); // Add each error message to the array
+                        }
+                    }
+
+                    // Join all error messages into a single string
+                    errorMessage = errorMessages.join('<br>'); // Using <br> to create new lines between messages
+                }
+
+                // Show the error message(s) in a bootbox alert
+                bootbox.alert({
+                    message: errorMessage,
+                    backdrop: true,
+                    callback: function () {}
+                }).find('.modal-content').addClass("flex items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800");
             }
-        }
-
-        // Join all error messages into a single string
-        errorMessage = errorMessages.join('<br>'); // Using <br> to create new lines between messages
-    }
-
-    // Show the error message(s) in a bootbox alert
-    bootbox.alert({
-        message: errorMessage,
-        backdrop: true,
-        callback: function () {}
-    }).find('.modal-content').addClass("flex items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800");
-}
 
         });
     }

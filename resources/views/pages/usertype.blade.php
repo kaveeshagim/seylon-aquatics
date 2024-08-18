@@ -214,12 +214,13 @@ Toggle modal
 
 function searchdata() {
   $('#usertype-table').DataTable().destroy();
-
+  startspinner();
   $.ajax({
     url: "getusertypes",
     type: "GET",
     dataSrc: "data",
     success: function(data) {
+        stopspinner();
       console.log("Data:", data);
 
       // Initialize the DataTable with the retrieved data
@@ -278,17 +279,6 @@ function searchdata() {
             $('.dt-length').find('label').addClass('text-gray-700 dark:text-white');
             $('#dt-length-1').addClass('text-gray-700 dark:text-white bg-gray-50 dark:bg-gray-700');
 
-            // const tbody = $('table tbody');
-            // const rows = tbody.find('tr');
-
-            // rows.each(function() {
-            //     // $(this).addClass('border-b dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700');
-                
-            //     const cells = $(this).find('td');
-            //     cells.each(function() {
-            //         $(this).addClass('p-2 w-4');
-            //     });
-            // });
         },
         "columnDefs": [
           { className: "text-center", "targets": [0, 1, 2] }
@@ -318,9 +308,36 @@ function searchdata() {
 
       });
     },
-    "error": function(xhr, status, error) {
-      console.error("Error:", error);
-    }
+    error: function(jqXHR, textStatus, errorThrown) {
+            stopspinner();
+                // Parse the JSON response to get the error messages
+                var response = jqXHR.responseJSON;
+
+                // Default error message
+                var errorMessage = 'Form submission failed.';
+
+                // Check if there are validation errors
+                if (response && response.errors) {
+                    // Collect all error messages
+                    var errorMessages = [];
+                    var errors = response.errors;
+                    for (var field in errors) {
+                        if (errors.hasOwnProperty(field)) {
+                            errorMessages.push(errors[field][0]); // Add each error message to the array
+                        }
+                    }
+
+                    // Join all error messages into a single string
+                    errorMessage = errorMessages.join('<br>'); // Using <br> to create new lines between messages
+                }
+
+                // Show the error message(s) in a bootbox alert
+                bootbox.alert({
+                    message: errorMessage,
+                    backdrop: true,
+                    callback: function () {}
+                }).find('.modal-content').addClass("flex items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800");
+            }
   });
 }
 
@@ -330,7 +347,7 @@ function searchdata() {
 
         const form = document.getElementById('create-form');
         const formData = new FormData(form);
-
+        startspinner();
                 $.ajax({
                     url: "{{url('addusertype')}}",
                     type: 'POST',
@@ -338,7 +355,7 @@ function searchdata() {
                     processData: false,
                     contentType: false,
                     success: function(response) {
-
+                        stopspinner();
                         if(response.status == "success"){
 
                             bootbox.alert({
@@ -360,8 +377,35 @@ function searchdata() {
                         }
                     },
                     error: function(jqXHR, textStatus, errorThrown) {
-                        alert('Form submission failed:', textStatus, errorThrown);
+            stopspinner();
+                // Parse the JSON response to get the error messages
+                var response = jqXHR.responseJSON;
+
+                // Default error message
+                var errorMessage = 'Form submission failed.';
+
+                // Check if there are validation errors
+                if (response && response.errors) {
+                    // Collect all error messages
+                    var errorMessages = [];
+                    var errors = response.errors;
+                    for (var field in errors) {
+                        if (errors.hasOwnProperty(field)) {
+                            errorMessages.push(errors[field][0]); // Add each error message to the array
+                        }
                     }
+
+                    // Join all error messages into a single string
+                    errorMessage = errorMessages.join('<br>'); // Using <br> to create new lines between messages
+                }
+
+                // Show the error message(s) in a bootbox alert
+                bootbox.alert({
+                    message: errorMessage,
+                    backdrop: true,
+                    callback: function () {}
+                }).find('.modal-content').addClass("flex items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800");
+            }
                 });
         }
 
@@ -373,11 +417,13 @@ function deletemodal(id) {
 
 function deleteusertype(id) {
     var id = document.getElementById('deleteid').value;
+    startspinner();
     $.ajax({
         url: 'deleteusertype',
         type: 'GET',
         data: {id: id},
         success: function (response) {
+            stopspinner();
             if(response.status == "success") {
                 bootbox.alert({
                     message: response.message,
@@ -388,7 +434,37 @@ function deleteusertype(id) {
                 }).find('.modal-content').addClass("flex items-center p-4 mb-4 text-sm text-green-800 border border-green-300 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400 dark:border-green-800");
 
             }
-        }
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+            stopspinner();
+                // Parse the JSON response to get the error messages
+                var response = jqXHR.responseJSON;
+
+                // Default error message
+                var errorMessage = 'Form submission failed.';
+
+                // Check if there are validation errors
+                if (response && response.errors) {
+                    // Collect all error messages
+                    var errorMessages = [];
+                    var errors = response.errors;
+                    for (var field in errors) {
+                        if (errors.hasOwnProperty(field)) {
+                            errorMessages.push(errors[field][0]); // Add each error message to the array
+                        }
+                    }
+
+                    // Join all error messages into a single string
+                    errorMessage = errorMessages.join('<br>'); // Using <br> to create new lines between messages
+                }
+
+                // Show the error message(s) in a bootbox alert
+                bootbox.alert({
+                    message: errorMessage,
+                    backdrop: true,
+                    callback: function () {}
+                }).find('.modal-content').addClass("flex items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800");
+            }
     });
 }
 
@@ -412,13 +488,14 @@ function showmodal(id) {
             } else {
                 modalBody.innerHTML = '<p class="dark:text-white text-white">No users found for this type.</p>';
             }
+            $('#showtoggle').click();
         },
         error: function() {
             alert('An error occurred while fetching user data.');
         }
     });
 
-    $('#showtoggle').click();
+    
 }
 
 
@@ -431,9 +508,10 @@ function editmodal(id) {
         type: 'GET',
         success: function (response) {
         document.getElementById('title-edit').value = response.title;
+        $('#edittoggle').click();
         }
     });
-    $('#edittoggle').click();
+    
 }
 
 
@@ -441,7 +519,7 @@ function editusertype() {
 
     const form = document.getElementById('edit-form');
     const formData = new FormData(form);
-
+    startspinner();
     $.ajax({
       url: '{{url('editusertype')}}',
       type: 'POST',
@@ -449,11 +527,13 @@ function editusertype() {
       processData: false,
       contentType: false,
       success: function (response) {
+        stopspinner();
         if (response.status == "success") {
             bootbox.alert({
             message: response.message,
             backdrop: true,
             callback: function () {
+                $('#edittoggle').click();
                 searchdata();
             }
         }).find('.modal-content').addClass("flex items-center p-4 mb-4 text-sm text-green-800 border border-green-300 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400 dark:border-green-800");
@@ -462,11 +542,40 @@ function editusertype() {
             message: response.message,
             backdrop: true,
             callback: function () {
-                searchdata();
             }
         }).find('.modal-content').addClass("flex items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800");
         }
-      }
+      },
+      error: function(jqXHR, textStatus, errorThrown) {
+            stopspinner();
+                // Parse the JSON response to get the error messages
+                var response = jqXHR.responseJSON;
+
+                // Default error message
+                var errorMessage = 'Form submission failed.';
+
+                // Check if there are validation errors
+                if (response && response.errors) {
+                    // Collect all error messages
+                    var errorMessages = [];
+                    var errors = response.errors;
+                    for (var field in errors) {
+                        if (errors.hasOwnProperty(field)) {
+                            errorMessages.push(errors[field][0]); // Add each error message to the array
+                        }
+                    }
+
+                    // Join all error messages into a single string
+                    errorMessage = errorMessages.join('<br>'); // Using <br> to create new lines between messages
+                }
+
+                // Show the error message(s) in a bootbox alert
+                bootbox.alert({
+                    message: errorMessage,
+                    backdrop: true,
+                    callback: function () {}
+                }).find('.modal-content').addClass("flex items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800");
+            }
       
     });
 }

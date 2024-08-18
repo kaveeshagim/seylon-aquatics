@@ -48,9 +48,10 @@
       <div class="flex items-center space-x-4">
           <button id="download-pdf" class="no-underline text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-primary-600 dark:hover:bg-primary-700 focus:outline-none dark:focus:ring-primary-800">Download PDF</button>
           <a href="{{ route('vieworderdetpage', ['id' => $orderdetail->id]) }}" class="no-underline py-2.5 px-5 text-sm font-medium text-gray-900 focus:outline-none bg-gray-50 rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">
-    View all orders
-</a>
-          <a href="{{ route('viewinvoicedetpage', ['id' => $orderdetail->id]) }}" class="no-underline py-2.5 px-5 text-sm font-medium text-gray-900 focus:outline-none bg-gray-50 rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-red-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-red-700 dark:bg-red-800 dark:text-white dark:border-red-600 dark:hover:text-white dark:hover:bg-red-700">View Invoice</a>
+              View all orders
+            </a>
+        <button onclick="viewinvoicedetpage({{$orderdetail->id}})" class="no-underline text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-green-600 dark:hover:bg-green-700 focus:outline-none dark:focus:ring-green-800">View Invoice</button>
+          <!-- <a href="{{ route('viewinvoicedetpage', ['id' => $orderdetail->id]) }}" class="no-underline py-2.5 px-5 text-sm font-medium text-gray-900 focus:outline-none bg-gray-50 rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-red-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-red-700 dark:bg-red-800 dark:text-white dark:border-red-600 dark:hover:text-white dark:hover:bg-red-700">View Invoice</a> -->
       </div>
   </div>
 </section>
@@ -73,5 +74,66 @@
                 .save();
         });
     </script>
+
+    <script>
+
+        function viewinvoicedetpage(id) {
+
+            $.ajax({
+                url: "{{ url('viewinvoicedetpage') }}" + "/" + id,
+                type: 'GET',
+                data: { id: id },
+                success: function (response) {
+                    if(response.status == "success") {
+
+                        location.href = "{{ url('viewinvoicee') }}" + "/" + id;
+
+                    }else if(response.status == "error"){
+                        bootbox.alert({
+                            message: response.message,
+                            backdrop: true,
+                            callback: function () {
+                                
+                            }
+                        }).find('.modal-content').addClass("flex items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800");
+                    }
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                        stopspinner();
+                    // Parse the JSON response to get the error messages
+                    var response = jqXHR.responseJSON;
+
+                    // Default error message
+                    var errorMessage = 'Form submission failed.';
+
+                    // Check if there are validation errors
+                    if (response && response.errors) {
+                        // Collect all error messages
+                        var errorMessages = [];
+                        var errors = response.errors;
+                        for (var field in errors) {
+                            if (errors.hasOwnProperty(field)) {
+                                errorMessages.push(errors[field][0]); // Add each error message to the array
+                            }
+                        }
+
+                        // Join all error messages into a single string
+                        errorMessage = errorMessages.join('<br>'); // Using <br> to create new lines between messages
+                    }
+
+                    // Show the error message(s) in a bootbox alert
+                    bootbox.alert({
+                        message: errorMessage,
+                        backdrop: true,
+                        callback: function () {}
+                    }).find('.modal-content').addClass("flex items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800");
+                }
+            });
+        }
+
+
+                
+                
+        </script>
 
 @endsection

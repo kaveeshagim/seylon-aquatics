@@ -20,11 +20,11 @@ class Size extends Model
     }
     public function fishweekly()
     {
-        return $this->hasMany(Fish::class, 'size');
+        return $this->hasMany(FishWeekly::class, 'size');
     }
     public function fishweeklyold()
     {
-        return $this->hasMany(Fish::class, 'size');
+        return $this->hasMany(FishWeeklyOld::class, 'size');
     }
 
     public function variety()

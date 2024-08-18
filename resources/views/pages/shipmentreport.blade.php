@@ -59,10 +59,12 @@
                         <th scope="col" class="p-4">Date</th>
                         <th scope="col" class="p-4">Customer Name</th>
                         <th scope="col" class="p-4">Order No</th>
+                        <th scope="col" class="p-4">Invoice No</th>
                         <th scope="col" class="p-4">Shipment Status</th>
                         <th scope="col" class="p-4">Shipped By</th>
                         <th scope="col" class="p-4">Shipped To</th>
                         <th scope="col" class="p-4">Shipment Date</th>
+                        <th scope="col" class="p-4">Shipping Charges</th>
                         <th scope="col" class="p-4">Deliver Date</th>
                         <th scope="col" class="p-4">No of boxes</th>
                         <th scope="col" class="p-4">No of fish</th>
@@ -83,12 +85,9 @@
 
 
 <script>
-    document.addEventListener("DOMContentLoaded", function(event) {
+document.addEventListener("DOMContentLoaded", function(event) {
     searchdata();
-  });
-</script>
-
-<script>
+});
 
 function searchdata() {
     // Get filter values
@@ -96,11 +95,15 @@ function searchdata() {
     const toDate = $('#to-date').val();
     const status = $('#status').val();
 
-    let dateRangeText = '';
-    dateRangeText = `Report Date: ${fromDate} to ${toDate}`;
+    let dateRangeText = `Report Date: ${fromDate} to ${toDate}`;
 
-    // Destroy the existing DataTable instance
-    $('#shipmentreport-table').DataTable().destroy();
+    // Destroy the existing DataTable instance if it exists
+    if ($.fn.DataTable.isDataTable('#shipmentreport-table')) {
+        $('#shipmentreport-table').DataTable().destroy();
+    }
+
+    // Clear the table body before appending new data
+    $('#shipmentreport-table tbody').empty();
 
     $.ajax({
         url: "getshipmentreport",
@@ -122,53 +125,35 @@ function searchdata() {
                     { "data": "shipment_date" },
                     { "data": "customer_name" },
                     { "data": "order_no" },
-                    // {
-                    //     "data": "order_status",
-                    //     sortable: false,
-                    //     "render": function(data, type, full, meta) {
-                    //         if(full.order_status == 'pending') {
-                    //         return '<span class="bg-yellow-100 text-yellow-800 text-xs font-medium px-2 py-0.5 rounded dark:bg-yellow-900 dark:text-yellow-300">' + full.order_status + '</span>';
-
-                    //         }else if(full.order_status == 'confirmed') {
-                    //         return '<span class="bg-blue-100 text-blue-800 text-xs font-medium px-2 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300">' + full.order_status + '</span>';
-
-                    //         }else if(full.order_status == 'cancelled') {
-                    //         return '<span class="bg-red-100 text-red-800 text-xs font-medium px-2 py-0.5 rounded dark:bg-red-900 dark:text-red-300">' + full.order_status + '</span>';
-
-                    //         }else if(full.order_status == 'completed') {
-                    //         return '<span class="bg-green-100 text-green-800 text-xs font-medium px-2 py-0.5 rounded dark:bg-green-900 dark:text-green-300">' + full.order_status + '</span>';
-
-                    //         }
-                    //     }
-                    // },
+                    { 
+                        "data": "invoice_no",
+                        "defaultContent": "-"
+                    },
                     {
                         "data": "status",
                         sortable: false,
                         "render": function(data, type, full, meta) {
-                            if(full.status == 'pending') {
-                            return '<span class="bg-yellow-100 text-yellow-800 text-xs font-medium px-2 py-0.5 rounded dark:bg-yellow-900 dark:text-yellow-300">' + full.status + '</span>';
-
-                            }else if(full.status == 'in-transit') {
-                            return '<span class="bg-blue-100 text-blue-800 text-xs font-medium px-2 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300">' + full.status + '</span>';
-
-                            }else if(full.status == 'completed') {
-                            return '<span class="bg-green-100 text-green-800 text-xs font-medium px-2 py-0.5 rounded dark:bg-green-900 dark:text-green-300">' + full.status + '</span>';
-
+                            if (full.status === 'pending') {
+                                return '<span class="bg-yellow-100 text-yellow-800 text-xs font-medium px-2 py-0.5 rounded dark:bg-yellow-900 dark:text-yellow-300">' + full.status + '</span>';
+                            } else if (full.status === 'in-transit') {
+                                return '<span class="bg-blue-100 text-blue-800 text-xs font-medium px-2 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300">' + full.status + '</span>';
+                            } else if (full.status === 'completed') {
+                                return '<span class="bg-green-100 text-green-800 text-xs font-medium px-2 py-0.5 rounded dark:bg-green-900 dark:text-green-300">' + full.status + '</span>';
                             }
                         }
                     },
                     { "data": "shipped_by" },
                     { "data": "shipped_to" },
                     { "data": "shipment_date" },
+                    { "data": "shipping_cost" },
                     { "data": "delivered_date" },
                     { "data": "tot_boxes" },
                     { "data": "tot_fish" }
                 ],
                 "initComplete": function(settings, json) {
-                    // Custom styling for DataTable
+                    // Custom styling for DataTable elements
                     $('.dt-info').addClass('text-sm font-normal text-gray-500 dark:text-gray-400 ml-3');
-                    $('.dt-paging').addClass('inline-flex items-stretch -space-x-px');
-                    $('.pagination').addClass('inline-flex items-stretch -space-x-px');
+                    $('.dt-paging, .pagination').addClass('inline-flex items-stretch -space-x-px');
                 },
                 "columnDefs": [
                     { className: "text-center", "targets": "_all" }
@@ -199,10 +184,13 @@ function searchdata() {
                 "pageLength": 25,
                 "searching": true
             });
+        },
+        error: function(xhr, status, error) {
+            console.error("AJAX Error: ", status, error);
+            alert("Failed to retrieve data. Please try again.");
         }
     });
 }
-
-
 </script>
+
 @endsection

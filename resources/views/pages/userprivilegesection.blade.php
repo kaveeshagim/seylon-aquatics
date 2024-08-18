@@ -148,7 +148,7 @@ function Test() {
                 data: {cat_id: cat_id, sub_cat_id: sub_cat_id, user_type: user_type},
             },
             "columns": [
-                { "data": "section_name" },
+                { "data": "route_name" },
                 {
                     sortable: false,
                     "render": function(data, type, full, meta) {

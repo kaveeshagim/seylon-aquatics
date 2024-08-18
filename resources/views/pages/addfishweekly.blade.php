@@ -22,7 +22,7 @@
 
             <div class="flex flex-col md:flex-row items-stretch md:items-center md:space-x-3 space-y-3 md:space-y-0 justify-between mx-4 py-4 border-t dark:border-gray-700">
 
-                <h3 class="mb-4 text-sm font-medium text-gray-900 dark:text-white">Choose fish week</h3>
+                <h3 class="mb-4 text-sm font-medium text-gray-900 dark:text-white">Choose fish week<span class="text-red-500">*</span></h3>
                 <ul class="items-center w-full text-sm font-medium text-gray-900 bg-gray-50 border border-gray-200 rounded-lg sm:flex dark:bg-gray-700 dark:border-gray-600 dark:text-white">
                     <li class="w-full border-b border-gray-200 sm:border-b-0 sm:border-r dark:border-gray-600">
                         <div class="flex items-center ps-3">
@@ -38,7 +38,11 @@
                     </li>
                 </ul>
 
-                <h3 class="mb-4 text-sm font-medium text-gray-900 dark:text-white">Choose upload method</h3>
+                <h3 class="mb-4 text-sm font-medium text-gray-900 dark:text-white">Choose upload method<span class="text-red-500">*</span></h3>
+                <p class="mb-4 text-xs font-medium text-gray-600 dark:text-gray-400">
+                    <span class="font-semibold text-gray-900 dark:text-gray-300">Note:</span> 
+                    The 'Excel upload' method is better suited for bulk data, while the 'Form submission' is more convenient for smaller entries.
+                </p>
                 <ul class="items-center w-full text-sm font-medium text-gray-900 bg-gray-50 border border-gray-200 rounded-lg sm:flex dark:bg-gray-700 dark:border-gray-600 dark:text-white">
                     <li class="w-full border-b border-gray-200 sm:border-b-0 sm:border-r dark:border-gray-600">
                         <div class="flex items-center ps-3">
@@ -124,18 +128,18 @@
 
                             <div class="w-full">
                                 <label for="size" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Size</label>
-                                <input type="text" name="size" id="size" class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" required>
+                                <input readonly type="text" name="size" id="size" class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" required>
 
                             </div>
 
                             <div class="w-full">
                                 <label for="size_cm" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Size</label>
-                                <input type="text" name="size_cm" id="size_cm" class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" required>
+                                <input readonly type="text" name="size_cm" id="size_cm" class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" required>
 
                             </div>
 
                             <div class="w-full">
-                                <label for="gross_price" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Gross Price</label>
+                                <label for="gross_price" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Unit Price(USD)</label>
                                 <input type="text" name="gross_price" id="gross_price" class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" required>
                             </div>
                             <div class="w-full">
@@ -145,17 +149,13 @@
                             <div class="w-full">
                                 <label for="special_offer" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Special Offer</label>
                                 <select name="special_offer" id="special_offer" class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
-                                    <option value="yes">Yes</option>
                                     <option value="no">No</option>
+                                    <option value="yes">Yes</option>
                                 </select>
                             </div>
                             <div class="w-full">
-                                <label for="discount" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Discount</label>
+                                <label for="discount" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Discount(%)</label>
                                 <input type="text" name="discount" id="discount" class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
-                            </div>
-                            <div class="w-full">
-                                <label for="stock_status" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Stock Status</label>
-                                <input type="text" name="stock_status" id="stock_status" value="in-stock" class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" readonly>
                             </div>
                             <button type="button" onclick="addRecord()" class="inline-flex items-center px-5 py-2.5 mt-4 text-sm font-medium text-center text-white bg-blue-700 rounded-lg focus:ring-4 focus:ring-blue-200 dark:focus:ring-blue-900 hover:bg-blue-800">
                                 Add Record
@@ -169,7 +169,7 @@
                                     <th class="px-2 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Fish Code</th>
                                     <th class="px-2 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Size</th>
                                     <th class="px-2 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Size in cm</th>
-                                    <th class="px-2 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Gross Price(USD)</th>
+                                    <th class="px-2 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Unit Price(USD)</th>
                                     <th class="px-2 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Quantity</th>
                                     <th class="px-2 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Special Offer</th>
                                     <th class="px-2 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Discount(%)</th>
@@ -283,7 +283,7 @@ function displayTable(fishData, rows) {
 
 function fetchFishData(validatedRows) {
     const fishCodes = validatedRows.map(row => row.fish_code.trim());
-
+    startspinner();
     $.ajax({
         url: '{{url('fetchfishweeklyexceldata')}}',
         type: 'POST',
@@ -292,15 +292,51 @@ function fetchFishData(validatedRows) {
             fish_codes: fishCodes,
             _token: $('meta[name="csrf-token"]').attr('content')
         },
-        success: function(fishData) {
-            console.log(fishData);
-            displayTable(fishData, validatedRows);
-            $('#submitButtonExcel').prop('disabled', false);
+        success: function(response) {
+            stopspinner();
+            console.log(response.fishData);
+
+            if(response.status == 'success') {
+                displayTable(response.fishData, validatedRows);
+                $('#submitButtonExcel').prop('disabled', false);
+            }else if(response.status == 'error') {
+                bootbox.alert({
+                    message: response.message,
+                    backdrop: true,
+                    callback: function () {}
+                }).find('.modal-content').addClass("flex items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800");
+            }
+
         },
-        error: function(xhr, status, error) {
-            console.error('Error fetching fish data:', error);
-            showBootboxAlert('An error occurred while fetching fish data.', 'red');
-        }
+        error: function(jqXHR, textStatus, errorThrown) {
+                // Parse the JSON response to get the error messages
+                var response = jqXHR.responseJSON;
+
+                // Default error message
+                var errorMessage = 'Form submission failed.';
+
+                // Check if there are validation errors
+                if (response && response.errors) {
+                    // Collect all error messages
+                    var errorMessages = [];
+                    var errors = response.errors;
+                    for (var field in errors) {
+                        if (errors.hasOwnProperty(field)) {
+                            errorMessages.push(errors[field][0]); // Add each error message to the array
+                        }
+                    }
+
+                    // Join all error messages into a single string
+                    errorMessage = errorMessages.join('<br>'); // Using <br> to create new lines between messages
+                }
+
+                // Show the error message(s) in a bootbox alert
+                bootbox.alert({
+                    message: errorMessage,
+                    backdrop: true,
+                    callback: function () {}
+                }).find('.modal-content').addClass("flex items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800");
+            }
     });
 }
 
@@ -308,6 +344,7 @@ function fetchFishData(validatedRows) {
 
 
 function validateExcel() {
+
     const fileInput = document.getElementById('excel_input');
     const file = fileInput.files[0];
 
@@ -391,7 +428,7 @@ function validateExcel() {
                 }
 
                 if (special_offer === 'yes' && (discount === '' || isNaN(discount) || parseFloat(discount) < 0)) {
-                    showBootboxAlert('Invalid discount value. It must be a non-negative number if special offer is "yes".', 'red');
+                    showBootboxAlert('Invalid discount value. It must be a non-negative, greater than 0 number if special offer is "yes".', 'red');
                     return;
                 }
 
@@ -436,35 +473,57 @@ function addRecord() {
     const grossPrice = document.getElementById('gross_price').value;
     const quantity = document.getElementById('quantity').value;
     const specialOffer = document.getElementById('special_offer').value;
-    const discountValue = document.getElementById('discount').value;
+    let discountValue = document.getElementById('discount').value;
 
-    // Convert discount to a number or set it to null if empty
-    const discount = discountValue === '' ? '' : parseFloat(discountValue);
+    // Sanitize discount value by removing any non-numeric characters except the decimal point
+    discountValue = discountValue.replace(/[^\d.]/g, '');
+    const discount = discountValue === '' ? 0 : parseFloat(discountValue);
 
-    // Check if all fields are filled
-    if (fishCode && grossPrice && quantity && specialOffer && (specialOffer === 'no' || (specialOffer === 'yes' && discount !== null && !isNaN(discount)))) {
-        // Check if discount is greater than 100%
-        if (discount !== null && discount > 100) {
+    // Check if all required fields are filled
+    if (fishCode && grossPrice && quantity && specialOffer) {
+        // If special offer is 'yes', validate discount
+        if (specialOffer === 'yes') {
+            if (isNaN(discount) || discount <= 0) {
+                bootbox.alert({
+                    message: "Please provide a valid discount greater than 0 when special offer is 'yes'.",
+                    size: 'small'
+                }).find('.modal-content').addClass("flex items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800");
+                return;
+            }
+
+            // Check if discount is greater than 100%
+            if (discount > 100) {
+                bootbox.alert({
+                    message: "Discount cannot be greater than 100%. Please enter a valid discount.",
+                    size: 'small'
+                }).find('.modal-content').addClass("flex items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800");
+                return;
+            }
+        } else {
+            // If special offer is 'no', discount should be 0
+            if (discount !== 0) {
+                bootbox.alert({
+                    message: "Discount should be empty when special offer is 'no'.",
+                    size: 'small'
+                }).find('.modal-content').addClass("flex items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800");
+                return;
+            }
+        }
+
+        // Check if a record with the same fish code already exists
+        const recordExists = records.some(record => record.fishCode === fishCode);
+
+        if (recordExists) {
             bootbox.alert({
-                message: "Discount cannot be greater than 100%. Please enter a valid discount.",
+                message: "A record with this fish code already exists. Please use a different fish code.",
                 size: 'small'
             }).find('.modal-content').addClass("flex items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800");
         } else {
-            // Check if a record with the same fish code already exists
-            const recordExists = records.some(record => record.fishCode === fishCode);
+            const record = { fishCode, size, sizeCm, grossPrice, quantity, specialOffer, discount };
+            records.push(record);
 
-            if (recordExists) {
-                bootbox.alert({
-                    message: "A record with this fish code already exists. Please use a different fish code.",
-                    size: 'small'
-                }).find('.modal-content').addClass("flex items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800");
-            } else {
-                const record = { fishCode, size, sizeCm, grossPrice, quantity, specialOffer, discount };
-                records.push(record);
-
-                updateTable();
-                clearForm();
-            }
+            updateTable();
+            clearForm();
         }
     } else {
         // Display Bootbox alert if any required field is empty
@@ -474,7 +533,6 @@ function addRecord() {
         }).find('.modal-content').addClass("flex items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800");
     }
 }
-
 
 
 
@@ -502,7 +560,6 @@ function updateTable() {
 }
 
 function clearForm() {
-    alert('Form will be cleared now');
 
     // Manually clear each form element by their ID
     document.getElementById('fish_code').selectedIndex = 0; // Reset select to first option
@@ -512,7 +569,6 @@ function clearForm() {
     document.getElementById('quantity').value = '';
     document.getElementById('special_offer').selectedIndex = 0; // Reset select to first option
     document.getElementById('discount').value = '';
-    document.getElementById('stock_status').value = 'in-stock'; // Set to default value if needed
 
     // Optionally, if you have additional fields or dynamic content, you can reset them here
 }
@@ -552,7 +608,17 @@ function submitFishList(method) {
     const csrfToken = document.querySelector('input[name="_token"]').value;
 
     // Extract the selected week
-    const selectedWeek = document.querySelector('input[name="week-radio"]:checked').value;
+    const selectedWeekRadio = document.querySelector('input[name="week-radio"]:checked');
+    
+    if (!selectedWeekRadio) {
+        bootbox.alert({
+            message: "Please select a week before submitting.",
+            size: 'small'
+        }).find('.modal-content').addClass("flex items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800");
+        return;
+    }
+
+    const selectedWeek = selectedWeekRadio.value;
 
     // Extract table data
     const tableRows = document.querySelectorAll('#recordsTable tbody tr');
@@ -586,6 +652,9 @@ function submitFishList(method) {
         ajaxUrl = '{{ url("fishweeklyuploadform") }}';
     }
 
+
+    startspinner();
+
     $.ajax({
         url: ajaxUrl,
         type: 'POST',
@@ -595,6 +664,7 @@ function submitFishList(method) {
         },
         data: JSON.stringify(payload),
         success: function(response) {
+            stopspinner();
             if(response.status == "success"){
                 bootbox.alert({
                     message: response.message,
@@ -615,8 +685,35 @@ function submitFishList(method) {
             }
         },
         error: function(jqXHR, textStatus, errorThrown) {
-            alert('Form submission failed: ' + textStatus + ' ' + errorThrown);
-        }
+            stopspinner();
+                // Parse the JSON response to get the error messages
+                var response = jqXHR.responseJSON;
+
+                // Default error message
+                var errorMessage = 'Form submission failed.';
+
+                // Check if there are validation errors
+                if (response && response.errors) {
+                    // Collect all error messages
+                    var errorMessages = [];
+                    var errors = response.errors;
+                    for (var field in errors) {
+                        if (errors.hasOwnProperty(field)) {
+                            errorMessages.push(errors[field][0]); // Add each error message to the array
+                        }
+                    }
+
+                    // Join all error messages into a single string
+                    errorMessage = errorMessages.join('<br>'); // Using <br> to create new lines between messages
+                }
+
+                // Show the error message(s) in a bootbox alert
+                bootbox.alert({
+                    message: errorMessage,
+                    backdrop: true,
+                    callback: function () {}
+                }).find('.modal-content').addClass("flex items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800");
+            }
     });
 }
 
@@ -634,8 +731,18 @@ function submitFishListExcel(method) {
     // Get CSRF token
     const csrfToken = document.querySelector('input[name="_token"]').value;
 
-    // Get selected week
-    const selectedWeek = document.querySelector('input[name="week-radio"]:checked').value;
+    // Extract the selected week
+    const selectedWeekRadio = document.querySelector('input[name="week-radio"]:checked');
+    
+    if (!selectedWeekRadio) {
+        bootbox.alert({
+            message: "Please select a week before submitting.",
+            size: 'small'
+        }).find('.modal-content').addClass("flex items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800");
+        return;
+    }
+
+    const selectedWeek = selectedWeekRadio.value;
 
     // Create FormData object to send file and other data
     const formData = new FormData();
@@ -648,6 +755,7 @@ function submitFishListExcel(method) {
         ajaxUrl = '{{ url("fishweeklyuploadexcel") }}';
     }
 
+    startspinner();
     $.ajax({
         url: ajaxUrl,
         type: 'POST',
@@ -658,6 +766,7 @@ function submitFishListExcel(method) {
             'X-CSRF-TOKEN': csrfToken
         },
         success: function(response) {
+            stopspinner();
             if (response.status === "success") {
                 bootbox.alert({
                     message: response.message,
@@ -674,20 +783,48 @@ function submitFishListExcel(method) {
             }
         },
         error: function(jqXHR, textStatus, errorThrown) {
-            alert('Form submission failed: ' + textStatus + ' ' + errorThrown);
-        }
+            stopspinner();
+                // Parse the JSON response to get the error messages
+                var response = jqXHR.responseJSON;
+
+                // Default error message
+                var errorMessage = 'Form submission failed.';
+
+                // Check if there are validation errors
+                if (response && response.errors) {
+                    // Collect all error messages
+                    var errorMessages = [];
+                    var errors = response.errors;
+                    for (var field in errors) {
+                        if (errors.hasOwnProperty(field)) {
+                            errorMessages.push(errors[field][0]); // Add each error message to the array
+                        }
+                    }
+
+                    // Join all error messages into a single string
+                    errorMessage = errorMessages.join('<br>'); // Using <br> to create new lines between messages
+                }
+
+                // Show the error message(s) in a bootbox alert
+                bootbox.alert({
+                    message: errorMessage,
+                    backdrop: true,
+                    callback: function () {}
+                }).find('.modal-content').addClass("flex items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800");
+            }
     });
 }
 
 document.getElementById('fish_code').addEventListener('change', function() {
     const fishCode = this.value;
-
+    startspinner();
     // Make AJAX request to get the size data based on the selected fish code
     $.ajax({
         url: '{{url('getfishsizedata')}}',
         type: 'GET',
         data: { fish_code: fishCode },
         success: function(response) {
+            stopspinner();
             if (response.status === 'success') {
                 $('#size').val(response.data.size || '').trigger('change');
                 $('#size_cm').val(response.data.size_cm || '').trigger('change');
@@ -697,17 +834,13 @@ document.getElementById('fish_code').addEventListener('change', function() {
             }
         },
         error: function() {
+            stopspinner();
             console.error('An error occurred while fetching the size data.');
         }
     });
 });
 
 
-// function refresh() {
-//     $('#weeklylistForm')[0].reset();
-//     $('#excelForm').addClass('hidden');
-//     $('#formSubmission').addClass('hidden');
-// }
 function refresh() {
     // Clear the form fields
     document.getElementById('weeklylistForm').reset();

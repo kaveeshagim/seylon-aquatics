@@ -26,6 +26,7 @@ class Order extends Model
         'tot_orders',
         'tot_bags',
         'tot_boxes',
+        'tot_fish',
         'advanced_payment',
         'shipping_address',
         'remarks',

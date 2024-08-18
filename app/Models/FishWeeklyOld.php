@@ -23,6 +23,8 @@ class FishWeeklyOld extends Model
         'week',
         'gross_price',
         'quantity',
+        'size',
+        'size_cm',
         'special_offer',
         'discount',
         'stock_status',
@@ -33,7 +35,7 @@ class FishWeeklyOld extends Model
     {
         return $this->belongsTo(FishVariety::class, 'fish_code', 'fish_code');
     }
-    public function size()
+    public function sizee()
     {
         return $this->belongsTo(Size::class, 'size');
     }

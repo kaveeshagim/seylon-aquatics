@@ -43,35 +43,75 @@ class OrderController extends Controller
         return response()->json($data);
     }
 
+    public function getorderitemdet($id) {
+        
+        $data = DB::table('tbl_order_det')
+        ->select('tbl_order_det.fish_code','tbl_order_det.quantity', 'tbl_fish_variety.common_name')
+        ->join('tbl_fish_variety', 'tbl_fish_variety.fish_code', '=', 'tbl_order_det.fish_code')
+        ->where('tbl_order_det.id', $id)
+        ->first();
+
+
+        return response()->json([
+            'data' => $data,
+        ]);  
+    }
+
     public function getorderhistory(Request $request)
     {
-
-
         // Retrieve the user ID from the session
-        $userId = session()->get('user_id');
+        $userId = session()->get('userid');
     
         // Fetch user type from the database
         $userType = DB::table('tbl_users')
             ->where('id', $userId)
             ->value('tbl_usertype_id');
     
-        // Check if the user is a customer (user type ID = 5)
-        if ($userType == 5) {
+        // Start building the query
+        $query = DB::table('tbl_order_mst')
+            ->leftJoin('tbl_users as executives', 'tbl_order_mst.executive_id', '=', 'executives.id')
+            ->select(
+                'tbl_order_mst.created_at',
+                'tbl_order_mst.order_no',
+                'tbl_order_mst.customer_name',
+                'executives.fname as executive_fname',
+                'executives.lname as executive_lname',
+                'tbl_order_mst.shipping_address',
+                'tbl_order_mst.tot_orders',
+                'tbl_order_mst.tot_bags',
+                'tbl_order_mst.tot_boxes',
+                'tbl_order_mst.delivery_date',
+                'tbl_order_mst.discount_applied',
+                'tbl_order_mst.order_total',
+                'tbl_order_mst.status',
+                'tbl_order_mst.id'
+            );
+    
+        // Apply user-specific filters
+        if ($userType == 5) { // Customer
             // Get the customer ID associated with the user
             $customerId = DB::table('tbl_customers')
                 ->where('user_id', $userId)
                 ->value('id');
     
             // Fetch orders only for the specific customer
-            $orders = DB::table('tbl_order_mst')
-                ->where('cus_id', $customerId)
-                ->get();
-        }elseif($userType == 3)
-            $orders = DB::table('tbl_order_mst')->where('executive_id', $userId)->get();
-        else {
-            // Fetch all orders if the user is not a customer
-            $orders = DB::table('tbl_order_mst')->get();
+            $query->where('tbl_order_mst.cus_id', $customerId);
+        } elseif ($userType == 3) { // Executive
+            $query->where('tbl_order_mst.executive_id', $userId);
         }
+    
+        // Apply date range filter if provided
+        if ($request->has('from_date') && $request->has('to_date') && !empty($request->input('from_date')) && !empty($request->input('to_date'))) {
+            $query->whereBetween('tbl_order_mst.created_at', [$request->input('from_date'), $request->input('to_date')]);
+        }
+    
+        // Apply status filter if provided
+        if ($request->has('status') && !empty($request->input('status'))) {
+            $query->where('tbl_order_mst.status', $request->input('status'));
+        }
+    
+        // Fetch the filtered or non-filtered orders
+        $orders = $query->get();
     
         // Format the data for DataTables
         $formattedOrders = $orders->map(function ($order) {
@@ -79,7 +119,7 @@ class OrderController extends Controller
                 'created_at' => $order->created_at,
                 'order_no' => $order->order_no,
                 'customer' => $order->customer_name,
-                'executive' => $order->executive_id, // Adjust if you need a different format
+                'executive' => trim("{$order->executive_fname} {$order->executive_lname}"),
                 'shipping_address' => $order->shipping_address,
                 'total_orders' => $order->tot_orders,
                 'total_bags' => $order->tot_bags,
@@ -95,6 +135,7 @@ class OrderController extends Controller
         // Return the data as JSON
         return response()->json(['data' => $formattedOrders]);
     }
+    
     
 
     public function getcustomerorders() 
@@ -118,22 +159,25 @@ class OrderController extends Controller
 
     public function getcusorderdetail($id) 
     {
-        // Retrieve the order details by ID and join with tbl_fish_variety to get additional fish details
+        // Retrieve the order details by ID and join with tbl_fish_variety and tbl_size to get additional details
         $orderDetails = DB::table('tbl_order_det as od')
             ->select(
                 'od.*',
                 'fv.common_name',
                 'fv.scientific_name',
                 'fv.size_cm',
-                'fv.size'
+                'fv.size',
+                'sz.name as size_name' // Add size name
             )
             ->join('tbl_fish_variety as fv', 'od.fish_code', '=', 'fv.fish_code')
+            ->leftJoin('tbl_size as sz', 'fv.size_cm', '=', 'sz.id') // LEFT JOIN with tbl_size
             ->where('od.order_id', $id)
             ->get();
-    
+        
         // Return the data as JSON
         return response()->json($orderDetails);
     }
+    
     
     
 
@@ -232,14 +276,16 @@ $customerName = trim(sprintf(
     $customer->lname ?? ''
 ));
 
+$customerrecid = DB::table('tbl_customers')->select('id')->where('user_id',$customerId)->first();
+
     // Insert the record into tbl_order_mst
     $orderMst = Order::create([
-        'cus_id' => $customerId,
+        'cus_id' => $customerrecid->id,
         'executive_id' => $executiveId,
-        'advanced_payment' => 'no',
         'tot_orders' => 0, // Placeholder, will update later
         'tot_bags' => 0,   // Placeholder, will update later
         'tot_boxes' => 0,  // Placeholder, will update later
+        'tot_fish' => 0,  // Placeholder, will update later
         'shipping_address' => $request->input('shippingaddress'), // Provided shipping address
         'customer_name' => $customerName,
         'status' => 'pending',
@@ -260,6 +306,7 @@ $customerName = trim(sprintf(
     // Initialize counters for total orders, bags, and boxes
     $totalOrders = 0;
     $totalBags = 0;
+    $totalFish = 0;
 
     // Insert each row from the Excel file into tbl_order_det
     foreach ($data as $index => $row) {
@@ -272,6 +319,15 @@ $customerName = trim(sprintf(
         $fishWeekly = DB::table('tbl_fishweekly')->where('fish_code', $row[0])->first();
         if (!$fishWeekly) {
             return response()->json(['status' => 'error', 'message' => 'Fish code ' . $row[0] . ' not found in weekly list.']);
+        }
+
+        // Check if requested quantity is available
+        $requestedQuantity = $row[1];
+        if ($fishWeekly->quantity < $requestedQuantity) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Fish code ' . $row[0] . ' has only ' . $fishWeekly->quantity . ' available, but ' . $requestedQuantity . ' was requested.',
+            ]);
         }
 
         // Get qtyperbag from tbl_fish_variety
@@ -290,7 +346,6 @@ $customerName = trim(sprintf(
             'order_id' => $orderMst->id, // Link to the order_mst entry
             'order_no' => $orderNo, // Use the newly generated order number
             'fish_code' => $row[0],
-            'orders' => $quantity,
             'quantity' => $quantity,
             'bags' => $numberOfBags,
             'approval_status' => 'pending',
@@ -299,6 +354,7 @@ $customerName = trim(sprintf(
         // Update total orders and total bags
         $totalOrders += 1;
         $totalBags += $numberOfBags;
+        $totalFish += $quantity;
     }
 
     // Calculate the total number of boxes
@@ -309,6 +365,7 @@ $customerName = trim(sprintf(
         'tot_orders' => $totalOrders,
         'tot_bags' => $totalBags,
         'tot_boxes' => $totalBoxes,
+        'tot_fish' => $totalFish,
     ]);
 
     try {
@@ -326,7 +383,7 @@ $customerName = trim(sprintf(
     
         DB::table('tbl_notifications')->insert([
             'user_id' => $user->id,
-            'notification' => 'Order No ' .  $orderNo . 'Created',
+            'notification' => 'Order No ' .  $orderNo . ' Created',
             'seen_status' => 0,
             'created_at' => now(),
         ]);
@@ -388,14 +445,16 @@ public function orderuploadform(Request $request)
         $customer->lname ?? ''
     ));
 
+    $customerrecid = DB::table('tbl_customers')->select('id')->where('user_id',$customerId)->first();
+
     // Insert the record into tbl_order_mst
     $orderMst = Order::create([
-        'cus_id' => $customerId,
+        'cus_id' => $customerrecid->id,
         'executive_id' => $executiveId,
-        'advanced_payment' => 'no',
         'tot_orders' => 0, // Placeholder, will update later
         'tot_bags' => 0,   // Placeholder, will update later
         'tot_boxes' => 0,  // Placeholder, will update later
+        'tot_fish' => 0,  // Placeholder, will update later
         'shipping_address' => $request->input('shipping_address'), // Provided shipping address
         'customer_name' => $customerName,
         'status' => 'pending',
@@ -416,6 +475,7 @@ public function orderuploadform(Request $request)
     // Initialize counters for total orders, bags, and boxes
     $totalOrders = 0;
     $totalBags = 0;
+    $totalFish = 0;
 
     // Extract table data from the request
     $tableData = $request->input('table_data');
@@ -428,6 +488,15 @@ public function orderuploadform(Request $request)
         $fishWeekly = DB::table('tbl_fishweekly')->where('fish_code', $fishCode)->first();
         if (!$fishWeekly) {
             return response()->json(['status' => 'error', 'message' => 'Fish code ' . $fishCode . ' not found in weekly list.']);
+        }
+
+        // Check if requested quantity is available
+        $requestedQuantity = $quantity;
+        if ($fishWeekly->quantity < $requestedQuantity) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Fish code ' . $fishCode . ' has only ' . $fishWeekly->quantity . ' available, but ' . $requestedQuantity . ' was requested.',
+            ]);
         }
 
         // Get qtyperbag from tbl_fish_variety
@@ -445,7 +514,6 @@ public function orderuploadform(Request $request)
             'order_id' => $orderMst->id, // Link to the order_mst entry
             'order_no' => $orderNo, // Use the newly generated order number
             'fish_code' => $fishCode,
-            'orders' => $quantity,
             'quantity' => $quantity,
             'bags' => $numberOfBags,
             'approval_status' => 'pending',
@@ -454,6 +522,7 @@ public function orderuploadform(Request $request)
         // Update total orders and total bags
         $totalOrders += 1;
         $totalBags += $numberOfBags;
+        $totalFish += $quantity;
     }
 
     // Calculate the total number of boxes
@@ -464,6 +533,7 @@ public function orderuploadform(Request $request)
         'tot_orders' => $totalOrders,
         'tot_bags' => $totalBags,
         'tot_boxes' => $totalBoxes,
+        'tot_fish' => $totalFish,
     ]);
 
 
@@ -528,10 +598,9 @@ public function cancelorder(Request $request) {
         try {
         
             $cus_id = $order->cus_id;
-    
+
             // Get customer details from tbl_customers using cus_id
             $customer = DB::table('tbl_customers')->where('id', $cus_id)->first();
-    
             if (!$customer) {
                 return response()->json(['status' => 'error', 'message' => 'Customer not found']);
             }
@@ -584,25 +653,274 @@ public function cancelorder(Request $request) {
         return response()->json(['status' => 'success', 'message' => 'Order cancelled successfully!']);
 
 
+    }else if($order->status == 'cancelled') {
+        return response()->json(['status' => 'error', 'message' => 'Order is already cancelled!']);
+
     }else{
-        return response()->json(['status' => 'error', 'message' => 'Order is already confirmed, cannot cancel!']);
+        return response()->json(['status' => 'error', 'message' => 'Order is not in the pending state, cannot cancel!']);
     }
 
+
+
+}
+
+
+public function orderconfirm($id) 
+{
+    // Step 1: Fetch the current status of the order
+    $orderconfirmstatus = DB::table('tbl_order_mst')->where('id', $id)->value('status');
+
+    if ($orderconfirmstatus == 'confirmed' || $orderconfirmstatus == 'shipping' || $orderconfirmstatus == 'completed') {
+        return response()->json(['status' => 'error', 'message' => 'This order is already confirmed']);
+    } 
+
+
+
+    // Step 3: Retrieve the order_det records for the relevant order_mst record
+    $orderItems = DB::table('tbl_order_det')
+        ->where('order_id', $id)
+        ->get();
+
+    // Step 4: Check inventory levels and prepare to update
+    foreach ($orderItems as $item) {
+        $fishCode = $item->fish_code;
+        $orderedQuantity = $item->quantity;
+
+        // Check current quantity in tbl_fishweekly
+        $currentQuantity = DB::table('tbl_fishweekly')
+            ->where('fish_code', $fishCode)
+            ->value('quantity');
+
+        if ($currentQuantity < $orderedQuantity) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Insufficient quantity available in inventory for fish code ' . $fishCode . '. Available quantity: ' . $currentQuantity
+            ]);
+        }
+    }
+
+    // All checks passed, proceed to confirm the order
+    DB::table('tbl_order_mst')->where('id', $id)->update(['status' => 'confirmed']);
+
+    // Step 5: Update inventory levels and check stock status
+    foreach ($orderItems as $item) {
+        $fishCode = $item->fish_code;
+        $orderedQuantity = $item->quantity;
+
+        
+
+        // Deduct the ordered quantity from the tbl_fishweekly
+        DB::table('tbl_fishweekly')
+            ->where('fish_code', $fishCode)
+            ->decrement('quantity', $orderedQuantity);
+
+        // Check if the updated quantity is less than 100
+        $currentQuantity = DB::table('tbl_fishweekly')
+            ->where('fish_code', $fishCode)
+            ->value('quantity');
+
+        if ($currentQuantity < 10) {
+            // Update stock status to out-of-stock
+            DB::table('tbl_fishweekly')
+                ->where('fish_code', $fishCode)
+                ->update(['stock_status' => 'out-of-stock']);
+        }
+    }
+
+        // Step 6: Retrieve the customer info for sending notifications and email
+        $orderdetails = DB::table('tbl_order_mst')->select('*')->where('id', $id)->first();
+        $customerId = $orderdetails->cus_id;
+    
+        $customer = DB::table('tbl_customers')->where('id', $customerId)->first();
+        $userId = $customer->user_id;
+        $userEmail = $customer->email;
+    
+        // Prepare notification and email
+        $subject = "Order No " . $orderdetails->order_no . " Confirmed";
+        $body = 'Hi ' . $orderdetails->customer_name . ',<br><br>Your order, order no ' . $orderdetails->order_no . 
+                ' has been confirmed.<br><br>Thank you, BioWorld Holdings.';
+    
+        // Send notification
+        DB::table('tbl_notifications')->insert([
+            'user_id' => $userId,
+            'notification' => 'Order No ' . $orderdetails->order_no . ' Confirmed',
+            'seen_status' => 0,
+            'created_at' => now(),
+        ]);
+    
+        // Send email
+        try {
+            $mailerService = new PHPMailerService();
+            $mailerService->sendEmail($userEmail, $subject, nl2br($body));
+            Log::info('Confirmation email sent to: ' . $userEmail);
+        } catch (\Exception $e) {
+            Log::error('Email sending failed for ' . $userEmail . '. Error: ' . $e->getMessage());
+        }
+
+    $dashboardController = new \App\Http\Controllers\DashboardController();
+    $dashboardController->updateStatus();
+
+    return response()->json([
+        'status' => 'success',
+        'message' => 'Order confirmed successfully!'
+    ]);
 
 
 }
 
 public function orderconfirmstatuscheck($id) {
 
-    $order = DB::table('tbl_order_mst')->select('status')->where('id',$id)->first();
+    $order = DB::table('tbl_order_mst')->select('status', 'tot_orders')->where('id',$id)->first();
     
     if($order->status == 'pending') {
-        return response()->json(['status' => 'success', 'message' => 'Order confirmed successfully!']);
+
+        if($order->tot_orders > 0) {
+
+            $response = $this->orderconfirm($id);
+
+            $responseData = json_decode($response->getContent(), true);
+                // Handle success case
+            return response()->json(['status'=> $responseData['status'], 'message' => $responseData['message']]);
+
+        }else{
+            return response()->json(['status' => 'error', 'message' => 'Order doesnt have any order items!']);
+
+        }
 
     }else{
-        return response()->json(['status' => 'error', 'message' => 'Order is already confirmed!']);
+
+        return response()->json(['status' => 'error', 'message' => 'Order is in ' .$order->status. ' state. Cannot confirm!']);
 
     }
 }
+
+
+
+public function editorderdet(Request $request) {
+    $id = $request->input('editid');
+
+
+    
+    // Fetch the order detail record to be edited
+    $orderDetail = OrderDet::find($id);
+    if (!$orderDetail) {
+        return response()->json(['status' => 'error', 'message' => 'Order detail not found.']);
+    }
+
+    // Fetch the order status
+        $orderstatus = DB::table('tbl_order_mst')
+            ->select('tbl_order_mst.status')
+            ->where('tbl_order_mst.order_no', $orderDetail->order_no)
+            ->first();
+
+    if ($orderstatus->status != 'pending') {
+        return response()->json(['status' => 'error', 'message' => 'Only pending order details can be updated.']);
+
+    }
+
+    // Get the new quantity from the request
+    $newQuantity = $request->input('qty-edit');
+
+    // Check if the new quantity is greater than 0
+    if ($newQuantity <= 0) {
+        return response()->json(['status' => 'error', 'message' => 'Quantity must be greater than 0.']);
+    }
+
+    // Fetch the related order master record using order_no
+    $orderMst = Order::where('order_no', $orderDetail->order_no)->first();
+    if (!$orderMst) {
+        return response()->json(['status' => 'error', 'message' => 'Order master record not found.']);
+    }
+
+    // Fetch the fish code from the order detail
+    $fishCode = $orderDetail->fish_code;
+
+    // Check if fish code exists in tbl_fishweekly
+    $fishWeekly = DB::table('tbl_fishweekly')->where('fish_code', $fishCode)->first();
+    if (!$fishWeekly) {
+        return response()->json(['status' => 'error', 'message' => 'Fish code ' . $fishCode . ' not found in weekly list.']);
+    }
+
+    // Check if the new quantity exceeds the available quantity
+    $availableQuantity = $fishWeekly->quantity;
+    if ($newQuantity > $availableQuantity) {
+        return response()->json(['status' => 'error', 'message' => 'Quantity exceeds the available stock for fish code ' . $fishCode . '.']);
+    }
+
+    // Update the quantity in the order detail
+    $orderDetail->quantity = $newQuantity;
+    $orderDetail->save();
+
+    // Recalculate totals based on the updated quantity
+    $totalOrders = 0;
+    $totalBags = 0;
+    $totalFish = 0;
+
+    // Fetch all order details related to this order_no
+    $orderDetails = OrderDet::where('order_no', $orderMst->order_no)->get();
+
+    foreach ($orderDetails as $detail) {
+        $fishCode = $detail->fish_code;
+        $quantity = $detail->quantity;
+
+        // Get qtyperbag from tbl_fish_variety
+        $fishVariety = DB::table('tbl_fish_variety')->where('fish_code', $fishCode)->first();
+        if (!$fishVariety) {
+            return response()->json(['status' => 'error', 'message' => 'Fish code ' . $fishCode . ' not found in fish variety list.']);
+        }
+
+        // Calculate the number of bags
+        $qtyPerBag = $fishVariety->qtyperbag;
+        $numberOfBags = (int)ceil($quantity / $qtyPerBag);
+
+        // Update the bags field for each order detail
+        $detail->bags = $numberOfBags;
+        $detail->save();
+
+        // Update total orders, total bags, and total fish
+        $totalOrders += 1;
+        $totalBags += $numberOfBags;
+        $totalFish += $quantity;
+    }
+
+    // Calculate the total number of boxes
+    $totalBoxes = (int)ceil($totalBags / 4); // Assuming 1 box holds 4 bags
+
+    // Update the total counts in the tbl_order_mst
+    $orderMst->update([
+        'tot_orders' => $totalOrders,
+        'tot_bags' => $totalBags,
+        'tot_boxes' => $totalBoxes,
+        'tot_fish' => $totalFish,
+    ]);
+
+    return response()->json(['status' => 'success', 'message' => 'Order details updated successfully.']);
+}
+
+
+public function deleteorderdet(Request $request) {
+    $id = $request->input('id');
+    $orderid = $request->input('orderid');
+
+    // Fetch the order status
+    $orderstatus = DB::table('tbl_order_mst')
+        ->where('id', $orderid)
+        ->value('status');
+
+    if ($orderstatus == 'pending') {
+        // Delete the order detail if the order is pending
+        $deleted = DB::table('tbl_order_det')->where('id', $id)->delete();
+
+        if ($deleted) {
+            return response()->json(['status' => 'success', 'message' => 'Order item removed successfully!']);
+        } else {
+            return response()->json(['status' => 'error', 'message' => 'Failed to remove order item.']);
+        }
+    } else {
+        return response()->json(['status' => 'error', 'message' => 'Cannot remove the item since the order is not in pending state!']);
+    }
+}
+
+
 
 }

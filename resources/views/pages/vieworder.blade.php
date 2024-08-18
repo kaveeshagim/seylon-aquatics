@@ -104,6 +104,14 @@ Toggle modal
                     <input type="hidden" name="_token" value="{{ csrf_token() }}">
                     <input hidden="true" id="editid" name="editid"/>
                     <div>
+                        <label for="fishcode-edit" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Fish Code</label>
+                        <input readonly type="text" name="fishcode-edit" id="fishcode-edit" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" required />
+                    </div>
+                    <div>
+                        <label for="commonname-edit" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Common Name</label>
+                        <input readonly type="text" name="commonname-edit" id="commonname-edit" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" required />
+                    </div>
+                    <div>
                         <label for="qty-edit" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Quantity</label>
                         <input type="text" name="qty-edit" id="qty-edit" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" required />
                     </div>
@@ -176,14 +184,409 @@ Toggle modal
 </div>
 
 <script>
+  document.addEventListener("DOMContentLoaded", function(event) {
+    searchdata();
+  });
+  </script>
+
+<script>
+    function editmodal(id) {
+
+var priv = 'Update Data_21';
+$.ajax({
+    url: "{{url('privcheck')}}",
+    type: 'GET',
+    data: { priv: priv },
+    success: function (response) {
+        if(response.status == "success") {
+            
+            document.getElementById('editid').value = id;
+            document.getElementById('qty-edit').value = '';
+            document.getElementById('commonname-edit').value = '';
+            document.getElementById('fishcode-edit').value = '';
+
+            $.ajax({
+                url: "{{url('getorderitemdet')}}" + "/" + id,
+                type: 'GET',
+                success: function (response) {
+                document.getElementById('qty-edit').value = response.data.quantity;
+                document.getElementById('fishcode-edit').value = response.data.fish_code;
+                document.getElementById('commonname-edit').value = response.data.common_name;
+                }
+            });
+            $('#edittoggle').click();
+
+
+        }else if(response.status == "error"){
+            bootbox.alert({
+                message: response.message,
+                backdrop: true,
+                callback: function () {
+                }
+            }).find('.modal-content').addClass("flex items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800");
+        }
+    }
+});
+
+
+}
+
+function editorderdetail() {
+
+const form = document.getElementById('edit-form');
+const formData = new FormData(form);
+startspinner();
+$.ajax({
+  url: '{{url('editorderdet')}}',
+  type: 'POST',
+  data: formData,
+  processData: false,
+  contentType: false,
+  success: function (response) {
+    stopspinner();
+    if (response.status == "success") {
+        bootbox.alert({
+        message: response.message,
+        backdrop: true,
+        callback: function () {
+            $('#edittoggle').click();
+            searchdata();
+        }
+    }).find('.modal-content').addClass("flex items-center p-4 mb-4 text-sm text-green-800 border border-green-300 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400 dark:border-green-800");
+    }else if(response.status == "error"){
+        bootbox.alert({
+        message: response.message,
+        backdrop: true,
+        callback: function () {
+        }
+    }).find('.modal-content').addClass("flex items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800");
+    }
+  },
+  error: function(jqXHR, textStatus, errorThrown) {
+        stopspinner();
+            // Parse the JSON response to get the error messages
+            var response = jqXHR.responseJSON;
+
+            // Default error message
+            var errorMessage = 'Form submission failed.';
+
+            // Check if there are validation errors
+            if (response && response.errors) {
+                // Collect all error messages
+                var errorMessages = [];
+                var errors = response.errors;
+                for (var field in errors) {
+                    if (errors.hasOwnProperty(field)) {
+                        errorMessages.push(errors[field][0]); // Add each error message to the array
+                    }
+                }
+
+                // Join all error messages into a single string
+                errorMessage = errorMessages.join('<br>'); // Using <br> to create new lines between messages
+            }
+
+            // Show the error message(s) in a bootbox alert
+            bootbox.alert({
+                message: errorMessage,
+                backdrop: true,
+                callback: function () {}
+            }).find('.modal-content').addClass("flex items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800");
+        }
+});
+}
+
+function deletemodal(id) {
+    var priv = 'Delete Data_21';
+    $.ajax({
+      url: "{{url('privcheck')}}",
+      type: 'GET',
+      data: { priv: priv },
+      success: function (response) {
+          if(response.status == "success") {
+              
+            document.getElementById('deleteid').value = id;
+            $('#deletetoggle').click();
+
+          }else if(response.status == "error"){
+              bootbox.alert({
+                  message: response.message,
+                  backdrop: true,
+                  callback: function () {
+                  }
+              }).find('.modal-content').addClass("flex items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800");
+          }
+      }
+  });
+}
+
+
+function deleteorderdetail() {
+  const id = document.getElementById('deleteid').value;
+  const orderid = document.getElementById('orderid').value;
+  startspinner();
+  $.ajax({
+    url: '{{url('deleteorderdet')}}',
+    type: 'GET',
+    data: { id: id, orderid:orderid },
+    success: function (response) {
+        stopspinner();
+        if(response.status == "success") {
+            bootbox.alert({
+                message: response.message,
+                backdrop: true,
+                callback: function () {
+                    searchdata();
+                }
+            }).find('.modal-content').addClass("flex items-center p-4 mb-4 text-sm text-green-800 border border-green-300 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400 dark:border-green-800");
+
+        }else if(response.status == "error"){
+            bootbox.alert({
+                message: response.message,
+                backdrop: true,
+                callback: function () {
+                    searchdata();
+                }
+            }).find('.modal-content').addClass("flex items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800");
+        }
+    },
+    error: function(jqXHR, textStatus, errorThrown) {
+            stopspinner();
+                // Parse the JSON response to get the error messages
+                var response = jqXHR.responseJSON;
+
+                // Default error message
+                var errorMessage = 'Form submission failed.';
+
+                // Check if there are validation errors
+                if (response && response.errors) {
+                    // Collect all error messages
+                    var errorMessages = [];
+                    var errors = response.errors;
+                    for (var field in errors) {
+                        if (errors.hasOwnProperty(field)) {
+                            errorMessages.push(errors[field][0]); // Add each error message to the array
+                        }
+                    }
+
+                    // Join all error messages into a single string
+                    errorMessage = errorMessages.join('<br>'); // Using <br> to create new lines between messages
+                }
+
+                // Show the error message(s) in a bootbox alert
+                bootbox.alert({
+                    message: errorMessage,
+                    backdrop: true,
+                    callback: function () {}
+                }).find('.modal-content').addClass("flex items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800");
+            }
+  });
+}
+
+function orderconfirm(id) {
+    var priv = 'Confirm Order_21';
+    startspinner();
+    
+    $.ajax({
+        url: "{{ url('privcheck') }}",
+        type: 'GET',
+        data: { priv: priv },
+        success: function (response) {
+            stopspinner();
+            if (response.status === "success") {
+                $.ajax({
+                    url: "{{ url('orderconfirmstatuscheck') }}/" + id, // Fixed the URL
+                    type: 'GET',
+                    data: { id: id },
+                    success: function (response) {
+                        if (response.status == "success") {
+
+                            location.href = "{{ url('orderconfirmationpage') }}" + "/" + id;
+
+                        } else if (response.status === "error") {
+                            bootbox.alert({
+                                message: response.message,
+                                backdrop: true,
+                                callback: function () {
+                                    searchdata();
+                                }
+                            }).find('.modal-content').addClass("flex items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800");
+                        }
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        stopspinner();
+                        // Parse the JSON response to get the error messages
+                        var response = jqXHR.responseJSON || {};
+                        
+                        // Default error message
+                        var errorMessage = 'Form submission failed.';
+
+                        // Check if there are validation errors
+                        if (response.errors) {
+                            // Collect all error messages
+                            var errorMessages = [];
+                            var errors = response.errors;
+                            for (var field in errors) {
+                                if (errors.hasOwnProperty(field)) {
+                                    errorMessages.push(errors[field][0]); // Add each error message to the array
+                                }
+                            }
+
+                            // Join all error messages into a single string
+                            errorMessage = errorMessages.join('<br>'); // Using <br> to create new lines between messages
+                        }
+
+                        // Show the error message(s) in a bootbox alert
+                        bootbox.alert({
+                            message: errorMessage,
+                            backdrop: true,
+                            callback: function () {}
+                        }).find('.modal-content').addClass("flex items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800");
+                    }
+                });
+            } else if (response.status === "error") {
+                bootbox.alert({
+                    message: response.message,
+                    backdrop: true,
+                    callback: function () {}
+                }).find('.modal-content').addClass("flex items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800");
+            }
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+            stopspinner();
+            // Parse the JSON response to get the error messages
+            var response = jqXHR.responseJSON || {};
+            
+            // Default error message
+            var errorMessage = 'Form submission failed.';
+
+            // Check if there are validation errors
+            if (response.errors) {
+                // Collect all error messages
+                var errorMessages = [];
+                var errors = response.errors;
+                for (var field in errors) {
+                    if (errors.hasOwnProperty(field)) {
+                        errorMessages.push(errors[field][0]); // Add each error message to the array
+                    }
+                }
+
+                // Join all error messages into a single string
+                errorMessage = errorMessages.join('<br>'); // Using <br> to create new lines between messages
+            }
+
+            // Show the error message(s) in a bootbox alert
+            bootbox.alert({
+                message: errorMessage,
+                backdrop: true,
+                callback: function () {}
+            }).find('.modal-content').addClass("flex items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800");
+        }
+    });
+}
+
+
+
+function ordercancel(id) {
+    document.getElementById('cancelid').value = id;
+    $('#canceltoggle').toggle();
+}
+
+function cancelorder() {
+  const id = document.getElementById('cancelid').value;
+
+  var priv = 'Cancel Order_21';
+  startspinner();
+    $.ajax({
+        url: "{{url('privcheck')}}",
+        type: 'GET',
+        data: { priv: priv },
+        success: function (response) {
+            stopspinner();
+            if(response.status == "success") {
+               
+                $.ajax({
+                    url: '{{url('cancelorder')}}',
+                    type: 'GET',
+                    data: { id: id },
+                    success: function (response) {
+                        if(response.status == "success") {
+                            bootbox.alert({
+                                message: response.message,
+                                backdrop: true,
+                                callback: function () {
+                                    searchdata();
+                                }
+                            }).find('.modal-content').addClass("flex items-center p-4 mb-4 text-sm text-green-800 border border-green-300 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400 dark:border-green-800");
+
+                        }else if(response.status == "error"){
+                            bootbox.alert({
+                                message: response.message,
+                                backdrop: true,
+                                callback: function () {
+                                    searchdata();
+                                }
+                            }).find('.modal-content').addClass("flex items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800");
+                        }
+                    }
+                });
+
+            }else if(response.status == "error"){
+                bootbox.alert({
+                    message: response.message,
+                    backdrop: true,
+                    callback: function () {
+                    }
+                }).find('.modal-content').addClass("flex items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800");
+            }
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+            stopspinner();
+                // Parse the JSON response to get the error messages
+                var response = jqXHR.responseJSON;
+
+                // Default error message
+                var errorMessage = 'Form submission failed.';
+
+                // Check if there are validation errors
+                if (response && response.errors) {
+                    // Collect all error messages
+                    var errorMessages = [];
+                    var errors = response.errors;
+                    for (var field in errors) {
+                        if (errors.hasOwnProperty(field)) {
+                            errorMessages.push(errors[field][0]); // Add each error message to the array
+                        }
+                    }
+
+                    // Join all error messages into a single string
+                    errorMessage = errorMessages.join('<br>'); // Using <br> to create new lines between messages
+                }
+
+                // Show the error message(s) in a bootbox alert
+                bootbox.alert({
+                    message: errorMessage,
+                    backdrop: true,
+                    callback: function () {}
+                }).find('.modal-content').addClass("flex items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800");
+            }
+    });
+
+}
+
+
+
+    </script>
+
+<script>
     function searchdata() {
     var orderid = $('#orderid').val();
     $('#orderdetail-table').DataTable().destroy();
-
+    startspinner();
     $.ajax({
         url: "{{ url('getcusorderdetail') }}" + "/" + orderid,
         type: "GET",
         success: function(data) {
+            stopspinner();
             console.log("Data:", data);
 
             // Initialize the DataTable with the retrieved data
@@ -196,9 +599,9 @@ Toggle modal
                     { "data": "fish_code" },
                     { "data": "common_name" },
                     { "data": "scientific_name" },
-                    { "data": "size_cm" },
+                    { "data": "size_name" },
                     { "data": "size" },
-                    { "data": "orders" },
+                    { "data": "quantity" },
                     {
                         "sortable": false,
                         "render": function(data, type, full, meta) {
@@ -239,6 +642,7 @@ Toggle modal
             });
         },
         error: function(xhr, status, error) {
+            stopspinner();
             console.error("Error:", error);
         }
     });
@@ -246,233 +650,20 @@ Toggle modal
 
     </script>
 
-<script>
-  document.addEventListener("DOMContentLoaded", function(event) {
-    searchdata();
-  });
-  </script>
+
 
 <script>
 
 
 
-function deletemodal(id) {
-    document.getElementById('deleteid').value = id;
-    $('#deletetoggle').toggle();
-}
 
 
-function deleteorderdetail() {
-  const id = document.getElementById('deleteid').value;
-  const orderid = document.getElementById('orderid').value;
-  $.ajax({
-    url: '{{url('deleteorderdet')}}',
-    type: 'GET',
-    data: { id: id, orderid:orderid },
-    success: function (response) {
-        if(response.status == "success") {
-            bootbox.alert({
-                message: response.message,
-                backdrop: true,
-                callback: function () {
-                    searchdata();
-                }
-            }).find('.modal-content').addClass("flex items-center p-4 mb-4 text-sm text-green-800 border border-green-300 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400 dark:border-green-800");
-
-        }else if(response.status == "error"){
-            bootbox.alert({
-                message: response.message,
-                backdrop: true,
-                callback: function () {
-                    searchdata();
-                }
-            }).find('.modal-content').addClass("flex items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800");
-        }
-    }
-  });
-}
 
 
-function editmodal(id) {
-    document.getElementById('editid').value = id;
-    document.getElementById('habitat-edit').value = '';
-
-   $.ajax({
-    url: "{{url('gethabitat')}}" + "/" + id,
-    type: 'GET',
-    success: function (response) {
-      document.getElementById('habitat-edit').value = response.name;
-    }
-  });
-    $('#edittoggle').toggle();
-}
-
-
-function editorderdetail() {
-
-    const form = document.getElementById('edit-form');
-    const formData = new FormData(form);
-
-    $.ajax({
-      url: '{{url('editorderdet')}}',
-      type: 'POST',
-      data: formData,
-      processData: false,
-      contentType: false,
-      success: function (response) {
-        if (response.status == "success") {
-            bootbox.alert({
-            message: response.message,
-            backdrop: true,
-            callback: function () {
-                searchdata();
-            }
-        }).find('.modal-content').addClass("flex items-center p-4 mb-4 text-sm text-green-800 border border-green-300 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400 dark:border-green-800");
-        }else if(response.status == "error"){
-            bootbox.alert({
-            message: response.message,
-            backdrop: true,
-            callback: function () {
-                searchdata();
-            }
-        }).find('.modal-content').addClass("flex items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800");
-        }
-      }
-    });
-}
 
 function refresh(){
 
-    $('#create-form')[0].reset();
-}
-
-function orderconfirm(id) {
-
-    var priv = 'Confirm Order_21';
-
-    $.ajax({
-        url: "{{url('privcheck')}}",
-        type: 'GET',
-        data: { priv: priv },
-        success: function (response) {
-            if(response.status == "success") {
-               
-                $.ajax({
-                    url: '{{url('cancelorder')}}',
-                    type: 'GET',
-                    data: { id: id },
-                    success: function (response) {
-                        if(response.status == "success") {
-
-                            $.ajax({
-                                url: "{{url('orderconfirmstatuscheck')}}" + "/" + id;
-                                type: 'GET',
-                                data: { id: id },
-                                success: function (response) {
-                                    if(response.status == "success") {
-                                        bootbox.alert({
-                                            message: response.message,
-                                            backdrop: true,
-                                            callback: function () {
-                                                location.href = "{{url('orderconfirm')}}" + "/" + id;
-                                            }
-                                        }).find('.modal-content').addClass("flex items-center p-4 mb-4 text-sm text-green-800 border border-green-300 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400 dark:border-green-800");
-
-                                    }else if(response.status == "error"){
-                                        bootbox.alert({
-                                            message: response.message,
-                                            backdrop: true,
-                                            callback: function () {
-                                                searchdata();
-                                            }
-                                        }).find('.modal-content').addClass("flex items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800");
-                                    }
-                                }
-                            });
-
-                        }else if(response.status == "error"){
-                            bootbox.alert({
-                                message: response.message,
-                                backdrop: true,
-                                callback: function () {
-                                }
-                            }).find('.modal-content').addClass("flex items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800");
-                        }
-
-                    }
-                });
-
-            }else if(response.status == "error"){
-                bootbox.alert({
-                    message: response.message,
-                    backdrop: true,
-                    callback: function () {
-                    }
-                }).find('.modal-content').addClass("flex items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800");
-            }
-        }
-    });
-}
-
-
-function ordercancel(id) {
-    document.getElementById('cancelid').value = id;
-    $('#canceltoggle').toggle();
-}
-
-function cancelorder() {
-  const id = document.getElementById('cancelid').value;
-
-  var priv = 'Cancel Order_21';
-
-    $.ajax({
-        url: "{{url('privcheck')}}",
-        type: 'GET',
-        data: { priv: priv },
-        success: function (response) {
-            if(response.status == "success") {
-               
-                $.ajax({
-                    url: '{{url('cancelorder')}}',
-                    type: 'GET',
-                    data: { id: id },
-                    success: function (response) {
-                        if(response.status == "success") {
-                            bootbox.alert({
-                                message: response.message,
-                                backdrop: true,
-                                callback: function () {
-                                    searchdata();
-                                }
-                            }).find('.modal-content').addClass("flex items-center p-4 mb-4 text-sm text-green-800 border border-green-300 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400 dark:border-green-800");
-
-                        }else if(response.status == "error"){
-                            bootbox.alert({
-                                message: response.message,
-                                backdrop: true,
-                                callback: function () {
-                                    searchdata();
-                                }
-                            }).find('.modal-content').addClass("flex items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800");
-                        }
-                    }
-                });
-
-            }else if(response.status == "error"){
-                bootbox.alert({
-                    message: response.message,
-                    backdrop: true,
-                    callback: function () {
-                    }
-                }).find('.modal-content').addClass("flex items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800");
-            }
-        }
-    });
-
-
-
-
-
+$('#create-form')[0].reset();
 }
 
 

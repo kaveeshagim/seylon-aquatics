@@ -161,7 +161,7 @@ class Util
             if ($user) {
                 $lastActivity = session()->get('last_activity_time');
 
-                if ($lastActivity && now()->diffInMinutes($lastActivity) > 60) {
+                if ($lastActivity && now()->diffInMinutes($lastActivity) > 120) {
                     $user->token = '';
                     $user->save();
 

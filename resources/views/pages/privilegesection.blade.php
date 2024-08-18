@@ -15,7 +15,7 @@
         <div class="grid gap-4 sm:grid-cols-2 sm:gap-6">
             
             <div class="w-full">
-                <label for="category" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Category</label>
+                <label for="category" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Category<span class="text-red-500">*</span></label>
                 <select onchange="load_sub_category()"  id="category" name="category" class="bg-gray-500 border border-gray-300 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
                     <option value="">- Select category -</option>
                     @foreach($categorylist as $value)
@@ -25,7 +25,7 @@
             </div>
 
             <div class="w-full">
-                <label for="subcategory" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Sub Category</label>
+                <label for="subcategory" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Sub Category<span class="text-red-500">*</span></label>
                 <select id="subcategory" name="subcategory" class="bg-gray-500 border border-gray-300 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
                     <option value="">- Select subcategory -</option>
 
@@ -33,12 +33,12 @@
             </div>
 
             <div class="w-full">
-                <label for="privilegesection" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Privilege Section</label>
+                <label for="privilegesection" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Privilege Section<span class="text-red-500">*</span></label>
                 <input onchange="gen_route_name()" type="text" id="privilegesection" name="privilegesection" class="bg-gray-500 border border-gray-300 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"  required/>
             </div>
 
             <div class="w-full">
-                <label for="routename" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Route Name</label>
+                <label for="routename" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Route Name<span class="text-red-500">*</span></label>
                 <input type="text" id="routename" name="routename" class="bg-gray-500 border border-gray-300 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" readonly required/>
             </div>
             </div>

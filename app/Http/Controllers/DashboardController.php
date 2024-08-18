@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use App\Models\UserType;
 use App\Models\User;
+use App\Models\Order;
+use App\Models\OrderDet;
 use Illuminate\Support\Facades\Http;
 
 class DashboardController extends Controller
@@ -127,6 +129,60 @@ public function updateStatusCustomer()
     return response()->json(['status' => 'Order status updated']);
 }
 
+
+public function getOrderStats()
+    {
+        // Get the current date
+        $now = Carbon::now();
+
+        // Find the start and end of the current week
+        $startOfWeek = $now->startOfWeek()->format('Y-m-d 00:00:00');
+        $endOfWeek = $now->endOfWeek()->format('Y-m-d 23:59:59');
+
+        // Get the order counts for the current week
+        $pending = Order::where('status', 'pending')
+            ->whereBetween('created_at', [$startOfWeek, $endOfWeek])
+            ->count();
+
+        $confirmed = Order::where('status', 'confirmed')
+            ->whereBetween('created_at', [$startOfWeek, $endOfWeek])
+            ->count();
+
+        $cancelled = Order::where('status', 'cancelled')
+            ->whereBetween('created_at', [$startOfWeek, $endOfWeek])
+            ->count();
+
+        $completed = Order::where('status', 'completed')
+            ->whereBetween('created_at', [$startOfWeek, $endOfWeek])
+            ->count();
+
+        return response()->json([
+            'pending' => $pending,
+            'confirmed' => $confirmed,
+            'cancelled' => $cancelled,
+            'completed' => $completed,
+        ]);
+    }
+
+
+    public function getTopFishVarieties() {
+        // Get the current week start and end dates with time included
+        $startOfWeek = Carbon::now()->startOfWeek()->format('Y-m-d 00:00:00');
+        $endOfWeek = Carbon::now()->endOfWeek()->format('Y-m-d 23:59:59');
+    
+        // Fetch the top 5 fish varieties based on quantity for the current week
+        $topFishVarieties = DB::table('tbl_order_det')
+            ->join('tbl_fish_variety', 'tbl_order_det.fish_code', '=', 'tbl_fish_variety.fish_code')
+            ->select('tbl_fish_variety.common_name', DB::raw('SUM(tbl_order_det.quantity) as total_quantity'))
+            ->whereBetween('tbl_order_det.created_at', [$startOfWeek, $endOfWeek])
+            ->groupBy('tbl_fish_variety.common_name')
+            ->orderBy('total_quantity', 'desc')
+            ->limit(5)
+            ->get();
+    
+        return response()->json($topFishVarieties);
+    }
+    
 
 
 }

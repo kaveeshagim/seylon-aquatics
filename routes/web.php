@@ -73,6 +73,7 @@ Route::namespace('App\Http\Controllers')->group(function () {
         Route::post('/logout', 'LoginController@logout')->name('logout');
         Route::get('/access_denied', 'UsersController@errorpage');
 
+        Route::get('/companydet', 'PageController@companydet')->name('companydet');
 
         // Users routes
         Route::get('/users', 'PageController@users')->name('users');
@@ -127,6 +128,8 @@ Route::namespace('App\Http\Controllers')->group(function () {
         Route::get('/update-status', 'DashboardController@updateStatus');
         Route::get('/update-status-customer', 'DashboardController@updateStatusCustomer');
         Route::get('/home', 'PageController@home')->name('home');
+        Route::get('/getOrderStats', 'DashboardController@getOrderStats')->name('getOrderStats');
+        Route::get('/getTopFishVarieties', 'DashboardController@getTopFishVarieties')->name('getTopFishVarieties');
 
         // Orders routes
         Route::get('/orderupload', 'PageController@orderupload')->name('orderupload');
@@ -145,18 +148,22 @@ Route::namespace('App\Http\Controllers')->group(function () {
         Route::post('/orderuploadform', 'OrderController@orderuploadform')->name('orderuploadform');
         Route::get('/vieworderdetpage/{id}', 'PageController@vieworderdetpage')->name('vieworderdetpage');
         Route::get('/getcusorderdetail/{id}', 'OrderController@getcusorderdetail')->name('getcusorderdetail');
-        Route::get('/orderconfirm/{id}', 'PageController@orderconfirm')->name('orderconfirm');
+        Route::get('/orderconfirm/{id}', 'OrderController@orderconfirm')->name('orderconfirm');
         Route::get('/orderconfirmstatuscheck/{id}', 'OrderController@orderconfirmstatuscheck')->name('orderconfirmstatuscheck');
         Route::get('/cancelorder', 'OrderController@cancelorder')->name('orderconfirm');
         Route::get('/deleteorderdet', 'OrderController@deleteorderdet')->name('deleteorderdet');
-        Route::get('/editorderdet', 'OrderController@editorderdet')->name('editorderdet');
-        Route::get('/getorderitemdetgetorderitemdet', 'OrderController@getorderitemdet')->name('getorderitemdet');
+        Route::post('/editorderdet', 'OrderController@editorderdet')->name('editorderdet');
+        Route::get('/getorderitemdet/{id}', 'OrderController@getorderitemdet')->name('getorderitemdet');
+        Route::get('/orderconfirmationpage/{id}', 'PageController@orderconfirmationpage')->name('orderconfirmationpage');
 
         // Invoice routes
         Route::get('/invoices', 'PageController@invoices')->name('invoices');
         Route::get('/getinvoices', 'InvoiceController@getinvoices')->name('getinvoices');
         Route::get('/updateinvoice', 'InvoiceController@updateinvoice')->name('updateinvoice');
         Route::get('/viewinvoicedetpage/{id}', 'PageController@viewinvoicedetpage')->name('viewinvoicedetpage');
+        Route::get('/viewinvoice/{id}', 'PageController@viewinvoice')->name('viewinvoice');
+        Route::get('/viewinvoicee/{id}', 'PageController@viewinvoicee')->name('viewinvoicee');
+        Route::post('/updateshipment', 'InvoiceController@updateshipment')->name('updateshipment');
 
 
         // Password manager routes
@@ -237,10 +244,11 @@ Route::namespace('App\Http\Controllers')->group(function () {
         Route::post('/fishweeklyuploadexcel', 'FishController@fishweeklyuploadexcel')->name('fishweeklyuploadexcel');
         Route::post('/fishweeklyuploadform', 'FishController@fishweeklyuploadform')->name('fishweeklyuploadform');
         Route::post('/fetchfishweeklyexceldata', 'FishController@fetchfishweeklyexceldata')->name('fetchfishweeklyexceldata');
-        Route::post('/editfishweekly', 'FishController@editfishweekly')->name('editfishweekly');
+        Route::post('/editfishweeklyrecord', 'FishController@editfishweeklyrecord')->name('editfishweeklyrecord');
         Route::get('/deletefishweekly', 'FishController@deletefishweekly')->name('deletefishweekly');
         Route::get('/downloadsampleexcel', 'FishController@downloadsampleexcel')->name('downloadsampleexcel');
         Route::get('/getfishsizedata', 'FishController@getfishsizedata')->name('getfishsizedata');
+        Route::get('/getfishweeklyrecord/{id}', 'FishController@getfishweeklyrecord')->name('getfishweeklyrecord');
 
         // Privilege routes
         Route::get('/categorysection', 'PageController@categorysection')->name('categorysection');

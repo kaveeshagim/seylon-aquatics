@@ -51,8 +51,18 @@ class CustomersController extends Controller
             'address' => 'required|string|max:255',
             'inline-radio-group' => 'required|boolean',
             'email' => 'required|email|max:255|unique:tbl_customers,email',
-            'primary_contact' => 'required|string|max:15',
-            'secondary_contact' => 'nullable|string|max:15',
+            'primary_contact' => [
+                    'required',
+                    'string',
+                    'max:15',
+                    'regex:/^\+?[0-9]{7,15}$/'
+                ],
+                'secondary_contact' => [
+                    'nullable',
+                    'string',
+                    'max:15',
+                    'regex:/^\+?[0-9]{7,15}$/'
+                ],
             'executive' => 'required|integer',
         ]);
     
@@ -101,8 +111,18 @@ class CustomersController extends Controller
             'address' => 'required|string|max:255',
             'inline-radio-group' => 'required|boolean',
             'email' => 'required|email|max:255|unique:tbl_customers,email,' . $request->cus_id,
-            'primary_contact' => 'required|string|max:15',
-            'secondary_contact' => 'nullable|string|max:15',
+            'primary_contact' => [
+                    'required',
+                    'string',
+                    'max:15',
+                    'regex:/^\+?[0-9]{7,15}$/'
+                ],
+                'secondary_contact' => [
+                    'nullable',
+                    'string',
+                    'max:15',
+                    'regex:/^\+?[0-9]{7,15}$/'
+                ],
             'executive' => 'required|integer',
             'cususer' => 'required|integer',
         ]);

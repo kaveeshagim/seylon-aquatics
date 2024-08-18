@@ -22,14 +22,14 @@
 
             <div class="flex flex-col md:flex-row items-stretch md:items-center md:space-x-3 space-y-3 md:space-y-0 justify-between mx-4 py-4 border-t dark:border-gray-700">
 
-                <h3 class="mb-4 text-sm font-medium text-gray-900 dark:text-white">Enter shipping address</h3>
+                <h3 class="mb-4 text-sm font-medium text-gray-900 dark:text-white">Enter shipping address<span class="text-red-500">*</span></h3>
                 <div class="w-full">
                     <textarea name="shippingaddress" id="shippingaddress"  rows="2"
                             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
                             required></textarea>
                 </div>
 
-                <h3 class="mb-4 text-sm font-medium text-gray-900 dark:text-white">Choose upload method</h3>
+                <h3 class="mb-4 text-sm font-medium text-gray-900 dark:text-white">Choose upload method<span class="text-red-500">*</span></h3>
 <p class="mb-4 text-xs font-medium text-gray-600 dark:text-gray-400">
     <span class="font-semibold text-gray-900 dark:text-gray-300">Note:</span> 
     The 'Excel upload' method is better suited for bulk data, while the 'Form submission' is more convenient for smaller entries.
@@ -290,7 +290,7 @@ function validateFile() {
 
 function fetchFishData(validatedRows) {
     const fishCodes = validatedRows.map(row => row.fish_code);
-
+    startspinner();
     $.ajax({
         url: '{{url('fetchfishweeklydata')}}',
         type: 'POST',
@@ -300,6 +300,7 @@ function fetchFishData(validatedRows) {
             _token: $('meta[name="csrf-token"]').attr('content')
         },
         success: function(response) {
+            stopspinner();
             if (response.status == 'error') {
                 showBootboxAlert(response.message, 'red');
             } else {
@@ -308,6 +309,7 @@ function fetchFishData(validatedRows) {
             }
         },
         error: function(xhr, status, error) {
+            stopspinner();
             console.error('Error fetching fish data:', error);
             showBootboxAlert('An error occurred while fetching fish data.', 'red');
         }
@@ -317,7 +319,7 @@ function fetchFishData(validatedRows) {
 
 
 
-    function validateExcel() {
+function validateExcel() {
     const fileInput = document.getElementById('excel_input');
     const file = fileInput.files[0];
 
@@ -352,10 +354,10 @@ function fetchFishData(validatedRows) {
             }
 
             const headers = json[0];
-            const requiredHeaders = ['fish_code', 'quantity',];
+            const requiredHeaders = ['fish_code', 'quantity'];
 
-            if (!requiredHeaders.every(header => headers.includes(header))) {
-                showBootboxAlert('Invalid column headers.', 'red');
+            if (headers.length !== requiredHeaders.length || !requiredHeaders.every(header => headers.includes(header))) {
+                showBootboxAlert('Invalid headers. Headers must be exactly "fish_code" and "quantity".', 'red');
                 return;
             }
 
@@ -374,22 +376,21 @@ function fetchFishData(validatedRows) {
 
                 const [fish_code, quantity] = row;
 
-                if (!fish_code || !quantity ) {
-                    showBootboxAlert('Required fields are missing in a row.', 'red');
+                if (!fish_code || !quantity) {
+                    showBootboxAlert('No cell can be left empty.', 'red');
                     return;
                 }
 
-
-                if (isNaN(quantity) || parseInt(quantity) <= 0) {
-                    showBootboxAlert('Invalid quantity.', 'red');
+                if (isNaN(quantity) || parseFloat(quantity) <= 0) {
+                    showBootboxAlert('Quantity must be a positive number.', 'red');
                     return;
                 }
 
                 // Push validated row
-                validatedRows.push({ fish_code, quantity});
+                validatedRows.push({ fish_code, quantity });
             }
 
-            // Fetch size and size_cm for each fish_code using jQuery AJAX
+            // Proceed with further processing
             fetchFishData(validatedRows);
 
         } catch (error) {
@@ -400,6 +401,7 @@ function fetchFishData(validatedRows) {
 
     reader.readAsArrayBuffer(file);
 }
+
 
 
 
@@ -566,7 +568,7 @@ if (method === 'excel') {
 } else if (method === 'form') {
     ajaxUrl = '{{ url("orderuploadform") }}';
 }
-
+startspinner();
 $.ajax({
     url: ajaxUrl,
     type: 'POST',
@@ -576,6 +578,7 @@ $.ajax({
     },
     data: JSON.stringify(payload),
     success: function(response) {
+        stopspinner();
         if(response.status == "success"){
             bootbox.alert({
                 message: response.message,
@@ -597,6 +600,7 @@ $.ajax({
         }
     },
     error: function(jqXHR, textStatus, errorThrown) {
+        stopspinner();
         alert('Form submission failed: ' + textStatus + ' ' + errorThrown);
     }
 });
@@ -638,7 +642,7 @@ function submitOrderExcel(method) {
     if (method === 'excel') {
         ajaxUrl = '{{ url("orderuploadexcel") }}';
     }
-
+    startspinner();
     $.ajax({
         url: ajaxUrl,
         type: 'POST',
@@ -649,6 +653,7 @@ function submitOrderExcel(method) {
             'X-CSRF-TOKEN': csrfToken
         },
         success: function(response) {
+            stopspinner();
             if (response.status === "success") {
                 bootbox.alert({
                     message: response.message,
@@ -665,6 +670,7 @@ function submitOrderExcel(method) {
             }
         },
         error: function(jqXHR, textStatus, errorThrown) {
+            stopspinner();
             bootbox.alert({
                 message: 'Form submission failed: ' + textStatus + ' ' + errorThrown,
                 backdrop: true

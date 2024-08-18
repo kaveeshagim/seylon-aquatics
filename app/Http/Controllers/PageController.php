@@ -22,6 +22,29 @@ use App\Models\PrivSubcategory;
 class PageController extends Controller
 {
 
+    public function companydet()
+    {
+
+        $updateLastActivityTime = Util::updateLastActivityTime();
+
+        if($updateLastActivityTime == 'false') {
+            return redirect('/expired');
+        }elseif($updateLastActivityTime == 'invalid') {
+            return redirect('/');
+        }
+
+
+        $data = DB::table('tbl_company')->select('*')->first();
+
+        $username = session()->get('username');
+        $ipaddress = Util::get_client_ip();
+        Util::user_auth_log($ipaddress,"user opened home page",$username, "View Home Page");
+
+
+        return view('pages.companydetails')->with('data', $data);
+    }
+
+
     public function home()
     {
 
@@ -31,6 +54,14 @@ class PageController extends Controller
             return redirect('/expired');
         }elseif($updateLastActivityTime == 'invalid') {
             return redirect('/');
+        }
+
+
+        if(Util::Privilege("View Data_24") == 'LOGOUT'){
+            return redirect('/');
+        }
+        if(Util::Privilege("View Data_24") == 'DENIED'){
+            return view('pages.accessdenied');
         }
 
         $username = session()->get('username');
@@ -784,7 +815,7 @@ class PageController extends Controller
     
         $fishvarietylist = DB::table('tbl_fish_variety')
         ->select('tbl_fish_variety.fish_code', 'tbl_fish_variety.common_name', 'tbl_fish_variety.size_cm as size_cm','tbl_size.name as size')
-        ->join('tbl_size', 'tbl_size.id', '=', 'tbl_fish_variety.size')
+        ->leftjoin('tbl_size', 'tbl_size.id', '=', 'tbl_fish_variety.size')
         ->get();
 
     
@@ -1191,6 +1222,13 @@ class PageController extends Controller
             return redirect('/');
         }
 
+        if(Util::Privilege("View Data_21") == 'LOGOUT'){
+            return redirect('/');
+        }
+        if(Util::Privilege("View Data_21") == 'DENIED'){
+            return view('pages.accessdenied');
+        }
+
         $orderid = $id;
         $orderno = DB::table('tbl_order_mst')->select('order_no')->where('id',$orderid)->first();
 
@@ -1216,6 +1254,13 @@ class PageController extends Controller
             return redirect('/');
         }
 
+        if(Util::Privilege("View Data_19") == 'LOGOUT'){
+            return redirect('/');
+        }
+        if(Util::Privilege("View Data_19") == 'DENIED'){
+            return view('pages.accessdenied');
+        }
+
         $username = session()->get('username');
         $ipaddress = Util::get_client_ip();
         Util::user_auth_log($ipaddress,"user opened invoice page",$username, "View Invoice Page");
@@ -1234,55 +1279,107 @@ class PageController extends Controller
             return redirect('/');
         }
 
+        if(Util::Privilege("View Invoice Data_19") == 'LOGOUT'){
+            return redirect('/');
+        }
+        if(Util::Privilege("View Invoice Data_19") == 'DENIED'){
+            return view('pages.accessdenied');
+        }
+
+        $invoiceavailability = DB::table('tbl_invoice_mst')->where('order_id', $orderId)->first();
+
+        if($invoiceavailability) {
+
+            return response()->json(['status' => 'success', 'message' => '']);
+
+        }else{
+            $response = app('App\Http\Controllers\InvoiceController')->generateinvoice($orderId);
+
+            $responseData = json_decode($response->getContent(), true);
+
+            return response()->json(['status' => $responseData['status'], 'message' => $responseData['message']]);
+
+        }
+
+    }
+
+    public function viewinvoice($id) {
+
+
+        $orderid = DB::table('tbl_invoice_mst')->select('order_id')->where('id', $id)->first();
         // Retrieve the invoice master details
         $invoiceMaster = DB::table('tbl_invoice_mst')
-                        ->select('tbl_invoice_mst.*', 'tbl_order_mst.*')
-                        ->join('tbl_order_mst','tbl_invoice_mst.order_id','=','tbl_order_mst.id')
-                        ->where('tbl_invoice_mst.order_id', $orderId)
-                        ->first();
-        
+        ->select('tbl_invoice_mst.*', 'tbl_order_mst.*')
+        ->join('tbl_order_mst','tbl_invoice_mst.order_id','=','tbl_order_mst.id')
+        ->where('tbl_invoice_mst.order_id', $orderid->order_id)
+        ->first();
+
         // Retrieve the invoice details
         $invoiceDetails = DB::table('tbl_invoice_det as invoice')
-                        ->join('tbl_order_det as order', 'invoice.orderdet_id', '=', 'order.id') // Join tbl_order_det
-                        ->join('tbl_fish_variety as variety', 'order.fish_code', '=', 'variety.fish_code') // Join tbl_order_det
-                        ->select(
-                            'invoice.*',
-                            'order.fish_code',
-                            'order.quantity as qty',
-                            'variety.*',
-                        )
-                        ->where('invoice.order_id', $orderId)
-                        ->get();
+                ->join('tbl_order_det as order', 'invoice.orderdet_id', '=', 'order.id') // Join tbl_order_det
+                ->join('tbl_fish_variety as variety', 'order.fish_code', '=', 'variety.fish_code') // Join tbl_order_det
+                ->select(
+                    'invoice.*',
+                    'order.fish_code',
+                    'order.quantity as qty',
+                    'variety.*',
+                )
+                ->where('invoice.order_id', $orderid->order_id)
+                ->get();
 
         $username = session()->get('username');
         $ipaddress = Util::get_client_ip();
         Util::user_auth_log($ipaddress,"user opened invoice page",$username, "View Invoice Page");
-
-// dd($invoiceMaster);
+        // dd($invoiceMaster);
         return view('pages.viewinvoice', [
             'invoiceMaster' => $invoiceMaster,
             'invoiceDetails' => $invoiceDetails
         ]);
-        
+
+    }
+
+    public function viewinvoicee($id) {
+
+
+        // Retrieve the invoice master details
+        $invoiceMaster = DB::table('tbl_invoice_mst')
+        ->select('tbl_invoice_mst.*', 'tbl_order_mst.*')
+        ->join('tbl_order_mst','tbl_invoice_mst.order_id','=','tbl_order_mst.id')
+        ->where('tbl_invoice_mst.order_id', $id)
+        ->first();
+
+        // Retrieve the invoice details
+        $invoiceDetails = DB::table('tbl_invoice_det as invoice')
+                ->join('tbl_order_det as order', 'invoice.orderdet_id', '=', 'order.id') // Join tbl_order_det
+                ->join('tbl_fish_variety as variety', 'order.fish_code', '=', 'variety.fish_code') // Join tbl_order_det
+                ->select(
+                    'invoice.*',
+                    'order.fish_code',
+                    'order.quantity as qty',
+                    'variety.*',
+                )
+                ->where('invoice.order_id', $id)
+                ->get();
+
+        $username = session()->get('username');
+        $ipaddress = Util::get_client_ip();
+        Util::user_auth_log($ipaddress,"user opened invoice page",$username, "View Invoice Page");
+        // dd($invoiceMaster);
+        return view('pages.viewinvoice', [
+            'invoiceMaster' => $invoiceMaster,
+            'invoiceDetails' => $invoiceDetails
+        ]);
+
     }
 
     public function accessdenied() {
         return view('pages.accessdenied');
     }
 
-    public function orderconfirm($id) 
-    {
-
-        $orderconfirmstatus  = DB::table('tbl_order_mst')->select('status')->where('id', $id)->first();
-
-        if($orderconfirmstatus == 'confirmed' || $orderconfirmstatus == 'shipping' || $orderconfirmstatus == 'completed') {
-            return response()->json(['status' => 'error', 'message' => 'This order is alread confirmed']);
-        }else {
-
-        // Step 1: Confirm the order status in tbl_order_mst
-        DB::table('tbl_order_mst')->where('id', $id)->update(['status' => 'confirmed']);
     
-        // Step 2: Retrieve the order details
+    public function orderconfirmationpage($id) {
+
+
         $orderdetail = DB::table('tbl_order_mst as om')
             ->select(
                 'om.*', 
@@ -1290,49 +1387,13 @@ class PageController extends Controller
                 'c.primary_contact as contact',  
                 'u.fname as executive'
             )
-            ->join('tbl_customers as c', 'c.user_id', '=', 'om.cus_id')
+            ->join('tbl_customers as c', 'c.id', '=', 'om.cus_id')
             ->join('tbl_users as u', 'u.id', '=', 'om.executive_id')
             ->where('om.id', $id)
             ->first();
-    
-        // Step 3: Retrieve the order_det records for the relevant order_mst record
-        $orderItems = DB::table('tbl_order_det')
-            ->where('order_id', $id)
-            ->get();
-            
-        // Step 4: For each fish_code, update the inventory levels in tbl_fishweekly
-        foreach ($orderItems as $item) {
-            // Get the fish_code and ordered quantity
-            $fishCode = $item->fish_code;
-            $orderedQuantity = $item->orders;
 
-            // Deduct the ordered quantity from the tbl_fishweekly and get the updated quantity
-            $updatedQuantity = DB::table('tbl_fishweekly')
-                ->where('fish_code', $fishCode)
-                ->decrement('quantity', $orderedQuantity);
-            
-            // Check if the updated quantity is less than 100
-            $currentQuantity = DB::table('tbl_fishweekly')
-                ->where('fish_code', $fishCode)
-                ->value('quantity');
 
-            if ($currentQuantity < 100) {
-                // Update stock status to out-of-stock
-                DB::table('tbl_fishweekly')
-                    ->where('fish_code', $fishCode)
-                    ->update(['stock_status' => 'out-of-stock']);
-            }
-        }
-            
-        // Step 5: Call the generateinvoice function
-        app('App\Http\Controllers\InvoiceController')->generateinvoice($id);
-    
-        // Step 6: Return the view with the order details
         return view('pages.orderconfirmation')->with('orderdetail', $orderdetail);
-        // return response()->json(['status' => 'success', 'message' => 'Order confirmed successfully!', 'orderdetail' => $orderdetail]);
-
-
-        }
 
     }
 

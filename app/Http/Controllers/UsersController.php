@@ -61,8 +61,18 @@ public function getexecutives() {
             'inline-radio-group' => 'required|boolean',
             'company' => 'nullable',
             'email' => 'nullable|email',
-            'primary_contact' => 'required',
-            'secondary_contact' => 'nullable',
+            'primary_contact' => [
+                    'required',
+                    'string',
+                    'max:15',
+                    'regex:/^\+?[0-9]{7,15}$/'
+                ],
+                'secondary_contact' => [
+                    'nullable',
+                    'string',
+                    'max:15',
+                    'regex:/^\+?[0-9]{7,15}$/'
+                ],
             'avatar' => 'nullable|file|max:2048',
         ]);
 
@@ -124,8 +134,18 @@ public function getexecutives() {
             'inline-radio-group' => 'required|boolean',
             'company' => 'nullable',
             'email' => 'nullable|email',
-            'primary_contact' => 'required',
-            'secondary_contact' => 'nullable',
+            'primary_contact' => [
+                    'required',
+                    'string',
+                    'max:15',
+                    'regex:/^\+?[0-9]{7,15}$/'
+                ],
+                'secondary_contact' => [
+                    'nullable',
+                    'string',
+                    'max:15',
+                    'regex:/^\+?[0-9]{7,15}$/'
+                ],
             'avatar' => 'nullable|file|max:2048',
         ]);
     
