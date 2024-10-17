@@ -11,10 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('tbl_size', function (Blueprint $table) {
+        Schema::create('tbl_user_auth_log', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->text('description')->nullable();
+            $table->string('ip_address', 15);
+            $table->foreignId('user_id')->constrained('tbl_users');
+            $table->string('username', 15);
+            $table->string('description', 30)->nullable();
+            $table->string('event', 15);
             $table->timestamps();
         });
     }
@@ -24,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('tbl_size');
+        Schema::dropIfExists('tbl_user_auth_log');
     }
 };

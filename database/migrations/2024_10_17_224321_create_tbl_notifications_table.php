@@ -11,10 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('testorders', function (Blueprint $table) {
+        Schema::create('tbl_notifications', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('status'); // 'pending' or 'completed'
+            $table->foreignId('user_id')->constrained('tbl_users');
+            $table->text('notifications');
+            $table->tinyInteger('seen_status')->nullable()->default(0);
             $table->timestamps();
         });
     }
@@ -24,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('testorders');
+        Schema::dropIfExists('tbl_notifications');
     }
 };

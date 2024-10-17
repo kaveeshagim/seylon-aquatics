@@ -11,7 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('tbl_company', function (Blueprint $table) {
+        Schema::create('tbl_reset_password_req', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('user_id');
+            $table->text('reasons');
+            $table->text('new_password')->nullable();
+            $table->tinyInteger('email_status')->nullable()->default(0);
             $table->timestamps();
         });
     }
@@ -21,8 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('tbl_company', function (Blueprint $table) {
-            $table->dropTimestamps();
-        });
+        Schema::dropIfExists('tbl_reset_password_req');
     }
 };
