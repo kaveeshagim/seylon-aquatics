@@ -11,7 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('tbl_fish_variety', function (Blueprint $table) {
+        Schema::create('tbl_fish_habitat', function (Blueprint $table) {
+            $table->id();
+            $table->string('name', 30);
             $table->timestamps();
         });
     }
@@ -21,8 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('tbl_fish_variety', function (Blueprint $table) {
-            $table->dropTimestamps();
-        });
+        Schema::dropIfExists('tbl_fish_habitat');
     }
 };

@@ -11,7 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('tbl_order_mst', function (Blueprint $table) {
+        Schema::create('tbl_priv_category', function (Blueprint $table) {
+            $table->id();
+            $table->string('name', 20);
             $table->timestamps();
         });
     }
@@ -21,8 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('tbl_order_mst', function (Blueprint $table) {
-            $table->dropTimestamps();
-        });
+        Schema::dropIfExists('tbl_priv_category');
     }
 };

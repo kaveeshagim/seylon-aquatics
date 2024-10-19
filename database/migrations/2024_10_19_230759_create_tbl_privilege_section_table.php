@@ -15,9 +15,9 @@ return new class extends Migration
             $table->id();
             $table->foreignId('cat_id')->constrained('tbl_priv_category')->onDelete('cascade');
             $table->foreignId('subcat_id')->constrained('tbl_priv_subcategory')->onDelete('cascade');
-            $table->string('route_name');
-            $table->string('section_name');
-            $table->string('cre_user');
+            $table->string('route_name', 30)->nullable();
+            $table->string('section_name', 30)->nullable();
+            $table->foreignId('cre_user')->constrained('tbl_users')->onDelete('cascade')->nullable();
             $table->timestamps();
         });
     }

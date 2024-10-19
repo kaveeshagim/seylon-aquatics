@@ -288,4 +288,6 @@ Route::namespace('App\Http\Controllers')->group(function () {
         Route::get('/getcustomerorderreport', 'ReportController@getcustomerorderreport')->name('getcustomerorderreport');
 
 
+        //Evaluation
+        Route::get('/customerevaluation', 'PageController@customerevaluation')->name('customerevaluation');
 });

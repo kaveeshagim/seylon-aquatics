@@ -11,7 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('tbl_fishweekly_old', function (Blueprint $table) {
+        Schema::create('test', function (Blueprint $table) {
+            $table->id();
+            $table->string('message', 10)->nullable();
+            $table->date('last_activity')->nullable();
             $table->timestamps();
         });
     }
@@ -21,8 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('tbl_fishweekly_old', function (Blueprint $table) {
-            $table->dropTimestamps();
-        });
+        Schema::dropIfExists('test');
     }
 };

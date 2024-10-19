@@ -11,7 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('tbl_fishhabitat', function (Blueprint $table) {
+        Schema::create('tbl_fish_family', function (Blueprint $table) {
+            $table->id();
+            $table->string('name', 30);
+            $table->foreignId('habitat_id')->constrained('tbl_fish_habitat')->onDelete('cascade');
             $table->timestamps();
         });
     }
@@ -21,8 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('tbl_fishhabitat', function (Blueprint $table) {
-            $table->dropTimestamps();
-        });
+        Schema::dropIfExists('tbl_fish_family');
     }
 };

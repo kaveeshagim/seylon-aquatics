@@ -11,8 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('tbl_fish', function (Blueprint $table) {
-            $table->timestamps();
+        Schema::table('tbl_users', function (Blueprint $table) {
+            $table->text('token')->nullable()->change();
         });
     }
 
@@ -21,8 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('tbl_fish', function (Blueprint $table) {
-            $table->dropTimestamps();
+        Schema::table('tbl_users', function (Blueprint $table) {
+            $table->integer('token')->nullable()->change();
         });
     }
 };

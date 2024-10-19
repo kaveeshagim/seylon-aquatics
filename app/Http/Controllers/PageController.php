@@ -1481,5 +1481,30 @@ class PageController extends Controller
 
 
     }
+
+    public function customerevaluation()
+    {
+
+        // $updateLastActivityTime = Util::updateLastActivityTime();
+
+        // if($updateLastActivityTime == 'false') {
+        //     return redirect('/expired');
+        // }elseif($updateLastActivityTime == 'invalid') {
+        //     return redirect('/');
+        // }
+
+        // if(Util::Privilege("View Data_19") == 'LOGOUT'){
+        //     return redirect('/');
+        // }
+        // if(Util::Privilege("View Data_19") == 'DENIED'){
+        //     return view('pages.accessdenied');
+        // }
+
+        // $username = session()->get('username');
+        // $ipaddress = Util::get_client_ip();
+        // Util::user_auth_log($ipaddress,"user opened invoice page",$username, "View Invoice Page");
+
+        return view('pages.customerevaluation');
+    }
     
 }

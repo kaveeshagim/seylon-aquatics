@@ -11,9 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('tbl_priv_category', function (Blueprint $table) {
+        Schema::create('tbl_fish_species', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->string('species_code', 30)->nullable();
+            $table->foreignId('family_id')->constrained('tbl_fish_family')->onDelete('cascade');
+            $table->string('name', 30);
+            $table->string('scientific_name', 50)->nullable();
             $table->timestamps();
         });
     }
@@ -23,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('tbl_priv_category');
+        Schema::dropIfExists('tbl_fish_species');
     }
 };
