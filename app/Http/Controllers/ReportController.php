@@ -24,10 +24,10 @@ class ReportController extends Controller
             return redirect('/');
         }
     
-        if (Util::Privilege("Download Report_20") == 'LOGOUT') {
+        if (Util::Privilege("Download Report_11") == 'LOGOUT') {
             return redirect('/');
         }
-        if (Util::Privilege("Download Report_20") == 'DENIED') {
+        if (Util::Privilege("Download Report_11") == 'DENIED') {
             return view('pages.accessdenied');
         }
     
@@ -73,10 +73,10 @@ class ReportController extends Controller
             return redirect('/');
         }
     
-        if (Util::Privilege("Download Report_9") == 'LOGOUT') {
+        if (Util::Privilege("Download Report_12") == 'LOGOUT') {
             return redirect('/');
         }
-        if (Util::Privilege("Download Report_9") == 'DENIED') {
+        if (Util::Privilege("Download Report_12") == 'DENIED') {
             return view('pages.accessdenied');
         }
     
@@ -156,10 +156,10 @@ class ReportController extends Controller
             return redirect('/');
         }
     
-        if (Util::Privilege("Download Report_8") == 'LOGOUT') {
+        if (Util::Privilege("Download Report_10") == 'LOGOUT') {
             return redirect('/');
         }
-        if (Util::Privilege("Download Report_8") == 'DENIED') {
+        if (Util::Privilege("Download Report_10") == 'DENIED') {
             return view('pages.accessdenied');
         }
     

@@ -79,7 +79,7 @@ class PrivilegeController extends Controller
         $category = $validatedData['category'];
         $sec_name = $validatedData['privilegesection'];
         $route_name = $validatedData['routename'];
-        $username = session()->get('username');
+        $username = session()->get('userid');
         
         // Check if a record with the same route_name already exists
         $existingRecord = PrivilegeSection::where('route_name', $route_name)->first();

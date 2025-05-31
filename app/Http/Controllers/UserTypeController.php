@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Storage;
 use App\Models\UserType;
 use App\Models\User;
 
-class UsertypeController extends Controller
+class UserTypeController extends Controller
 {
 
     public function getusertypes() {

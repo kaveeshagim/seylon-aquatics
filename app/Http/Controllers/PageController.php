@@ -109,10 +109,10 @@ class PageController extends Controller
             return redirect('/');
         }
 
-        if(Util::Privilege("View Data_10") == 'LOGOUT'){
+        if(Util::Privilege("View Data_13") == 'LOGOUT'){
             return redirect('/');
         }
-        if(Util::Privilege("View Data_10") == 'DENIED'){
+        if(Util::Privilege("View Data_13") == 'DENIED'){
             return view('pages.accessdenied');
         }
 
@@ -151,10 +151,10 @@ class PageController extends Controller
             return redirect('/');
         }
 
-        if(Util::Privilege("Add Data_10") == 'LOGOUT'){
+        if(Util::Privilege("Add Data_13") == 'LOGOUT'){
             return redirect('/');
         }
-        if(Util::Privilege("Add Data_10") == 'DENIED'){
+        if(Util::Privilege("Add Data_13") == 'DENIED'){
             return view('pages.accessdenied');
         }
 
@@ -178,10 +178,10 @@ class PageController extends Controller
             return redirect('/');
         }
 
-        if(Util::Privilege("Update Data_10") == 'LOGOUT'){
+        if(Util::Privilege("Update Data_13") == 'LOGOUT'){
             return redirect('/');
         }
-        if(Util::Privilege("Update Data_10") == 'DENIED'){
+        if(Util::Privilege("Update Data_13") == 'DENIED'){
             return view('pages.accessdenied');
         }
 
@@ -208,10 +208,10 @@ class PageController extends Controller
             return redirect('/');
         }
 
-        if(Util::Privilege("View Data_11") == 'LOGOUT'){
+        if(Util::Privilege("View Data_14") == 'LOGOUT'){
             return redirect('/');
         }
-        if(Util::Privilege("View Data_11") == 'DENIED'){
+        if(Util::Privilege("View Data_14") == 'DENIED'){
             return view('pages.accessdenied');
         }
 
@@ -261,10 +261,10 @@ class PageController extends Controller
             return redirect('/');
         }
 
-        if(Util::Privilege("Update Data_11") == 'LOGOUT'){
+        if(Util::Privilege("Update Data_14") == 'LOGOUT'){
             return redirect('/');
         }
-        if(Util::Privilege("Update Data_11") == 'DENIED'){
+        if(Util::Privilege("Update Data_14") == 'DENIED'){
             return view('pages.accessdenied');
         }
 
@@ -289,10 +289,10 @@ class PageController extends Controller
             return redirect('/');
         }
 
-        if(Util::Privilege("View Data_12") == 'LOGOUT'){
+        if(Util::Privilege("View Data_15") == 'LOGOUT'){
             return redirect('/');
         }
-        if(Util::Privilege("View Data_12") == 'DENIED'){
+        if(Util::Privilege("View Data_15") == 'DENIED'){
             return view('pages.accessdenied');
         }
 
@@ -332,10 +332,10 @@ class PageController extends Controller
             return redirect('/');
         }
     
-        if (Util::Privilege("Add Data_12") == 'LOGOUT') {
+        if (Util::Privilege("Add Data_15") == 'LOGOUT') {
             return redirect('/');
         }
-        if (Util::Privilege("Add Data_12") == 'DENIED') {
+        if (Util::Privilege("Add Data_15") == 'DENIED') {
             return view('pages.accessdenied');
         }
     
@@ -374,10 +374,10 @@ class PageController extends Controller
             return redirect('/');
         }
     
-        if (Util::Privilege("Update Data_12") == 'LOGOUT') {
+        if (Util::Privilege("Update Data_15") == 'LOGOUT') {
             return redirect('/');
         }
-        if (Util::Privilege("Update Data_12") == 'DENIED') {
+        if (Util::Privilege("Update Data_15") == 'DENIED') {
             return view('pages.accessdenied');
         }
     
@@ -421,10 +421,10 @@ class PageController extends Controller
             return redirect('/');
         }
 
-        if(Util::Privilege("View Data_12") == 'LOGOUT'){
+        if(Util::Privilege("View Data_15") == 'LOGOUT'){
             return redirect('/');
         }
-        if(Util::Privilege("View Data_12") == 'DENIED'){
+        if(Util::Privilege("View Data_15") == 'DENIED'){
             return view('pages.accessdenied');
         }
 
@@ -545,10 +545,10 @@ class PageController extends Controller
             return redirect('/');
         }
 
-        if(Util::Privilege("View Data_17") == 'LOGOUT'){
+        if(Util::Privilege("View Data_20") == 'LOGOUT'){
             return redirect('/');
         }
-        if(Util::Privilege("View Data_17") == 'DENIED'){
+        if(Util::Privilege("View Data_20") == 'DENIED'){
             return view('pages.accessdenied');
         }
 
@@ -634,10 +634,10 @@ class PageController extends Controller
             return redirect('/');
         }
 
-        if(Util::Privilege("View Data_21") == 'LOGOUT'){
+        if(Util::Privilege("View Data_8") == 'LOGOUT'){
             return redirect('/');
         }
-        if(Util::Privilege("View Data_21") == 'DENIED'){
+        if(Util::Privilege("View Data_8") == 'DENIED'){
             return view('pages.accessdenied');
         }
 
@@ -1068,12 +1068,12 @@ class PageController extends Controller
             return redirect('/');
         }
 
-        if(Util::Privilege("Add Data_13") == 'LOGOUT'){
-            return redirect('/');
-        }
-        if(Util::Privilege("Add Data_13") == 'DENIED'){
-            return view('pages.accessdenied');
-        }
+        // if(Util::Privilege("Add Data_13") == 'LOGOUT'){
+        //     return redirect('/');
+        // }
+        // if(Util::Privilege("Add Data_13") == 'DENIED'){
+        //     return view('pages.accessdenied');
+        // }
 
         $username = session()->get('username');
         $ipaddress = Util::get_client_ip();
@@ -1093,12 +1093,12 @@ class PageController extends Controller
             return redirect('/');
         }
 
-        if(Util::Privilege("Add Data_14") == 'LOGOUT'){
-            return redirect('/');
-        }
-        if(Util::Privilege("Add Data_14") == 'DENIED'){
-            return view('pages.accessdenied');
-        }
+        // if(Util::Privilege("Add Data_14") == 'LOGOUT'){
+        //     return redirect('/');
+        // }
+        // if(Util::Privilege("Add Data_14") == 'DENIED'){
+        //     return view('pages.accessdenied');
+        // }
 
         $categorylist = PrivCategory::select('id', 'name')->get();
 
@@ -1120,12 +1120,12 @@ class PageController extends Controller
             return redirect('/');
         }
 
-        if(Util::Privilege("Add Data_15") == 'LOGOUT'){
-            return redirect('/');
-        }
-        if(Util::Privilege("Add Data_15") == 'DENIED'){
-            return view('pages.accessdenied');
-        }
+        // if(Util::Privilege("Add Data_15") == 'LOGOUT'){
+        //     return redirect('/');
+        // }
+        // if(Util::Privilege("Add Data_15") == 'DENIED'){
+        //     return view('pages.accessdenied');
+        // }
 
         $categorylist = PrivCategory::select('id', 'name')->get();
 
@@ -1147,12 +1147,12 @@ class PageController extends Controller
             return redirect('/');
         }
 
-        if(Util::Privilege("View Data_16") == 'LOGOUT'){
-            return redirect('/');
-        }
-        if(Util::Privilege("View Data_16") == 'DENIED'){
-            return view('pages.accessdenied');
-        }
+        // if(Util::Privilege("View Data_16") == 'LOGOUT'){
+        //     return redirect('/');
+        // }
+        // if(Util::Privilege("View Data_16") == 'DENIED'){
+        //     return view('pages.accessdenied');
+        // }
 
         $usertypelist = UserType::select('id', 'title')->get();
         $categorylist = PrivCategory::select('id', 'name')->get();
@@ -1254,10 +1254,10 @@ class PageController extends Controller
             return redirect('/');
         }
 
-        if(Util::Privilege("View Data_19") == 'LOGOUT'){
+        if(Util::Privilege("View Data_9") == 'LOGOUT'){
             return redirect('/');
         }
-        if(Util::Privilege("View Data_19") == 'DENIED'){
+        if(Util::Privilege("View Data_9") == 'DENIED'){
             return view('pages.accessdenied');
         }
 
@@ -1279,10 +1279,10 @@ class PageController extends Controller
             return redirect('/');
         }
 
-        if(Util::Privilege("View Invoice Data_19") == 'LOGOUT'){
+        if(Util::Privilege("View Invoice Data_9") == 'LOGOUT'){
             return redirect('/');
         }
-        if(Util::Privilege("View Invoice Data_19") == 'DENIED'){
+        if(Util::Privilege("View Invoice Data_9") == 'DENIED'){
             return view('pages.accessdenied');
         }
 
@@ -1409,10 +1409,10 @@ class PageController extends Controller
             return redirect('/');
         }
 
-        if(Util::Privilege("View Data_9") == 'LOGOUT'){
+        if(Util::Privilege("View Data_12") == 'LOGOUT'){
             return redirect('/');
         }
-        if(Util::Privilege("View Data_9") == 'DENIED'){
+        if(Util::Privilege("View Data_12") == 'DENIED'){
             return view('pages.accessdenied');
         }
 
@@ -1436,10 +1436,10 @@ class PageController extends Controller
         }elseif($updateLastActivityTime == 'invalid') {
             return redirect('/');
         }
-        if(Util::Privilege("View Data_20") == 'LOGOUT'){
+        if(Util::Privilege("View Data_11") == 'LOGOUT'){
             return redirect('/');
         }
-        if(Util::Privilege("View Data_20") == 'DENIED'){
+        if(Util::Privilege("View Data_11") == 'DENIED'){
             return view('pages.accessdenied');
         }
 
@@ -1465,10 +1465,10 @@ class PageController extends Controller
             return redirect('/');
         }
 
-        if(Util::Privilege("View Data_8") == 'LOGOUT'){
+        if(Util::Privilege("View Data_10") == 'LOGOUT'){
             return redirect('/');
         }
-        if(Util::Privilege("View Data_8") == 'DENIED'){
+        if(Util::Privilege("View Data_10") == 'DENIED'){
             return view('pages.accessdenied');
         }
 

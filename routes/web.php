@@ -24,14 +24,8 @@ Route::get('/sidebar', function () {
 Route::get('/ordersoverview', function () {
     return view('ordersoverview');
 });
-Route::get('/orderconfirmation', function () {
-    return view('orderconfirmation');
-});
 Route::get('/invoicesummary', function () {
     return view('invoice');
-});
-Route::get('/orderconfirmation', function () {
-    return view('orderconfirmation');
 });
 Route::get('/orderconfirmation', function () {
     return view('orderconfirmation');
@@ -150,7 +144,7 @@ Route::namespace('App\Http\Controllers')->group(function () {
         Route::get('/getcusorderdetail/{id}', 'OrderController@getcusorderdetail')->name('getcusorderdetail');
         Route::get('/orderconfirm/{id}', 'OrderController@orderconfirm')->name('orderconfirm');
         Route::get('/orderconfirmstatuscheck/{id}', 'OrderController@orderconfirmstatuscheck')->name('orderconfirmstatuscheck');
-        Route::get('/cancelorder', 'OrderController@cancelorder')->name('orderconfirm');
+        Route::get('/cancelorder', 'OrderController@cancelorder')->name('cancelorder');
         Route::get('/deleteorderdet', 'OrderController@deleteorderdet')->name('deleteorderdet');
         Route::post('/editorderdet', 'OrderController@editorderdet')->name('editorderdet');
         Route::get('/getorderitemdet/{id}', 'OrderController@getorderitemdet')->name('getorderitemdet');
@@ -222,7 +216,7 @@ Route::namespace('App\Http\Controllers')->group(function () {
         // fish family
         Route::get('/fish_family', 'PageController@fish_family')->name('fish_family');
         Route::get('/getfishfamilies', 'FishController@getfishfamilies')->name('getfishfamilies');
-        Route::get('/getfamily/{id}', 'FishController@getfamily')->name('getsize');
+        Route::get('/getfamily/{id}', 'FishController@getfamily')->name('getfamily');
         Route::post('/addfishfamily', 'FishController@addfishfamily');
         Route::post('/editfishfamily', 'FishController@editfishfamily')->name('editfishfamily');
         Route::get('/deletefishfamily', 'FishController@deletefishfamily')->name('deletefishfamily');
