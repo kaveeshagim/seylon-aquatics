@@ -1341,7 +1341,7 @@ class PageController extends Controller
 
         // Retrieve the invoice master details
         $invoiceMaster = DB::table('tbl_invoice_mst')
-        ->select('tbl_invoice_mst.*', 'tbl_order_mst.*')
+        ->select('tbl_invoice_mst.*', 'tbl_invoice_mst.id as invoiceid', 'tbl_order_mst.*')
         ->join('tbl_order_mst','tbl_invoice_mst.order_id','=','tbl_order_mst.id')
         ->where('tbl_invoice_mst.order_id', $id)
         ->first();

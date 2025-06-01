@@ -301,7 +301,7 @@ function viewinvoice(id) {
 
 function editmodal(id) {
 
-var priv = 'Update Data_19';
+var priv = 'Update Data_9';
 $.ajax({
     url: "{{url('privcheck')}}",
     type: 'GET',

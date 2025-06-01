@@ -159,7 +159,7 @@
                 <form class="space-y-4" id="edit-form">
                     @csrf
                     <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                    <input hidden="true" id="invoiceid" name="invoiceid" value="{{$invoiceMaster->id}}"/>
+                    <input hidden="true" id="invoiceid" name="invoiceid" value="{{$invoiceMaster->invoiceid}}"/>
                     <input hidden="true" id="orderid" name="orderid" value="{{$invoiceMaster->order_id}}"/>
                     <input hidden="true" id="orderno" name="orderno" value="{{$invoiceMaster->order_no}}"/>
                     <div>
