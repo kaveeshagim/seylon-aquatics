@@ -236,7 +236,7 @@ function searchdata() {
 
 function addneworderpage() {
 
-        var priv = 'Add Data_21';
+        var priv = 'Add Data_8';
 
         $.ajax({
             url: "{{url('privcheck')}}",
@@ -266,7 +266,7 @@ function vieworder(id) {
 
 function viewinvoice(id) {
 
-  var priv = 'View Invoice Data_19';
+  var priv = 'View Invoice Data_9';
     $.ajax({
       url: "{{url('privcheck')}}",
       type: 'GET',
@@ -281,7 +281,7 @@ function viewinvoice(id) {
                     success: function (response) {
                         if(response.status == "success") {
 
-                          location.href = "{{ url('viewinvoice') }}" + "/" + id;
+                          location.href = "{{ url('viewinvoicee') }}" + "/" + id;
 
 
                         }else if(response.status == "error"){

@@ -192,7 +192,7 @@ Toggle modal
 <script>
     function editmodal(id) {
 
-var priv = 'Update Data_21';
+var priv = 'Update Data_24';
 $.ajax({
     url: "{{url('privcheck')}}",
     type: 'GET',
@@ -296,7 +296,7 @@ $.ajax({
 }
 
 function deletemodal(id) {
-    var priv = 'Delete Data_21';
+    var priv = 'Delete Data_24';
     $.ajax({
       url: "{{url('privcheck')}}",
       type: 'GET',
@@ -383,7 +383,7 @@ function deleteorderdetail() {
 }
 
 function orderconfirm(id) {
-    var priv = 'Confirm Order_21';
+    var priv = 'Confirm Order_24';
     startspinner();
     
     $.ajax({

@@ -211,7 +211,7 @@
 
     function updateinvoice() {
 
-        var priv = 'Update Data_19';
+        var priv = 'Update Data_9';
         var invoiceid = $('#invoiceid').val();
         var orderid = $('#orderid').val();
         var orderno = $('#orderno').val();

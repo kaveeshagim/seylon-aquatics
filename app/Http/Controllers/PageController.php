@@ -57,10 +57,10 @@ class PageController extends Controller
         }
 
 
-        if(Util::Privilege("View Data_24") == 'LOGOUT'){
+        if(Util::Privilege("View Data_23") == 'LOGOUT'){
             return redirect('/');
         }
-        if(Util::Privilege("View Data_24") == 'DENIED'){
+        if(Util::Privilege("View Data_23") == 'DENIED'){
             return view('pages.accessdenied');
         }
 
@@ -342,7 +342,7 @@ class PageController extends Controller
         // Fetching executives
         $executives = User::select('fname', 'id')
             ->whereHas('userType', function ($query) {
-                $query->where('title', 'Marketing Executive');
+                $query->where('title', 'Executive - Marketing');
             })
             ->get();
     
@@ -687,16 +687,16 @@ class PageController extends Controller
             return redirect('/');
         }
 
-        if(Util::Privilege("Add Data_21") == 'LOGOUT'){
+        if(Util::Privilege("Add Data_8") == 'LOGOUT'){
             return redirect('/');
         }
-        if(Util::Privilege("Add Data_21") == 'DENIED'){
+        if(Util::Privilege("Add Data_8") == 'DENIED'){
             return view('pages.accessdenied');
         }
 
         $fishweeklylist = DB::table('tbl_fishweekly')
         ->select('tbl_fishweekly.fish_code','tbl_fishweekly.size', 'tbl_fishweekly.size_cm', 'tbl_fish_variety.common_name')
-        ->join('tbl_fish_variety', 'tbl_fish_variety.fish_code', '=', 'tbl_fishweekly.fish_code')
+        ->join('tbl_fish_variety', DB::raw("CONVERT(tbl_fish_variety.fish_code USING utf8mb4) COLLATE utf8mb4_unicode_ci"), '=', 'tbl_fishweekly.fish_code')
         ->get();
 
 
@@ -1222,10 +1222,10 @@ class PageController extends Controller
             return redirect('/');
         }
 
-        if(Util::Privilege("View Data_21") == 'LOGOUT'){
+        if(Util::Privilege("View Data_24") == 'LOGOUT'){
             return redirect('/');
         }
-        if(Util::Privilege("View Data_21") == 'DENIED'){
+        if(Util::Privilege("View Data_24") == 'DENIED'){
             return view('pages.accessdenied');
         }
 
@@ -1270,7 +1270,6 @@ class PageController extends Controller
 
     public function viewinvoicedetpage($orderId)
     {
-
         $updateLastActivityTime = Util::updateLastActivityTime();
 
         if($updateLastActivityTime == 'false') {
@@ -1339,7 +1338,6 @@ class PageController extends Controller
     }
 
     public function viewinvoicee($id) {
-
 
         // Retrieve the invoice master details
         $invoiceMaster = DB::table('tbl_invoice_mst')
@@ -1485,13 +1483,13 @@ class PageController extends Controller
     public function customerevaluation()
     {
 
-        // $updateLastActivityTime = Util::updateLastActivityTime();
+        $updateLastActivityTime = Util::updateLastActivityTime();
 
-        // if($updateLastActivityTime == 'false') {
-        //     return redirect('/expired');
-        // }elseif($updateLastActivityTime == 'invalid') {
-        //     return redirect('/');
-        // }
+        if($updateLastActivityTime == 'false') {
+            return redirect('/expired');
+        }elseif($updateLastActivityTime == 'invalid') {
+            return redirect('/');
+        }
 
         // if(Util::Privilege("View Data_19") == 'LOGOUT'){
         //     return redirect('/');
@@ -1500,9 +1498,9 @@ class PageController extends Controller
         //     return view('pages.accessdenied');
         // }
 
-        // $username = session()->get('username');
-        // $ipaddress = Util::get_client_ip();
-        // Util::user_auth_log($ipaddress,"user opened invoice page",$username, "View Invoice Page");
+        $username = session()->get('username');
+        $ipaddress = Util::get_client_ip();
+        Util::user_auth_log($ipaddress,"user opened invoice page",$username, "View Invoice Page");
 
         return view('pages.customerevaluation');
     }
